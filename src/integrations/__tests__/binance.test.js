@@ -1,41 +1,33 @@
-import {jest} from '@jest/globals';
-
-const WebSocketMock = jest.fn().mockImplementation(() => {
-    return {
-        on: jest.fn(),
-        send: jest.fn(),
-        close: jest.fn()
-    }
-});
-
-jest.unstable_mockModule('ws', async () => {
-    return {
-        default: WebSocketMock
-    };
-})
-
-const WebSocket = (await import('ws')).default;
-const BinanceIntegration = (await import("src/integrations/binance.js")).default;
+import { jest } from '@jest/globals';
+import { WebSocketMock } from '__mocks__/WebSocketMock.js';
+import BinanceIntegration from 'src/integrations/binance.js';
 
 describe('BinanceIntegration', () => {
-    const testWebsocketUrl = 'wss://localhost:1234';
-
     let binance;
-    let mockWebSocket;
 
     beforeEach(async () => {
-        mockWebSocket = new WebSocket(testWebsocketUrl);
-        binance = new BinanceIntegration();
+        binance = new BinanceIntegration(WebSocketMock);
     });
 
     afterEach(() => {
         binance.closeWebsocket();
-        jest.clearAllMocks();
-    })
+    });
+
+    const connectWebSocket = async () => {
+        const connectionPromise = binance.connectWebSocket();
+        binance.websocket.mockTriggerEvent('open', []);
+        await expect(connectionPromise).resolves.toBe('connected');
+    };
 
     it('connects to the websocket', async () => {
-        await binance.connectWebSocket();
-        expect(WebSocket).toHaveBeenCalledTimes(1);
-        expect(WebSocketMock).toHaveBeenCalledWith(testWebsocketUrl);
-    })
-})
+        await connectWebSocket();
+    });
+
+    it('receives a message', async () => {
+        await connectWebSocket();
+        const spy = jest.spyOn(binance, 'handleTickerUpdate');
+        const mockMessage = { s: 'BTCUSDT', c: 12345.6 };
+        binance.websocket.mockTriggerEvent('message', [JSON.stringify(mockMessage)]);
+        expect(spy).toHaveBeenCalledWith(mockMessage);
+    });
+});
