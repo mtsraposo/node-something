@@ -74,13 +74,21 @@ class BinanceIntegration extends EventEmitter {
         });
     }
 
-    closeWebsocketStreamConnections() {
-        Object.values(this.websocketStreams).forEach(ws => ws.close());
+    closeWebSocketStreamConnections() {
+        Object.values(this.websocketStreams).forEach(ws => {
+            try {
+                ws.close();
+            } catch (e) {
+                console.warn('Failed to close websocket connection with error ', e);
+            }
+        });
     }
 
     closeWebSocketConnection() {
-        if (this.websocket) {
+        try {
             this.websocket.close();
+        } catch (e) {
+            console.warn('Failed to close websocket connection with error ', e);
         }
     }
 
