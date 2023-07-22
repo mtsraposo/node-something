@@ -1,33 +1,45 @@
 import WebSocket from 'ws';
 import axios from "axios";
+import EventEmitter from "events";
 
-const BINANCE_API_URL = 'https://testnet.binance.vision/api/v3';
-const BINANCE_WEBSOCKET_URL = 'wss://testnet.binance.vision/ws/btcusdt@ticker';
+export const BINANCE_API_URL = 'https://testnet.binance.vision/api/v3';
+export const BINANCE_WEBSOCKET_URL = 'wss://testnet.binance.vision/ws/btcusdt@ticker';
 
-class BinanceIntegration {
+class BinanceIntegration extends EventEmitter {
     constructor() {
+        super();
         this.websocket = null;
     }
 
     async connectWebSocket() {
         this.websocket = new WebSocket(BINANCE_WEBSOCKET_URL);
 
-        this.websocket.on('open', () => {
-            console.log('Connected to Binance WebSocket');
-        });
+        await new Promise((resolve, reject) => {
+            this.websocket.on('open', () => {
+                this.emit('connected');
+                resolve();
+            });
 
-        this.websocket.on('message', (data, _isBinary) => {
-            const message = JSON.parse(data);
-            this.handleTickerUpdate(message);
-        });
+            this.websocket.on('message', (data, _isBinary) => {
+                const message = JSON.parse(data);
+                this.handleTickerUpdate(message);
+            });
 
-        this.websocket.on('error', (error) => {
-            console.error('WebSocket error:', error);
-        });
+            this.websocket.on('error', error => {
+                this.emit('error', error);
+                reject();
+            });
 
-        this.websocket.on('close', (_code, _reason) => {
-            console.log('WebSocket connection closed');
-        });
+            this.websocket.on('close', (_closeEvent, _reason) => {
+                this.emit('close');
+            });
+        })
+    }
+
+    closeWebsocket() {
+        if (this.websocket) {
+            this.websocket.close();
+        }
     }
 
     async fetchLatestPrice() {

@@ -5,7 +5,7 @@
   "main": "src",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "start": "node src/main.js"
   },
   "repository": {
@@ -22,5 +22,13 @@
     "axios": "^1.4.0",
     "events": "^3.3.0",
     "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.9",
+    "@babel/core": "^7.22.9",
+    "@babel/preset-env": "^7.22.9",
+    "@types/jest": "^29.5.3",
+    "babel-jest": "^29.6.1",
+    "jest": "^29.6.1"
   }
 }
