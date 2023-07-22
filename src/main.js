@@ -6,9 +6,4 @@ bot.start();
 
 const binance = new Binance();
 
-binance.on('connected', () => {
-    console.log('Connected to Binance WebSocket');
-});
-
 binance.connectWebSocket();
-binance.fetchLatestPrice();

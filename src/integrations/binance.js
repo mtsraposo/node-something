@@ -1,8 +1,6 @@
 import WebSocket from 'ws';
-import axios from 'axios';
 import EventEmitter from 'events';
 
-export const BINANCE_API_URL = 'https://testnet.binance.vision/api/v3';
 export const BINANCE_WEBSOCKET_URL = 'wss://testnet.binance.vision/ws/btcusdt@ticker';
 
 class BinanceIntegration extends EventEmitter {
@@ -10,6 +8,10 @@ class BinanceIntegration extends EventEmitter {
         super();
         this.websocket = null;
         this.WebSocketClass = WebSocketClass;
+
+        this.on('connected', () => {
+            console.log('Connected to Binance WebSocket');
+        });
     }
 
     async connectWebSocket() {
@@ -43,19 +45,6 @@ class BinanceIntegration extends EventEmitter {
         if (this.websocket) {
             this.websocket.close();
         }
-    }
-
-    async fetchLatestPrice() {
-        const response = await axios.get(`${BINANCE_API_URL}/ticker/price`, {
-            params: {
-                symbol: 'BTCUSDT',
-            },
-        });
-
-        const price = response.data.price;
-        console.log('Latest BTC/USDT price:', price);
-
-        return price;
     }
 
     handleTickerUpdate(message) {
