@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events';
 
 class TradingBot extends EventEmitter {
     constructor() {
@@ -19,4 +19,4 @@ class TradingBot extends EventEmitter {
     }
 }
 
-module.exports = TradingBot;
+export default TradingBot;
