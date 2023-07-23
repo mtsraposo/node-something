@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 class WebSocketMock extends EventEmitter {
-    static OPENING = 1;
+    static CONNECTING = 1;
     static CLOSED = 3;
 
     constructor() {
@@ -18,7 +18,7 @@ class WebSocketMock extends EventEmitter {
             this.eventMap[event](...args);
             switch (event) {
                 case ('open'):
-                    this.readyState = WebSocketMock.OPENING;
+                    this.readyState = WebSocketMock.CONNECTING;
                     break;
                 case ('close'):
                     this.readyState = WebSocketMock.CLOSED;

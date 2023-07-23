@@ -24,6 +24,7 @@ class BinanceWebSocketMock extends WebSocketMock {
 describe('BinanceIntegration', () => {
     let binance;
     const streamNames = ['testStream-1', 'testStream-2'];
+    const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
 
     beforeEach(async () => {
         binance = new BinanceWebSocket(BinanceWebSocketMock, streamNames, false);
@@ -55,7 +56,6 @@ describe('BinanceIntegration', () => {
     it('receives messages on the websocket', async () => {
         await connectWebSocket();
         const spy = jest.spyOn(binance, 'handleTickerUpdate');
-        const mockData = { s: 'BTCUSDT', c: 12345.6 };
         const mockMessage = { stream: 'btcusdt@ticker', data: mockData };
         binance.webSocket.mockTriggerEvent('message', [JSON.stringify(mockMessage)]);
         expect(spy).toHaveBeenCalledWith(mockData);
@@ -68,7 +68,6 @@ describe('BinanceIntegration', () => {
     it('receives messages on websocket streams', async () => {
         await connectWebSocketStreams();
         const spy = jest.spyOn(binance, 'handleTickerUpdate');
-        const mockData = { s: 'BTCUSDT', c: 12345.6 };
         const mockMessage = { stream: 'btcusdt@ticker', data: mockData };
         binance.webSocketStreams.mockTriggerEvent('message', [JSON.stringify(mockMessage)]);
         expect(spy).toHaveBeenCalledWith(mockData);

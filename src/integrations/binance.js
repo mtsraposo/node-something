@@ -46,8 +46,9 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
     }
 
     handleTickerUpdate(data) {
-        const { s: symbol, c: lastPrice } = data;
-        console.log('Received ticker update:', symbol, lastPrice);
+        const { e: eventType, s: symbol, c: lastPrice, w: averagePrice } = data;
+        console.log('- Received ticker update');
+        console.log('--- ', eventType, symbol, lastPrice, averagePrice);
     }
 }
 
