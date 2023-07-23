@@ -7,7 +7,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
         super(WebSocketClass);
         this.pingId = null;
         this.websocket = null;
-        this.websocketStreams = {};
+        this.webSocketStreams = {};
         this.streamNames = streamNames;
     }
 
@@ -18,33 +18,25 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     connectWebSocketStreams() {
-        return this.streamNames.map(stream => {
-            return this.connectWebSocketStream(stream);
-        });
-    }
-
-    connectWebSocketStream(stream) {
-        const url = `${BINANCE_WEBSOCKET_STREAM_URL}/${stream}`;
-        this.websocketStreams[url] = this.setupWebSocket(url);
+        const streamParams = this.streamNames.join('/');
+        this.webSocketStreams = this.setupWebSocket(`${BINANCE_WEBSOCKET_STREAM_URL}?streams=${streamParams}`);
         return this.connectionPromise();
     }
 
     connectionPromise() {
         return new Promise((resolve, _reject) => {
-            this.once('connected', () => {
+            this.on('ws-connected', () => {
                 resolve('connected');
             });
         });
     }
 
-    closeWebSocketStreamConnections() {
-        Object.values(this.websocketStreams).forEach(ws => {
-            try {
-                ws.close();
-            } catch (e) {
-                console.warn('Failed to close websocket connection with error ', e);
-            }
-        });
+    closeWebSocketStreamConnection() {
+        try {
+            this.webSocketStreams.close();
+        } catch (e) {
+            console.warn('Failed to close websocket streams connection with error ', e);
+        }
     }
 
     closeWebSocketConnection() {

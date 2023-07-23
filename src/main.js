@@ -6,6 +6,6 @@ bot.start();
 
 const binance = new BinanceWebSocket();
 
-await Promise.all(binance.connectWebSocketStreams());
+await binance.connectWebSocketStreams();
 await binance.connectWebSocket();
 binance.checkConnectivity();
