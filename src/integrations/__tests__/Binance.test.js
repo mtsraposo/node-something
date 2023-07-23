@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { WebSocketMock } from '__mocks__/WebSocketMock.js';
+import { WebSocketMock } from 'src/__mocks__/WebSocketMock.js';
 import BinanceWebSocket from 'src/integrations/binance.js';
 
 class BinanceWebSocketMock extends WebSocketMock {

@@ -1,6 +1,6 @@
+import WebSocket from 'ws';
 import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
 import { BINANCE_STREAMS } from './constants.js';
-import WebSocket from 'ws';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor(
@@ -16,11 +16,14 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         });
 
         this.on('ws-message', message => {
+            // TODO: storage
+            // TODO: error handling
             // console.info('Received message ', message);
             this.handleMessage(message);
         });
 
         this.on('ws-error', error => {
+            // TODO: error handling
             console.error('Received error from websocket: ', error);
         });
 
