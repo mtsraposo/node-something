@@ -104,7 +104,7 @@ class BinanceIntegration extends EventEmitter {
 
     handleMessage(message) {
         if (this.pingId && message.id === this.pingId) {
-            console.log('Received pong: ', message);
+            this.emit('pong');
         } else {
             this.handleTickerUpdate(message);
         }

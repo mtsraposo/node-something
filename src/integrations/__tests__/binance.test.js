@@ -58,5 +58,11 @@ describe('BinanceIntegration', () => {
         binance.closeWebSocketStreamConnections();
     });
 
-
+    it('checks websocket connectivity', async () => {
+        await connectWebSocket();
+        const spy = jest.spyOn(binance, 'handleMessage');
+        binance.checkConnectivity();
+        expect(spy).toHaveBeenCalledWith(binance.websocket.pongResponse);
+        binance.closeWebSocketConnection();
+    });
 });
