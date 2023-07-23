@@ -1,105 +1,26 @@
-import { v4 as uuidv4 } from 'uuid';
+import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
+import { BINANCE_STREAMS } from './constants.js';
 import WebSocket from 'ws';
-import EventEmitter from 'events';
 
-export const BINANCE_STREAMS = ['btcusdt@ticker'];
-export const BINANCE_WEBSOCKET_STREAM_URL = 'wss://testnet.binance.vision/ws';
-export const BINANCE_WEBSOCKET_API_URL = 'wss://testnet.binance.vision/ws-api/v3';
-
-class BinanceIntegration extends EventEmitter {
+class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor(WebSocketClass = WebSocket, streamNames = BINANCE_STREAMS) {
-        super();
-
-        this.WebSocketClass = WebSocketClass;
-
-        this.pingId = null;
-
-        this.websocket = null;
-        this.websocketStreams = {};
-        this.streamNames = streamNames;
-
-        this.on('connected', () => {
+        super(WebSocketClass, streamNames);
+        this.on('connected', url => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
-            console.log('Connected to Binance WebSocket');
-        });
-    }
-
-    // TODO: send unsolicited pong frames to avoid disconnection
-
-    connectWebSocket() {
-        this.websocket = this.setupWebSocket(BINANCE_WEBSOCKET_API_URL);
-        return this.connectionPromise();
-    }
-
-    connectWebSocketStreams() {
-        return this.streamNames.map(stream => {
-            return this.connectWebSocketStream(stream);
-        });
-    }
-
-    connectWebSocketStream(stream) {
-        const url = `${BINANCE_WEBSOCKET_STREAM_URL}/${stream}`;
-        this.websocketStreams[url] = this.setupWebSocket(url);
-        return this.connectionPromise();
-    }
-
-    setupWebSocket(url) {
-        const websocket = new this.WebSocketClass(url);
-
-        websocket.on('open', () => {
-            this.emit('connected', url);
+            console.log(`Connected to Binance WebSocket at url: ${url}`);
         });
 
-        websocket.on('message', (data, _isBinary) => {
-            const message = JSON.parse(data);
+        this.on('message', message => {
             this.handleMessage(message);
         });
 
-        websocket.on('error', error => {
+        this.on('error', error => {
             this.emit('error', error);
         });
 
-        websocket.on('close', (_closeEvent, _reason) => {
+        this.on('close', () => {
             this.emit('close');
         });
-
-        return websocket;
-    }
-
-    connectionPromise() {
-        return new Promise((resolve, _reject) => {
-            this.once('connected', () => {
-                resolve('connected');
-            });
-        });
-    }
-
-    closeWebSocketStreamConnections() {
-        Object.values(this.websocketStreams).forEach(ws => {
-            try {
-                ws.close();
-            } catch (e) {
-                console.warn('Failed to close websocket connection with error ', e);
-            }
-        });
-    }
-
-    closeWebSocketConnection() {
-        try {
-            this.websocket.close();
-        } catch (e) {
-            console.warn('Failed to close websocket connection with error ', e);
-        }
-    }
-
-    checkConnectivity() {
-        this.pingId = uuidv4();
-        const payload = {
-            'id': this.pingId,
-            'method': 'ping',
-        };
-
-        this.websocket.send(JSON.stringify(payload));
     }
 
     handleMessage(message) {
@@ -116,4 +37,4 @@ class BinanceIntegration extends EventEmitter {
     }
 }
 
-export default BinanceIntegration;
+export default BinanceWebSocket;

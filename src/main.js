@@ -1,10 +1,10 @@
 import TradingBot from './strategies/tradingBot.js';
-import Binance from './integrations/binance.js';
+import BinanceWebSocket from './integrations/binance.js';
 
 const bot = new TradingBot();
 bot.start();
 
-const binance = new Binance();
+const binance = new BinanceWebSocket();
 
 await Promise.all(binance.connectWebSocketStreams());
 await binance.connectWebSocket();

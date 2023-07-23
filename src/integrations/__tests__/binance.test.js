@@ -1,13 +1,16 @@
 import { jest } from '@jest/globals';
 import { WebSocketMock } from '__mocks__/WebSocketMock.js';
-import BinanceIntegration, { BINANCE_WEBSOCKET_STREAM_URL } from 'src/integrations/binance.js';
+import BinanceWebSocket from 'src/integrations/binance.js';
+import WebSocketSupervisor from 'src/clients/WebSocketSupervisor.js';
+import BinanceWebSocketSupervisor from '../BinanceWebSocketSupervisor.js';
+import { BINANCE_WEBSOCKET_STREAM_URL } from '../constants.js';
 
 describe('BinanceIntegration', () => {
     let binance;
     const streamNames = ['testStream-1', 'testStream-2'];
 
     beforeEach(async () => {
-        binance = new BinanceIntegration(WebSocketMock, streamNames);
+        binance = new BinanceWebSocket(WebSocketMock, streamNames);
         expect(binance.streamNames).toBe(streamNames);
     });
 
