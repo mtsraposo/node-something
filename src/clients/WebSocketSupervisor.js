@@ -7,26 +7,27 @@ class WebSocketSupervisor extends EventEmitter {
     }
 
     setupWebSocket(url) {
-        const websocket = new this.WebSocketClass(url);
+        const webSocket = new this.WebSocketClass(url);
 
-        websocket.on('open', () => {
+        webSocket.on('open', () => {
             this.emit('ws-connected', url);
         });
 
-        websocket.on('message', (data, _isBinary) => {
+        webSocket.on('message', (data, _isBinary) => {
             const message = JSON.parse(data);
             this.emit('ws-message', message);
         });
 
-        websocket.on('error', error => {
+        webSocket.on('error', error => {
             this.emit('ws-error', error);
         });
 
-        websocket.on('close', (_closeEvent, _reason) => {
+        webSocket.on('close', (_code, _reason) => {
+            console.log('Received WebSocket close event');
             this.emit('ws-close');
         });
 
-        return websocket;
+        return webSocket;
     }
 }
 

@@ -3,8 +3,13 @@ import { BINANCE_STREAMS } from './constants.js';
 import WebSocket from 'ws';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
-    constructor(WebSocketClass = WebSocket, streamNames = BINANCE_STREAMS) {
+    constructor(
+        WebSocketClass = WebSocket,
+        streamNames = BINANCE_STREAMS,
+        stayUp = true,
+    ) {
         super(WebSocketClass, streamNames);
+        this.stayUp = stayUp;
         this.on('ws-connected', url => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
             console.log(`Connected to Binance WebSocket at url: ${url}`);
@@ -20,7 +25,15 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         });
 
         this.on('ws-close', () => {
-            console.info('WebSocket connection closed');
+            console.warn('WebSocket connection closed');
+            if (!this.stayUp) return;
+            console.info('Reconnecting...');
+            if (this.webSocket?.readyState === WebSocketClass.CLOSED) {
+                this.connectWebSocket().then();
+            }
+            if (this.webSocketStreams?.readyState === WebSocketClass.CLOSED) {
+                this.connectWebSocketStreams().then();
+            }
         });
     }
 

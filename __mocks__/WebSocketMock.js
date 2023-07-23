@@ -1,28 +1,31 @@
-class WebSocketMock {
-    constructor() {
-        this.eventMap = {};
-        this.pongResponse = {
-            status: 200,
-            result: {},
-            rateLimits: [
-                {
-                    'rateLimitType': 'REQUEST_WEIGHT',
-                    'interval': 'MINUTE',
-                    'intervalNum': 1,
-                    'limit': 1200,
-                    'count': 1,
-                },
-            ],
-        };
-    }
+import EventEmitter from 'events';
 
-    on(event, callback) {
-        this.eventMap[event] = callback;
+class WebSocketMock extends EventEmitter {
+    static OPENING = 1;
+    static CLOSED = 3;
+
+    constructor() {
+        super();
+        this.eventMap = {};
+        this.readyState = WebSocketMock.CLOSED;
+        this.on = (event, callback) => {
+            this.eventMap[event] = callback;
+        };
     }
 
     mockTriggerEvent(event, args) {
         if (Object.keys(this.eventMap).includes(event)) {
             this.eventMap[event](...args);
+            switch (event) {
+                case ('open'):
+                    this.readyState = WebSocketMock.OPENING;
+                    break;
+                case ('close'):
+                    this.readyState = WebSocketMock.CLOSED;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

@@ -6,14 +6,14 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     constructor(WebSocketClass, streamNames) {
         super(WebSocketClass);
         this.pingId = null;
-        this.websocket = null;
-        this.webSocketStreams = {};
+        this.webSocket = null;
+        this.webSocketStreams = null;
         this.streamNames = streamNames;
     }
 
     // TODO: send unsolicited pong frames to avoid disconnection
     connectWebSocket() {
-        this.websocket = this.setupWebSocket(BINANCE_WEBSOCKET_API_URL);
+        this.webSocket = this.setupWebSocket(BINANCE_WEBSOCKET_API_URL);
         return this.connectionPromise();
     }
 
@@ -41,9 +41,9 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
 
     closeWebSocketConnection() {
         try {
-            this.websocket.close();
+            this.webSocket.close();
         } catch (e) {
-            console.warn('Failed to close websocket connection with error ', e);
+            console.error('Failed to close websocket connection with error ', e);
         }
     }
 
@@ -54,7 +54,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
             'method': 'ping',
         };
 
-        this.websocket.send(JSON.stringify(payload));
+        this.webSocket.send(JSON.stringify(payload));
     }
 }
 
