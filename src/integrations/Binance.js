@@ -10,15 +10,18 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
     ) {
         super(WebSocketClass, streamNames);
         this.stayUp = stayUp;
+        this.addEventListeners();
+    }
+
+    addEventListeners() {
         this.on('ws-connected', url => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
-            console.log(`Connected to Binance WebSocket at url: ${url}`);
+            console.info(`Connected to Binance WebSocket at url: ${url}`);
         });
 
         this.on('ws-message', message => {
             // TODO: storage
             // TODO: error handling
-            // console.info('Received message ', message);
             this.handleMessage(message);
         });
 
@@ -31,27 +34,56 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
             console.warn('WebSocket connection closed');
             if (!this.stayUp) return;
             console.info('Reconnecting...');
-            if (this.webSocket?.readyState === WebSocketClass.CLOSED) {
+            if (this.webSocket?.readyState === this.WebSocketClass.CLOSED) {
                 this.connectWebSocket().then();
             }
-            if (this.webSocketStreams?.readyState === WebSocketClass.CLOSED) {
+            if (this.webSocketStreams?.readyState === this.WebSocketClass.CLOSED) {
                 this.connectWebSocketStreams().then();
             }
         });
     }
 
     handleMessage(message) {
-        if (this.pingId && message.id === this.pingId) {
-            this.emit('ws-pong');
+        const outgoingRequest = this.requests.get(message.id);
+        if (outgoingRequest) {
+            this.handleResponse(outgoingRequest, message);
+        } else if (message?.stream) {
+            this.handleStreamPayload(message.data);
+        } else if (message?.e) {
+            this.handleStreamPayload(message);
         } else {
-            this.handleTickerUpdate(message.data);
+            console.error(`Received unknown message type ${JSON.stringify(message)}`);
+        }
+    }
+
+    handleResponse(request, response) {
+        switch (request.method) {
+            case ('ping'):
+                this.emit('ws-pong');
+                break;
+            case ('account.status'):
+                console.info(`Received response ${JSON.stringify(response)}\n Request: ${JSON.stringify(request)}`);
+                const { result: { balances: balances } } = response;
+                console.info(`Received balances ${JSON.stringify(balances)}`);
+                break;
+            default:
+                console.warn(`Received response for unknown request method ${request.method}`);
+                return;
+        }
+    }
+
+    handleStreamPayload(payload) {
+        if (payload?.e?.includes('Ticker')) {
+            this.handleTickerUpdate(payload);
+        } else {
+            console.error(`Received unknown stream payload ${JSON.stringify(payload)}`);
         }
     }
 
     handleTickerUpdate(data) {
         const { e: eventType, s: symbol, c: lastPrice, w: averagePrice } = data;
-        console.log('- Received ticker update');
-        console.log('--- ', eventType, symbol, lastPrice, averagePrice);
+        console.info('- Received ticker update');
+        console.info('--- ', eventType, symbol, lastPrice, averagePrice);
     }
 }
 

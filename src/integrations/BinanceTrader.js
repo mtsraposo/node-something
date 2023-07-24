@@ -18,28 +18,33 @@ class BinanceTrader extends EventEmitter {
     }
 
     handleMarketUpdate(data) {
-        console.log('Received market update:', data);
+        console.info('Received market update:', data);
     }
 
     handleTradeSignal(signal) {
-        console.log('Received trade signal:', signal);
+        console.info('Received trade signal:', signal);
+    }
+
+    getAccountStatus() {
+        this.tryRequest('account.status', {});
     }
 
     placeOrder(params) {
-        const request = new BinanceRequest(this.apiKey, this.privateKey, 'order.place', params);
+        this.tryRequest('order.place', params);
+    }
+
+    tryRequest(method, params) {
+        const request = new BinanceRequest(this.apiKey, this.privateKey, method, params);
         if (!request.isValid) {
-            this.handleErrors(request);
+            this.handleRequestErrors(request);
             return;
         }
+        this.binance.requests.set(request.id, request.body);
         this.binance.webSocket.send(JSON.stringify(request.body));
     }
 
-    handleErrors(request) {
-        console.error(`Order placement failed with errors`);
-        request.errors.forEach(error => {
-            const [field, errorType, value] = error;
-            console.error(`Field: ${field}, Error Type: ${errorType}, Value: ${value}`);
-        });
+    handleRequestErrors(request) {
+        console.error(`Request failed with errors ${JSON.stringify(request.errors)}`);
     }
 }
 

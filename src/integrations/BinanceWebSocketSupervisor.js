@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     constructor(WebSocketClass, streamNames) {
         super(WebSocketClass);
-        this.pingId = null;
+        // TODO: move to a database?
+        this.requests = new Map();
         this.webSocket = null;
         this.webSocketStreams = null;
         this.streamNames = streamNames;
@@ -32,28 +33,27 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     closeWebSocketStreamConnection() {
-        try {
+        if (this.webSocketStreams?.readyState === this.WebSocketClass.OPEN) {
             this.webSocketStreams.close();
-        } catch (e) {
-            console.warn('Failed to close websocket streams connection with error ', e);
         }
+        console.info(`The stream connection is not closed. State: ${this.webSocketStreams?.readyState}`);
     }
 
     closeWebSocketConnection() {
-        try {
+        if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
             this.webSocket.close();
-        } catch (e) {
-            console.error('Failed to close websocket connection with error ', e);
         }
+        console.info(`The websocket connection is not closed. State: ${this.webSocket?.readyState}`);
     }
 
     checkConnectivity() {
-        this.pingId = uuidv4();
+        const id = uuidv4();
         const payload = {
-            'id': this.pingId,
+            'id': id,
             'method': 'ping',
         };
 
+        this.requests.set(id, payload);
         this.webSocket.send(JSON.stringify(payload));
     }
 }

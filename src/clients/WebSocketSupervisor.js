@@ -23,7 +23,7 @@ class WebSocketSupervisor extends EventEmitter {
         });
 
         webSocket.on('close', (_code, _reason) => {
-            console.log('Received WebSocket close event');
+            console.info('Received WebSocket close event');
             this.emit('ws-close');
         });
 

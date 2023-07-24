@@ -2,23 +2,7 @@ import qs from 'qs';
 import crypto from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { Buffer } from 'node:buffer';
-
-const REQUIRED_ATTRIBUTES = new Set(['symbol', 'side', 'type']);
-const REQUIRED_ATTRIBUTES_BY_TYPE = new Map(
-    [
-        ['LIMIT', new Set(['timeInForce', 'price', 'quantity'])],
-        ['MARKET', new Set(['quantity'])],
-    ],
-);
-
-const FIELD_ENUMS = new Map(
-    [
-        ['side', new Set(['BUY', 'SELL'])],
-        ['type', new Set(['LIMIT', 'LIMIT_MAKER', 'MARKET', 'STOP_LOSS', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT', 'TAKE_PROFIT_LIMIT'])],
-        ['newOrderRespType', new Set(['ACK', 'RESULT', 'FULL'])],
-        ['timeInForce', new Set(['GTC', 'IOC', 'FOK'])],
-    ],
-);
+import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
 
 class BinanceRequest {
     constructor(apiKey, privateKey, method, params) {
@@ -40,12 +24,12 @@ class BinanceRequest {
 
         if (this.isValid) {
             this.includeOptions();
-            const signedParams = this.authenticate();
+            this.authenticate();
             this.id = uuidv4();
             this.body = {
                 id: this.id,
                 method: this.method,
-                params: signedParams,
+                params: this.params,
             };
         } else {
             console.error(`Invalid params received: ${this.params}`);
@@ -66,19 +50,28 @@ class BinanceRequest {
             ...this.params,
         };
         authParams['signature'] = this.signParams(authParams);
-        return authParams;
+        this.params = authParams;
     }
 
     signParams(authParams) {
+        const signaturePayload = Object.keys(authParams).sort().reduce((acc, key) => {
+            acc[key] = authParams[key];
+            return acc;
+        }, {});
+        const encodedSignaturePayload = Buffer.from(qs.stringify(signaturePayload), 'ascii');
         return crypto
-            .sign(null, Buffer.from(qs.stringify(authParams)), this.privateKey)
+            .sign(null, encodedSignaturePayload, this.privateKey)
             .toString('base64');
     }
 
     validate() {
+        const requiredAttributes = REQUIRED_ATTRIBUTES.get(this.method);
+        const requiredAttributesByType = REQUIRED_ATTRIBUTES_BY_TYPE.get(this.method);
+        const fieldEnums = FIELD_ENUMS.get(this.method);
+
         const required = [
-            ...REQUIRED_ATTRIBUTES,
-            ...(REQUIRED_ATTRIBUTES_BY_TYPE.get(this.params?.type) || []),
+            ...requiredAttributes,
+            ...(requiredAttributesByType?.get(this.params?.type) || []),
         ];
         required.forEach(param => {
             if (!Object.keys(this.params).includes(param)) {
@@ -88,7 +81,7 @@ class BinanceRequest {
         });
 
         Object.entries(this.params).forEach(([param, value]) => {
-            if (FIELD_ENUMS.get(param) && !FIELD_ENUMS.get(param)?.has(value)) {
+            if (fieldEnums?.get(param) && !fieldEnums?.get(param)?.has(value)) {
                 this.errors.push([param, 'enum', value]);
                 this.isValid = false;
             }

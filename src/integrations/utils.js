@@ -6,6 +6,6 @@ export const serializePrivateKey = (privateKeyPath) => {
         throw new Error(`Private key path does not exist: ${privateKeyPath}`);
     }
     return crypto.createPrivateKey({
-        key: fs.readFileSync(privateKeyPath, 'utf8'),
+        key: fs.readFileSync(privateKeyPath, 'ascii'),
     });
 };

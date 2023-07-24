@@ -1,7 +1,9 @@
 import EventEmitter from 'events';
 
 class WebSocketMock extends EventEmitter {
-    static CONNECTING = 1;
+    static CONNECTING = 0;
+    static OPEN = 1;
+    static CLOSING = 2;
     static CLOSED = 3;
 
     constructor() {

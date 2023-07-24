@@ -10,4 +10,4 @@ await binance.connectWebSocket();
 binance.checkConnectivity();
 
 const bot = new BinanceTrader(binance);
-bot.start();
+bot.getAccountStatus();

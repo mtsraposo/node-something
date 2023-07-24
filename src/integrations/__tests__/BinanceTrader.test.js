@@ -43,6 +43,7 @@ describe('BinanceTrader', () => {
 
     it('handles errors for invalid orders', async () => {
         await connectWebSocket();
+        console.error = jest.fn();
         const params = {
             symbol: 'BTCUSDT',
             side: 'SELL',
@@ -50,5 +51,6 @@ describe('BinanceTrader', () => {
         const spy = jest.spyOn(WebSocketMock.prototype, 'send');
         binanceTrader.placeOrder(params);
         expect(spy).toHaveBeenCalledTimes(0);
+        expect(console.error.mock.calls).toHaveLength(2);
     });
 });

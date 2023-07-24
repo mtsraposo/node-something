@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 import BinanceRequest from '../BinanceRequest.js';
 import { serializePrivateKey } from '../../../integrations/utils.js';
 
@@ -5,11 +7,16 @@ const expectInvalidRequest = (request) => {
     expect(request.isValid).toBeFalsy();
     expect(request.id).toBeNull();
     expect(request.body).toEqual({});
+    expect(console.error.mock.calls).toHaveLength(1);
 };
 describe('BinanceRequest', () => {
     const fakeApiKey = 'fake-api-key';
     const privateKey = serializePrivateKey('unit-test-prv-key.pem');
     const method = 'order.place';
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
 
     it('creates a binance request', () => {
         const params = {
@@ -36,6 +43,7 @@ describe('BinanceRequest', () => {
     });
 
     it('requires certain fields to be in the params', () => {
+        console.error = jest.fn();
         const params = {
             symbol: 'BTCUSDT',
             side: 'SELL',
