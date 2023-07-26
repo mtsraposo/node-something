@@ -13,6 +13,14 @@ class WebSocketMock extends EventEmitter {
         this.on = (event, callback) => {
             this.eventMap[event] = callback;
         };
+        this.connectionTimeout = setTimeout(() => {
+            this.mockTriggerEvent('open', []);
+        }, 500);
+
+    }
+
+    destroy() {
+        clearTimeout(this.connectionTimeout);
     }
 
     mockTriggerEvent(event, args) {
@@ -20,7 +28,7 @@ class WebSocketMock extends EventEmitter {
             this.eventMap[event](...args);
             switch (event) {
                 case ('open'):
-                    this.readyState = WebSocketMock.CONNECTING;
+                    this.readyState = WebSocketMock.OPEN;
                     break;
                 case ('close'):
                     this.readyState = WebSocketMock.CLOSED;
