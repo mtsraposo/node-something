@@ -5,11 +5,12 @@ import { Buffer } from 'node:buffer';
 import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
 
 class BinanceRequest {
-    constructor(apiKey, privateKey, method, params) {
+    constructor(apiKey, privateKey, method, params, signed) {
         this.apiKey = apiKey;
         this.privateKey = privateKey;
         this.method = method;
         this.params = params;
+        this.signed = signed;
 
         this.id = null;
         this.body = {};
@@ -23,34 +24,32 @@ class BinanceRequest {
         this.validate();
 
         if (this.isValid) {
-            this.includeOptions();
             this.authenticate();
             this.id = uuidv4();
-            this.body = {
-                id: this.id,
-                method: this.method,
-                params: this.params,
-            };
+            this.buildBody();
         } else {
             console.error(`Invalid params received: ${this.params}`);
         }
     }
 
-    includeOptions() {
-        this.params = {
-            recvWindow: 5000,
-            timestamp: new Date().getTime(),
-            ...this.params,
-        };
-    }
-
     authenticate() {
+        if (!this.signed) return;
         let authParams = {
             apiKey: this.apiKey,
             ...this.params,
         };
         authParams['signature'] = this.signParams(authParams);
         this.params = authParams;
+    }
+
+    buildBody() {
+        this.body = {
+            id: this.id,
+            method: this.method,
+        };
+        if (Object.keys(this.params).length !== 0) {
+            this.body = { ...this.body, params: this.params };
+        }
     }
 
     signParams(authParams) {
@@ -65,7 +64,7 @@ class BinanceRequest {
     }
 
     validate() {
-        const requiredAttributes = REQUIRED_ATTRIBUTES.get(this.method);
+        const requiredAttributes = REQUIRED_ATTRIBUTES.get(this.method) || [];
         const requiredAttributesByType = REQUIRED_ATTRIBUTES_BY_TYPE.get(this.method);
         const fieldEnums = FIELD_ENUMS.get(this.method);
 

@@ -1,15 +1,19 @@
 import WebSocket from 'ws';
 import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
-import { BINANCE_STREAMS } from './constants.js';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor(
         WebSocketClass = WebSocket,
-        streamNames = BINANCE_STREAMS,
-        stayUp = true,
+        apiKey = process.env.BINANCE_API_KEY,
+        privateKeyPath = process.env.PRIVATE_KEY_PATH,
+        onListenKeyReady = function() {
+        },
+        keepAlive = true,
     ) {
-        super(WebSocketClass, streamNames);
-        this.stayUp = stayUp;
+        super(WebSocketClass, apiKey, privateKeyPath);
+        this.keepAlive = keepAlive;
+        this.onListenKeyReady = onListenKeyReady;
+
         this.addEventListeners();
     }
 
@@ -17,6 +21,10 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         this.on('ws-connected', url => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
             console.info(`Connected to Binance WebSocket at url: ${url}`);
+        });
+
+        this.on('listen-key-ready', listenKey => {
+            this.onListenKeyReady(listenKey).then();
         });
 
         this.on('ws-message', message => {
@@ -32,13 +40,10 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
 
         this.on('ws-close', () => {
             console.warn('WebSocket connection closed');
-            if (!this.stayUp) return;
+            if (!this.keepAlive) return;
             console.info('Reconnecting...');
             if (this.webSocket?.readyState === this.WebSocketClass.CLOSED) {
-                this.connectWebSocket().then();
-            }
-            if (this.webSocketStreams?.readyState === this.WebSocketClass.CLOSED) {
-                this.connectWebSocketStreams().then();
+                this.connect().then();
             }
         });
     }
@@ -47,10 +52,6 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         const outgoingRequest = this.requests.get(message.id);
         if (outgoingRequest) {
             this.handleResponse(outgoingRequest, message);
-        } else if (message?.stream) {
-            this.handleStreamPayload(message.data);
-        } else if (message?.e) {
-            this.handleStreamPayload(message);
         } else {
             console.error(`Received unknown message type ${JSON.stringify(message)}`);
         }
@@ -62,9 +63,14 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
                 this.emit('ws-pong');
                 break;
             case ('account.status'):
-                console.info(`Received response ${JSON.stringify(response)}\n Request: ${JSON.stringify(request)}`);
                 const { result: { balances: balances } } = response;
                 console.info(`Received balances ${JSON.stringify(balances)}`);
+                break;
+            case ('userDataStream.start'):
+                console.log(`Received response ${JSON.stringify(response)}`);
+                const { result: { listenKey: listenKey } } = response;
+                this.listenKey = listenKey;
+                this.emit('listen-key-ready', listenKey);
                 break;
             default:
                 console.warn(`Received response for unknown request method ${request.method}`);
@@ -72,18 +78,18 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         }
     }
 
-    handleStreamPayload(payload) {
-        if (payload?.e?.includes('Ticker')) {
-            this.handleTickerUpdate(payload);
-        } else {
-            console.error(`Received unknown stream payload ${JSON.stringify(payload)}`);
-        }
+    checkConnectivity() {
+        this.send('ping', {}, false);
     }
 
-    handleTickerUpdate(data) {
-        const { e: eventType, s: symbol, c: lastPrice, w: averagePrice } = data;
-        console.info('- Received ticker update');
-        console.info('--- ', eventType, symbol, lastPrice, averagePrice);
+    getAccountStatus() {
+        this.send('account.status', {
+            timestamp: new Date().getTime(),
+        }, true);
+    }
+
+    placeOrder(params) {
+        this.send('order.place', params, true);
     }
 }
 

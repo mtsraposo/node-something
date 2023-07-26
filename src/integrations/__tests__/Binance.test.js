@@ -32,7 +32,7 @@ describe('BinanceIntegration', () => {
     });
 
     afterEach(() => {
-        binance.stayUp = false;
+        binance.keepAlive = false;
         binance.closeWebSocketConnection();
         binance.closeWebSocketStreamConnection();
         jest.resetAllMocks();
@@ -81,7 +81,7 @@ describe('BinanceIntegration', () => {
         expect(spy).toHaveBeenCalledWith(binance.webSocket.pongResponse);
     });
 
-    it('keeps connections open when stayUp is true', async () => {
+    it('keeps connections open when keepAlive is true', async () => {
         binance = new BinanceWebSocket(BinanceWebSocketMock, streamNames, true);
         console.warn = jest.fn();
         const connectWebSocketSpy = jest.spyOn(binance, 'connectWebSocket');

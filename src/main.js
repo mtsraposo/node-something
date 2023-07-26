@@ -1,13 +1,11 @@
 import { config } from 'dotenv';
-import BinanceTrader from './integrations/binanceTrader.js';
-import BinanceWebSocket from './integrations/binance.js';
+import BinanceWebSocket from './integrations/binance/websocket/BinanceWebSocket.js';
+import BinanceStream from './integrations/binance/streams/BinanceStream.js';
 
 config();
 
-const binance = new BinanceWebSocket();
-await binance.connectWebSocketStreams();
-await binance.connectWebSocket();
-binance.checkConnectivity();
-
-const bot = new BinanceTrader(binance);
-bot.getAccountStatus();
+const webSocket = new BinanceWebSocket();
+const streams = new BinanceStream();
+await webSocket.connect();
+await streams.connect();
+webSocket.checkConnectivity();

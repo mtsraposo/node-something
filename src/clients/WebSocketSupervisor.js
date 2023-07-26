@@ -29,6 +29,14 @@ class WebSocketSupervisor extends EventEmitter {
 
         return webSocket;
     }
+
+    connectionPromise() {
+        return new Promise((resolve, _reject) => {
+            this.on('ws-connected', () => {
+                resolve('connected');
+            });
+        });
+    }
 }
 
 export default WebSocketSupervisor;

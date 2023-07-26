@@ -15,7 +15,7 @@ describe('BinanceTrader', () => {
     });
 
     afterEach(() => {
-        binance.stayUp = false;
+        binance.keepAlive = false;
         binance.closeWebSocketConnection();
         jest.restoreAllMocks();
     });
@@ -35,6 +35,8 @@ describe('BinanceTrader', () => {
             timeInForce: 'GTC',
             price: 23416.10000000,
             quantity: 0.00847000,
+            recvWindow: 5000,
+            timestamp: new Date().getTime(),
         };
         const spy = jest.spyOn(WebSocketMock.prototype, 'send');
         binanceTrader.placeOrder(params);
@@ -47,6 +49,8 @@ describe('BinanceTrader', () => {
         const params = {
             symbol: 'BTCUSDT',
             side: 'SELL',
+            recvWindow: 5000,
+            timestamp: new Date().getTime(),
         };
         const spy = jest.spyOn(WebSocketMock.prototype, 'send');
         binanceTrader.placeOrder(params);
