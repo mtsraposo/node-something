@@ -1,8 +1,6 @@
-import qs from 'qs';
-import crypto from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
-import { Buffer } from 'node:buffer';
 import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
+import { buildSignaturePayload, generateSignature } from './auth.js';
 
 class BinanceRequest {
     constructor(apiKey, privateKey, method, params, signed) {
@@ -38,8 +36,13 @@ class BinanceRequest {
             apiKey: this.apiKey,
             ...this.params,
         };
-        authParams['signature'] = this.signParams(authParams);
+        authParams['signature'] = this.sign(authParams).toString('base64');
         this.params = authParams;
+    }
+
+    sign(payload) {
+        const signaturePayload = buildSignaturePayload(payload);
+        return generateSignature(signaturePayload, this.privateKey);
     }
 
     buildBody() {
@@ -50,17 +53,6 @@ class BinanceRequest {
         if (Object.keys(this.params).length !== 0) {
             this.body = { ...this.body, params: this.params };
         }
-    }
-
-    signParams(authParams) {
-        const signaturePayload = Object.keys(authParams).sort().reduce((acc, key) => {
-            acc[key] = authParams[key];
-            return acc;
-        }, {});
-        const encodedSignaturePayload = Buffer.from(qs.stringify(signaturePayload), 'ascii');
-        return crypto
-            .sign(null, encodedSignaturePayload, this.privateKey)
-            .toString('base64');
     }
 
     validate() {

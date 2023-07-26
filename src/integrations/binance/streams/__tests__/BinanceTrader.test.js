@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
 import Binance from '../Binance.js';
-import { WebSocketMock } from '../../__mocks__/WebSocketMock.js';
+import { WebSocketMock } from '../../../../__mocks__/WebSocketMock.js';
 import BinanceTrader from '../BinanceTrader.js';
 
 describe('BinanceTrader', () => {

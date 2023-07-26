@@ -3,4 +3,4 @@
 prefix=$1;
 openssl_binary=$2;
 $openssl_binary genpkey -algorithm ed25519 -out "$prefix"-prv-key.pem
-$openssl_binary pkey -pubout -in test-prv-key.pem -out "$prefix"-pub-key.pem
+$openssl_binary pkey -pubout -in "$prefix"-prv-key.pem -out "$prefix"-pub-key.pem

@@ -1,3 +1,5 @@
+import { buildSignaturePayload, checkSignature, generateSignature } from '../src/models/requests/auth.js';
+
 const crypto = await import('node:crypto');
 const { Buffer } = await import('node:buffer');
 const qs = await import('qs');
@@ -14,12 +16,8 @@ const params = {
     timestamp: new Date().getTime(),
 };
 
-const signaturePayload = Object.keys(params).sort().reduce((acc, key) => {
-    acc[key] = params[key];
-    return acc;
-}, {});
-const buffer = Buffer.from(qs.stringify(signaturePayload));
-console.log(qs.stringify(signaturePayload));
+const buffer = buildSignaturePayload(params);
+console.log(qs.stringify(buffer));
 
 const privateKey = crypto.createPrivateKey({
     key: fs.readFileSync(process.env.PRIVATE_KEY_PATH, 'ascii'),
@@ -31,8 +29,8 @@ const publicKey = crypto.createPublicKey({
 console.log(privateKey.asymmetricKeyType);
 console.log(privateKey.type);
 
-const signature = crypto.sign(null, buffer, privateKey);
+const signature = generateSignature(buffer, privateKey);
 console.log(signature.toString('base64'));
 
-const verified = crypto.verify(null, buffer, publicKey, signature);
+const verified = checkSignature(buffer, publicKey, signature);
 console.log(verified);
