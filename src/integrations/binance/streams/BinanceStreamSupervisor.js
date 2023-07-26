@@ -1,7 +1,8 @@
-import WebSocketSupervisor from '../../../clients/WebSocketSupervisor.js';
+import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
+import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
+import { serializePrivateKey } from '#root/src/models/requests/auth.js';
+
 import { BINANCE_WEBSOCKET_STREAM_URL } from './constants.js';
-import { serializePrivateKey } from '../../utils.js';
-import BinanceWebSocket from '../websocket/BinanceWebSocket.js';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
     constructor(WebSocketClass, apiKey, privateKeyPath, streamNames) {

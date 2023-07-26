@@ -4,6 +4,9 @@
   "description": "",
   "main": "src",
   "type": "module",
+  "imports": {
+    "#root/*.js": "./*.js"
+  },
   "engines": {
     "node": ">=20.0.0"
   },
