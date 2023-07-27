@@ -12,14 +12,15 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
         this.streamNames = streamNames;
 
         this.privateKey = serializePrivateKey(privateKeyPath);
-        this.webSocket = null;
+        this.binanceWebSocket = null;
         this.stream = null;
         this.userDataStream = null;
     }
 
     async connect() {
         await this.connectWebSocket();
-        this.startUserDataStream();
+        const { connectionPromise } = this.startUserDataStream();
+        await connectionPromise;
         await this.connectStreams();
     }
 
@@ -33,22 +34,35 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     }
 
     connectWebSocket() {
-        if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
+        if (this.binanceWebSocket?.readyState === this.WebSocketClass.OPEN) {
             return new Promise(() => 'Already connected');
         }
-        this.webSocket = new BinanceWebSocket(
+        this.binanceWebSocket = new BinanceWebSocket(
             this.WebSocketClass,
             this.apiKey,
             this.privateKeyPath,
-            async listenKey => {
-                await this.connectUserDataStream(listenKey);
-            },
         );
-        return this.webSocket.connect();
+        return this.binanceWebSocket.connect();
     }
 
     startUserDataStream() {
-        this.webSocket.send('userDataStream.start', { apiKey: this.apiKey }, false);
+        const requestId = this.binanceWebSocket.send('userDataStream.start', { apiKey: this.apiKey }, false);
+        return {
+            requestId: requestId,
+            connectionPromise: this.userDataStreamPromise(),
+        };
+    }
+
+    userDataStreamPromise() {
+        return new Promise((resolve) => {
+            this.binanceWebSocket.on('listen-key-ready', listenKey => {
+                resolve(listenKey);
+            });
+        }).then((listenKey) => {
+            return this.connectUserDataStream(listenKey);
+        }).then(() => {
+            return 'connected';
+        });
     }
 
     connectUserDataStream(listenKey) {
@@ -58,9 +72,9 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     }
 
     close() {
-        this.stream.close();
-        this.userDataStream.close();
-        this.webSocket.close();
+        this.stream?.close();
+        this.userDataStream?.close();
+        this.binanceWebSocket?.close();
     }
 }
 

@@ -1,9 +1,10 @@
-import WebSocketSupervisor from '../../../clients/WebSocketSupervisor.js';
-import { BINANCE_WEBSOCKET_API_URL } from './constants.js';
-import BinanceRequest from '../../../models/requests/BinanceRequest.js';
-import { serializePrivateKey } from '../../utils.js';
+import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
+import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
+import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 
-class BinanceStreamSupervisor extends WebSocketSupervisor {
+import { BINANCE_WEBSOCKET_API_URL } from './constants.js';
+
+class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     constructor(WebSocketClass, apiKey, privateKeyPath) {
         super(WebSocketClass);
         this.apiKey = apiKey;
@@ -21,15 +22,14 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     }
 
     send(method, params, signed) {
-        console.log(`Sending ${method}`);
         const request = new BinanceRequest(this.apiKey, this.privateKey, method, params, signed);
-        console.log(`Request: ${JSON.stringify(request)}`);
         if (!request.isValid) {
             this.handleErrors(request);
-            return;
+            return request.id;
         }
         this.requests.set(request.id, request.body);
         this.webSocket.send(JSON.stringify(request.body));
+        return request.id;
     }
 
     handleErrors(request) {
@@ -39,9 +39,10 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     close() {
         if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
             this.webSocket.close();
+            return;
         }
         console.info(`The websocket connection is not closed. State: ${this.webSocket?.readyState}`);
     }
 }
 
-export default BinanceStreamSupervisor;
+export default BinanceWebSocketSupervisor;

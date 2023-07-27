@@ -6,13 +6,10 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         WebSocketClass = WebSocket,
         apiKey = process.env.BINANCE_API_KEY,
         privateKeyPath = process.env.PRIVATE_KEY_PATH,
-        onListenKeyReady = function() {
-        },
         keepAlive = true,
     ) {
         super(WebSocketClass, apiKey, privateKeyPath);
         this.keepAlive = keepAlive;
-        this.onListenKeyReady = onListenKeyReady;
 
         this.addEventListeners();
     }
@@ -21,10 +18,6 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         this.on('ws-connected', url => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
             console.info(`Connected to Binance WebSocket at url: ${url}`);
-        });
-
-        this.on('listen-key-ready', listenKey => {
-            this.onListenKeyReady(listenKey).then();
         });
 
         this.on('ws-message', message => {
