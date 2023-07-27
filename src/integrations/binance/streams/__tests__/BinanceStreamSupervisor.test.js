@@ -32,6 +32,7 @@ describe('BinanceStreamSupervisor', () => {
     afterEach(() => {
         binanceStreamSupervisor.close();
         binanceStreamSupervisor.stream?.destroy();
+        binanceStreamSupervisor.binanceWebSocket?.webSocket?.destroy();
         jest.resetAllMocks();
     });
 
