@@ -39,8 +39,7 @@ class WebSocketMock extends EventEmitter {
         }
     }
 
-    close() {
-    }
+    close() {}
 
     send(message) {
         const data = JSON.parse(message);
