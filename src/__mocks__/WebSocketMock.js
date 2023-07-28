@@ -19,10 +19,6 @@ class WebSocketMock extends EventEmitter {
 
     }
 
-    destroy() {
-        clearTimeout(this.connectionTimeout);
-    }
-
     mockTriggerEvent(event, args) {
         if (Object.keys(this.eventMap).includes(event)) {
             this.eventMap[event](...args);
@@ -39,7 +35,9 @@ class WebSocketMock extends EventEmitter {
         }
     }
 
-    close() {}
+    close() {
+        clearTimeout(this.connectionTimeout);
+    }
 
     send(message) {
         const data = JSON.parse(message);

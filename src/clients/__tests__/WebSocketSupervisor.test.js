@@ -10,7 +10,7 @@ describe('WebSocketSupervisor', () => {
     });
 
     afterEach(() => {
-        webSocket.destroy();
+        webSocket.close();
     })
 
     it('sets up a new websocket connection with event handlers', async () => {
