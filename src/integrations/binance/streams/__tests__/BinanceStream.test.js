@@ -6,20 +6,6 @@ import BinanceStream from '#root/src/integrations/binance/streams/BinanceStream.
 describe('BinanceStream', () => {
     let binanceStream;
 
-    const pongResponse = {
-        status: 200,
-        result: {},
-        rateLimits: [
-            {
-                'rateLimitType': 'REQUEST_WEIGHT',
-                'interval': 'MINUTE',
-                'intervalNum': 1,
-                'limit': 1200,
-                'count': 1,
-            },
-        ],
-    };
-
     const streamNames = ['testStream-1', 'testStream-2'];
 
     beforeEach(async () => {

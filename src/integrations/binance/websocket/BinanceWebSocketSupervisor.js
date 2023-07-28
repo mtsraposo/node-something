@@ -16,9 +16,9 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     // TODO: send unsolicited pong frames to avoid disconnection
-    connect(onConnect = function() {}) {
+    connect() {
         this.webSocket = this.setupWebSocket(BINANCE_WEBSOCKET_API_URL);
-        return this.connectionPromise(onConnect);
+        return this.connectionPromise();
     }
 
     send(method, params, signed) {
