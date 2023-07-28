@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { ADDITIONAL_RESULTS_BY_METHOD, RATE_LIMITS_BY_METHOD } from '#root/src/__mocks__/constants.js';
 
 class WebSocketMock extends EventEmitter {
     static CONNECTING = 0;
@@ -40,13 +41,43 @@ class WebSocketMock extends EventEmitter {
     }
 
     send(message) {
-        const data = JSON.parse(message);
-        if (data.method === 'ping') {
-            this.pongResponse.id = data?.id;
-            this.mockTriggerEvent('message',
-                [
-                    JSON.stringify(this.pongResponse),
-                ]);
+        const payload = JSON.parse(message);
+        const response = this._mockResponse(payload);
+        this.mockTriggerEvent('message',
+            [
+                JSON.stringify({
+                    id: payload.id,
+                    status: 200,
+                    ...response,
+                }),
+            ],
+        );
+        return payload.id;
+    }
+
+    _mockResponse(payload) {
+        switch (payload.method) {
+            case ('ping'):
+                return {
+                    result: {},
+                    rateLimits: RATE_LIMITS_BY_METHOD.get('ping'),
+                };
+            case ('order.place'):
+                return {
+                    result: {
+                        symbol: payload.params.symbol,
+                        transactTime: payload.params.timestamp,
+                        ...ADDITIONAL_RESULTS_BY_METHOD.get('order.place'),
+                    },
+                    rateLimits: RATE_LIMITS_BY_METHOD.get('order.place'),
+                };
+            case ('account.status'):
+                return {
+                    result: ADDITIONAL_RESULTS_BY_METHOD.get('account.status'),
+                    rateLimits: RATE_LIMITS_BY_METHOD.get('account.status'),
+                };
+            default:
+                return {};
         }
     }
 }

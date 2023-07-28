@@ -1,93 +1,84 @@
 import { jest } from '@jest/globals';
-
-import Binance from '../Binance.js';
-import { WebSocketMock } from '../../../../__mocks__/WebSocketMock.js';
-import BinanceTrader from '../BinanceTrader.js';
+import { v4 as uuidv4 } from 'uuid';
+import { WebSocketMock } from '#root/src/__mocks__/WebSocketMock.js';
+import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
 
 describe('BinanceWebSocket', () => {
-    let binance;
-    let binanceTrader;
+    let binanceWebSocket;
 
-    const pongResponse = {
-        status: 200,
-        result: {},
-        rateLimits: [
-            {
-                'rateLimitType': 'REQUEST_WEIGHT',
-                'interval': 'MINUTE',
-                'intervalNum': 1,
-                'limit': 1200,
-                'count': 1,
-            },
-        ],
+    const validOrder = {
+        symbol: 'BTCUSDT',
+        side: 'SELL',
+        type: 'LIMIT',
+        timeInForce: 'GTC',
+        price: 23416.10000000,
+        quantity: 0.00847000,
     };
 
-    const fakeApiKey = 'fake-api-key';
-
     beforeEach(() => {
-        binance = new Binance(WebSocketMock, [], false);
-        binanceTrader = new BinanceTrader(binance, fakeApiKey, 'unit-test-prv-key.pem');
+        binanceWebSocket = new BinanceWebSocket(
+            WebSocketMock,
+            'test-api-key',
+            'unit-test-prv-key.pem',
+            false,
+        );
     });
 
     afterEach(() => {
-        binance.keepAlive = false;
-        binance.closeWebSocketConnection();
+        binanceWebSocket.keepAlive = false;
+        binanceWebSocket.close();
         jest.restoreAllMocks();
     });
 
     const connectWebSocket = async () => {
-        const connectionPromise = binance.connectWebSocket();
-        binance.webSocket.mockTriggerEvent('open', []);
-        await connectionPromise;
+        const connectionPromise = binanceWebSocket.connect();
+        await expect(connectionPromise).resolves.toBe('connected');
     };
 
-    it('places a valid order', async () => {
+    it('pings websocket', async () => {
         await connectWebSocket();
-        const params = {
-            symbol: 'BTCUSDT',
-            side: 'SELL',
-            type: 'LIMIT',
-            timeInForce: 'GTC',
-            price: 23416.10000000,
-            quantity: 0.00847000,
-            recvWindow: 5000,
-            timestamp: new Date().getTime(),
-        };
-        const spy = jest.spyOn(WebSocketMock.prototype, 'send');
-        binanceTrader.placeOrder(params);
+        const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
+        const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
+        binanceWebSocket.ping();
+        expect(handleMessageSpy).toHaveBeenCalled();
+        expect(handleResponseSpy).toHaveBeenCalled();
+    });
+
+    it('gets account status', async () => {
+        await connectWebSocket();
+        const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
+        const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
+        binanceWebSocket.getAccountStatus();
+        expect(handleMessageSpy).toHaveBeenCalled();
+        expect(handleResponseSpy).toHaveBeenCalled();
+    });
+
+    it('places orders', async () => {
+        await connectWebSocket();
+        const spy = jest.spyOn(binanceWebSocket.webSocket, 'send');
+        const requestId = binanceWebSocket.placeOrder(validOrder);
         expect(spy).toHaveBeenCalled();
+        expect(binanceWebSocket.requests.get(requestId)).toBeTruthy();
     });
 
-    it('handles errors for invalid orders', async () => {
+    it('errors on server responses that don\'t match requests', async () => {
         await connectWebSocket();
+        const spy = jest.spyOn(binanceWebSocket, 'handleMessage');
+        const message = JSON.stringify({ id: uuidv4() });
         console.error = jest.fn();
-        const params = {
-            symbol: 'BTCUSDT',
-            side: 'SELL',
-            recvWindow: 5000,
-            timestamp: new Date().getTime(),
-        };
-        const spy = jest.spyOn(WebSocketMock.prototype, 'send');
-        binanceTrader.placeOrder(params);
-        expect(spy).toHaveBeenCalledTimes(0);
-        expect(console.error.mock.calls).toHaveLength(2);
+        binanceWebSocket.webSocket.mockTriggerEvent('message', [message]);
+        expect(spy).toHaveBeenCalled();
+        expect(console.error).toHaveBeenCalled();
     });
 
-    // it('checks websocket connectivity', async () => {
-    //     await connectWebSocket();
-    //     const spy = jest.spyOn(binance, 'handleMessage');
-    //     binance.checkConnectivity();
-    //     expect(spy).toHaveBeenCalledWith(binance.webSocket.pongResponse);
-    // });
-    //
-    // it('keeps connections open when keepAlive is true', async () => {
-    //     binance = new BinanceWebSocket(BinanceWebSocketMock, streamNames, true);
-    //     console.warn = jest.fn();
-    //     const connectWebSocketSpy = jest.spyOn(binance, 'connectWebSocket');
-    //     await connectWebSocket();
-    //     await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
-    //     binance.webSocket.mockTriggerEvent('close', [1000, 'Normal closure']);
-    //     await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
-    //     expect(console.warn.mock.calls).toHaveLength(1);
-    // });
+    it('retries connections when keepAlive is true', async () => {
+        binanceWebSocket.keepAlive = true;
+        console.warn = jest.fn();
+        const connectWebSocketSpy = jest.spyOn(binanceWebSocket, 'connect');
+        await connectWebSocket();
+        await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
+        binanceWebSocket.webSocket.mockTriggerEvent('close', [1000, 'Normal closure']);
+        await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalled();
+    });
 });

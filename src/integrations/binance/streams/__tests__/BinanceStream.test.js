@@ -18,36 +18,45 @@ describe('BinanceStream', () => {
         );
     });
 
+    afterEach(async () => {
+        binanceStream.keepAlive = false;
+        binanceStream.close();
+        jest.resetAllMocks();
+    });
+
     const connectStreams = async () => {
         const connectionPromise = binanceStream.connectStreams();
         await expect(connectionPromise).resolves.toBe('connected');
     };
 
     const expectMessageHandled = async (message) => {
-        await connectStreams();
         const spy = jest.spyOn(binanceStream, 'handleMessage');
         binanceStream.stream.mockTriggerEvent('message', [JSON.stringify(message)]);
         expect(spy).toHaveBeenCalledWith(message);
     };
 
     it('handles stream messages', async () => {
+        await connectStreams();
         const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
         const mockMessage = { stream: 'btcusdt@ticker', data: mockData };
         await expectMessageHandled(mockMessage);
     });
 
     it('handles bare stream messages', async () => {
+        await connectStreams();
         const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
         await expectMessageHandled(mockData);
     });
 
     it('handles stream messages with bad formats', async () => {
+        await connectStreams();
         console.error = jest.fn();
         await expectMessageHandled({});
         expect(console.error.mock.calls).toHaveLength(1);
     });
 
     it('handles invalid stream messages', async () => {
+        await connectStreams();
         console.error = jest.fn();
         const handlePayloadSpy = jest.spyOn(binanceStream, 'handlePayload');
         const message = { e: 'otherEventType' };
@@ -57,10 +66,22 @@ describe('BinanceStream', () => {
     });
 
     it('handles ticker updates', async () => {
+        await connectStreams();
         const spy = jest.spyOn(binanceStream, 'handleTickerUpdate');
         const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
         const mockMessage = { stream: 'btcusdt@ticker', data: mockData };
         await expectMessageHandled(mockMessage);
         expect(spy).toHaveBeenCalledWith(mockData);
+    });
+
+    it('retries streams connections when keepAlive is true', async () => {
+        binanceStream.keepAlive = true;
+        console.warn = jest.fn();
+        const connectStreamsSpy = jest.spyOn(binanceStream, 'connectStreams');
+        await connectStreams();
+        await expect(connectStreamsSpy).toHaveBeenCalledTimes(1);
+        binanceStream.stream.mockTriggerEvent('close', [1000, 'Normal closure']);
+        await expect(connectStreamsSpy).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalled();
     });
 });

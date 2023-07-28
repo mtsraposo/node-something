@@ -56,14 +56,14 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
                 this.emit('ws-pong');
                 break;
             case ('account.status'):
-                const { result: { balances: balances } } = response;
-                console.info(`Received balances ${JSON.stringify(balances)}`);
+                const { result: { balances: _balances } } = response;
                 break;
             case ('userDataStream.start'):
-                console.log(`Received response ${JSON.stringify(response)}`);
                 const { result: { listenKey: listenKey } } = response;
                 this.listenKey = listenKey;
                 this.emit('listen-key-ready', listenKey);
+                break;
+            case ('order.place'):
                 break;
             default:
                 console.warn(`Received response for unknown request method ${request.method}`);
@@ -71,18 +71,18 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         }
     }
 
-    checkConnectivity() {
-        this.send('ping', {}, false);
+    ping() {
+        return this.send('ping', {}, false);
     }
 
     getAccountStatus() {
-        this.send('account.status', {
+        return this.send('account.status', {
             timestamp: new Date().getTime(),
         }, true);
     }
 
     placeOrder(params) {
-        this.send('order.place', params, true);
+        return this.send('order.place', params, true);
     }
 }
 

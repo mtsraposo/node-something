@@ -8,4 +8,4 @@ const webSocket = new BinanceWebSocket();
 const streams = new BinanceStream();
 await webSocket.connect();
 await streams.connect();
-webSocket.checkConnectivity();
+webSocket.ping();

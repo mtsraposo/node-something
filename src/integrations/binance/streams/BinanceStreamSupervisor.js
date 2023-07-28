@@ -24,6 +24,12 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
         await this.connectStreams();
     }
 
+    close() {
+        this.stream?.close();
+        this.userDataStream?.close();
+        this.binanceWebSocket?.close();
+    }
+
     connectStreams() {
         if (this.stream?.readyState === this.WebSocketClass.OPEN) {
             return new Promise(() => 'Already connected');
@@ -69,12 +75,6 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
         this.listenKey = listenKey;
         this.userDataStream = this.setupWebSocket(`${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`);
         return this.connectionPromise();
-    }
-
-    close() {
-        this.stream?.close();
-        this.userDataStream?.close();
-        this.binanceWebSocket?.close();
     }
 }
 
