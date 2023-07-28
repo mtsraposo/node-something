@@ -28,6 +28,7 @@ export const ADDITIONAL_RESULTS_BY_METHOD = new Map(
             permissions: ['SPOT'],
             uid: 354937868,
         }],
+        ['userDataStream.start', { listenKey: 'xs0mRXdAKlIPDRFrlPcw0qI41Eh3ixNntmymGyhrhgqo7L6FuLaWArTD7RLP' }],
     ],
 );
 
@@ -64,6 +65,15 @@ export const RATE_LIMITS_BY_METHOD = new Map([
         },
     ]],
     ['account.status', [
+        {
+            rateLimitType: 'REQUEST_WEIGHT',
+            interval: 'MINUTE',
+            intervalNum: 1,
+            limit: 1200,
+            count: 10,
+        },
+    ]],
+    ['userDataStream.start', [
         {
             rateLimitType: 'REQUEST_WEIGHT',
             interval: 'MINUTE',

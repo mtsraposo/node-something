@@ -77,7 +77,10 @@ class WebSocketMock extends EventEmitter {
                     rateLimits: RATE_LIMITS_BY_METHOD.get('account.status'),
                 };
             default:
-                return {};
+                return {
+                    result: ADDITIONAL_RESULTS_BY_METHOD.get('userDataStream.start'),
+                    rateLimits: RATE_LIMITS_BY_METHOD.get('userDataStream.start'),
+                };
         }
     }
 }

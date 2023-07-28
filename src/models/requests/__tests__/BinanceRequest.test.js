@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
 import BinanceRequest from '../BinanceRequest.js';
-import { serializePrivateKey } from '../../../integrations/utils.js';
+import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 
 const expectInvalidRequest = (request) => {
     expect(request.isValid).toBeFalsy();
@@ -18,8 +18,10 @@ describe('BinanceRequest', () => {
         jest.resetAllMocks();
     });
 
-    it('creates a binance request', () => {
+    it('creates a signed binance request', () => {
         const params = {
+            recvWindow: 5000,
+            timestamp: new Date().getTime(),
             symbol: 'BTCUSDT',
             side: 'SELL',
             type: 'LIMIT',
@@ -27,7 +29,7 @@ describe('BinanceRequest', () => {
             price: 23416.10000000,
             quantity: 0.00847000,
         };
-        const request = new BinanceRequest(fakeApiKey, privateKey, method, params);
+        const request = new BinanceRequest(fakeApiKey, privateKey, method, params, true);
         expect(request.isValid).toBeTruthy();
         expect(request.errors).toEqual([]);
         expect(request.body).toMatchObject({
@@ -38,7 +40,23 @@ describe('BinanceRequest', () => {
                 signature: expect.any(String),
                 recvWindow: 5000,
                 timestamp: expect.any(Number),
+                price: expect.any(Number),
+                quantity: expect.any(Number),
+                side: expect.any(String),
+                symbol: expect.any(String),
+                timeInForce: expect.any(String),
+                type: expect.any(String),
             },
+        });
+    });
+
+    it('creates an unsigned binance request', () => {
+        const request = new BinanceRequest(fakeApiKey, privateKey, 'ping', {}, true);
+        expect(request.isValid).toBeTruthy();
+        expect(request.errors).toEqual([]);
+        expect(request.body).toMatchObject({
+            id: request.id,
+            method: request.method,
         });
     });
 
