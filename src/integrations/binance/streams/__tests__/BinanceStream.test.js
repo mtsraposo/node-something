@@ -20,7 +20,7 @@ describe('BinanceStream', () => {
 
     afterEach(async () => {
         binanceStream.keepAlive = false;
-        binanceStream.close();
+        await binanceStream.close();
         jest.resetAllMocks();
     });
 
@@ -77,11 +77,9 @@ describe('BinanceStream', () => {
     it('retries streams connections when keepAlive is true', async () => {
         binanceStream.keepAlive = true;
         console.warn = jest.fn();
-        const connectStreamsSpy = jest.spyOn(binanceStream, 'connectStreams');
-        await connectStreams();
-        await expect(connectStreamsSpy).toHaveBeenCalledTimes(1);
-        binanceStream.stream.mockTriggerEvent('close', [1000, 'Normal closure']);
-        await expect(connectStreamsSpy).toHaveBeenCalledTimes(1);
+        const connectionPromise = binanceStream.connectStreams();
+        await expect(connectionPromise).resolves.toBe('connected');
+        await binanceStream.stream.close();
         expect(console.warn).toHaveBeenCalled();
     });
 });

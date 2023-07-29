@@ -17,9 +17,9 @@ class BinanceStream extends BinanceStreamSupervisor {
     }
 
     addEventListeners() {
-        this.on('ws-connected', url => {
+        this.on('ws-connected', ([uid, url]) => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
-            console.info(`Connected to Binance Stream at url: ${url}`);
+            console.info(`Connected to Binance Stream. URL: ${url}. UID: ${uid}`);
         });
 
         this.on('ws-message', message => {
@@ -33,11 +33,11 @@ class BinanceStream extends BinanceStreamSupervisor {
             console.error('Received error from stream: ', error);
         });
 
-        this.on('ws-close', async () => {
-            console.warn('Stream connection closed');
+        this.on('ws-close', async ([uid, url]) => {
+            console.warn(`Stream connection closed. URL: ${url}. UID: ${uid}`);
             if (!this.keepAlive) return;
             console.info('Reconnecting...');
-            await this.connect();
+            await this.connectByUid(uid);
         });
     }
 

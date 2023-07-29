@@ -21,6 +21,20 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
         return this.connectionPromise();
     }
 
+    close() {
+        if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
+            this.webSocket.close();
+            return this.closePromise();
+        }
+        console.info(`
+        Attempted to close websocket connection with UID: ${this.webSocket.uid}
+        and URL: ${this.webSocket.url},
+        but the connection is not open. 
+        State: ${this.webSocket?.readyState}
+        `);
+        return Promise.resolve('close skipped');
+    }
+
     send(method, params, signed) {
         const request = new BinanceRequest(this.apiKey, this.privateKey, method, params, signed);
         if (!request.isValid) {
@@ -34,14 +48,6 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
 
     handleErrors(request) {
         console.error(`Request failed with errors ${JSON.stringify(request.errors)}`);
-    }
-
-    close() {
-        if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
-            this.webSocket.close();
-            return;
-        }
-        console.info(`The websocket connection is not closed. State: ${this.webSocket?.readyState}`);
     }
 }
 

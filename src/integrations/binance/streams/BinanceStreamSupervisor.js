@@ -24,15 +24,33 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
         await this.connectStreams();
     }
 
-    close() {
-        this.stream?.close();
-        this.userDataStream?.close();
-        this.binanceWebSocket?.close();
+    async connectByUid(uid) {
+        switch (uid) {
+            case (this.stream?.uid):
+                await this.connectStreams();
+                break;
+            case (this.userDataStream?.uid):
+                const { connectionPromise } = this.startUserDataStream();
+                await connectionPromise;
+                break;
+            case (this.binanceWebSocket?.uid):
+                await this.connectWebSocket();
+                break;
+            default:
+                console.warn(`WebSocket with UID: ${uid} not found for connection.`);
+                break;
+        }
+    }
+
+    async close() {
+        await this.stream?.close();
+        await this.userDataStream?.close();
+        await this.binanceWebSocket?.close();
     }
 
     connectStreams() {
         if (this.stream?.readyState === this.WebSocketClass.OPEN) {
-            return new Promise(() => 'Already connected');
+            return Promise.resolve('Already connected');
         }
         const streamParams = this.streamNames.join('/');
         this.stream = this.setupWebSocket(`${BINANCE_WEBSOCKET_STREAM_URL}?streams=${streamParams}`);
@@ -41,12 +59,13 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
 
     connectWebSocket() {
         if (this.binanceWebSocket?.readyState === this.WebSocketClass.OPEN) {
-            return new Promise(() => 'Already connected');
+            return Promise.resolve('Already connected');
         }
         this.binanceWebSocket = new BinanceWebSocket(
             this.WebSocketClass,
             this.apiKey,
             this.privateKeyPath,
+            false,
         );
         return this.binanceWebSocket.connect();
     }
