@@ -19,16 +19,18 @@ class BinanceStream extends BinanceStreamSupervisor {
     addEventListeners() {
         this.on('ws-connected', ([uid, url]) => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
-            console.info(`Connected to Binance Stream. URL: ${url}. UID: ${uid}`);
+            console.info(
+                `Connected to Binance Stream. URL: ${url}. UID: ${uid}`,
+            );
         });
 
-        this.on('ws-message', message => {
+        this.on('ws-message', (message) => {
             // TODO: storage
             // TODO: error handling
             this.handleMessage(message);
         });
 
-        this.on('ws-error', error => {
+        this.on('ws-error', (error) => {
             // TODO: error handling
             console.error('Received error from stream: ', error);
         });
@@ -47,7 +49,9 @@ class BinanceStream extends BinanceStreamSupervisor {
         } else if (message?.e) {
             this.handlePayload(message);
         } else {
-            console.error(`Received unknown message type ${JSON.stringify(message)}`);
+            console.error(
+                `Received unknown message type ${JSON.stringify(message)}`,
+            );
         }
     }
 
@@ -55,7 +59,9 @@ class BinanceStream extends BinanceStreamSupervisor {
         if (payload?.e?.includes('Ticker')) {
             this.handleTickerUpdate(payload);
         } else {
-            console.error(`Received unknown stream payload ${JSON.stringify(payload)}`);
+            console.error(
+                `Received unknown stream payload ${JSON.stringify(payload)}`,
+            );
         }
     }
 

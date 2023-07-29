@@ -36,7 +36,13 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     send(method, params, signed) {
-        const request = new BinanceRequest(this.apiKey, this.privateKey, method, params, signed);
+        const request = new BinanceRequest(
+            this.apiKey,
+            this.privateKey,
+            method,
+            params,
+            signed,
+        );
         if (!request.isValid) {
             this.handleErrors(request);
             return request.id;
@@ -47,7 +53,9 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     handleErrors(request) {
-        console.error(`Request failed with errors ${JSON.stringify(request.errors)}`);
+        console.error(
+            `Request failed with errors ${JSON.stringify(request.errors)}`,
+        );
     }
 }
 

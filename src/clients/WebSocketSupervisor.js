@@ -20,12 +20,14 @@ class WebSocketSupervisor extends EventEmitter {
             this.emit('ws-message', message);
         });
 
-        webSocket.on('error', error => {
+        webSocket.on('error', (error) => {
             this.emit('ws-error', error);
         });
 
         webSocket.on('close', (_code, _reason) => {
-            console.info(`Received WebSocket close event. URL: ${webSocket.url}. UID: ${this.webSocketUid}.`);
+            console.info(
+                `Received WebSocket close event. URL: ${webSocket.url}. UID: ${this.webSocketUid}.`,
+            );
             this.emit('ws-close', [this.webSocketUid, webSocket.url]);
         });
 

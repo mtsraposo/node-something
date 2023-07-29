@@ -32,20 +32,32 @@ describe('BinanceStream', () => {
 
     const expectMessageHandled = async (message) => {
         const spy = jest.spyOn(binanceStream, 'handleMessage');
-        binanceStream.stream.mockTriggerEvent('message', [JSON.stringify(message)]);
+        binanceStream.stream.mockTriggerEvent('message', [
+            JSON.stringify(message),
+        ]);
         expect(spy).toHaveBeenCalledWith(message);
     };
 
     it('handles stream messages', async () => {
         await connectStreams();
-        const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
+        const mockData = {
+            e: '1hTicker',
+            s: 'BTCUSDT',
+            c: 12345.6,
+            w: 12100.0,
+        };
         const mockMessage = { stream: 'btcusdt@ticker', data: mockData };
         await expectMessageHandled(mockMessage);
     });
 
     it('handles bare stream messages', async () => {
         await connectStreams();
-        const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
+        const mockData = {
+            e: '1hTicker',
+            s: 'BTCUSDT',
+            c: 12345.6,
+            w: 12100.0,
+        };
         await expectMessageHandled(mockData);
     });
 
@@ -69,7 +81,12 @@ describe('BinanceStream', () => {
     it('handles ticker updates', async () => {
         await connectStreams();
         const spy = jest.spyOn(binanceStream, 'handleTickerUpdate');
-        const mockData = { e: '1hTicker', s: 'BTCUSDT', c: 12345.6, w: 12100.0 };
+        const mockData = {
+            e: '1hTicker',
+            s: 'BTCUSDT',
+            c: 12345.6,
+            w: 12100.0,
+        };
         const mockMessage = { stream: 'btcusdt@ticker', data: mockData };
         await expectMessageHandled(mockMessage);
         expect(spy).toHaveBeenCalledWith(mockData);

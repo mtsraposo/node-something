@@ -1,11 +1,15 @@
-export const ADDITIONAL_RESULTS_BY_METHOD = new Map(
+export const ADDITIONAL_RESULTS_BY_METHOD = new Map([
     [
-        ['order.place', {
+        'order.place',
+        {
             orderId: 12569099453,
             orderListId: -1, // always -1 for singular orders
             clientOrderId: '4d96324ff9d44481926157ec08158a40',
-        }],
-        ['account.status', {
+        },
+    ],
+    [
+        'account.status',
+        {
             makerCommission: 15,
             takerCommission: 15,
             buyerCommission: 0,
@@ -27,59 +31,78 @@ export const ADDITIONAL_RESULTS_BY_METHOD = new Map(
             balances: [[Object], [Object], [Object]],
             permissions: ['SPOT'],
             uid: 354937868,
-        }],
-        ['userDataStream.start', { listenKey: 'xs0mRXdAKlIPDRFrlPcw0qI41Eh3ixNntmymGyhrhgqo7L6FuLaWArTD7RLP' }],
+        },
     ],
-);
+    [
+        'userDataStream.start',
+        {
+            listenKey:
+                'xs0mRXdAKlIPDRFrlPcw0qI41Eh3ixNntmymGyhrhgqo7L6FuLaWArTD7RLP',
+        },
+    ],
+]);
 
 export const RATE_LIMITS_BY_METHOD = new Map([
-    ['order.place', [
-        {
-            rateLimitType: 'ORDERS',
-            interval: 'SECOND',
-            intervalNum: 10,
-            limit: 50,
-            count: 1,
-        },
-        {
-            rateLimitType: 'ORDERS',
-            interval: 'DAY',
-            intervalNum: 1,
-            limit: 160000,
-            count: 1,
-        },
-        {
-            rateLimitType: 'REQUEST_WEIGHT',
-            interval: 'MINUTE',
-            intervalNum: 1,
-            limit: 1200,
-            count: 1,
-        }]],
-    ['ping', [
-        {
-            'rateLimitType': 'REQUEST_WEIGHT',
-            'interval': 'MINUTE',
-            'intervalNum': 1,
-            'limit': 1200,
-            'count': 1,
-        },
-    ]],
-    ['account.status', [
-        {
-            rateLimitType: 'REQUEST_WEIGHT',
-            interval: 'MINUTE',
-            intervalNum: 1,
-            limit: 1200,
-            count: 10,
-        },
-    ]],
-    ['userDataStream.start', [
-        {
-            rateLimitType: 'REQUEST_WEIGHT',
-            interval: 'MINUTE',
-            intervalNum: 1,
-            limit: 1200,
-            count: 10,
-        },
-    ]],
+    [
+        'order.place',
+        [
+            {
+                rateLimitType: 'ORDERS',
+                interval: 'SECOND',
+                intervalNum: 10,
+                limit: 50,
+                count: 1,
+            },
+            {
+                rateLimitType: 'ORDERS',
+                interval: 'DAY',
+                intervalNum: 1,
+                limit: 160000,
+                count: 1,
+            },
+            {
+                rateLimitType: 'REQUEST_WEIGHT',
+                interval: 'MINUTE',
+                intervalNum: 1,
+                limit: 1200,
+                count: 1,
+            },
+        ],
+    ],
+    [
+        'ping',
+        [
+            {
+                rateLimitType: 'REQUEST_WEIGHT',
+                interval: 'MINUTE',
+                intervalNum: 1,
+                limit: 1200,
+                count: 1,
+            },
+        ],
+    ],
+    [
+        'account.status',
+        [
+            {
+                rateLimitType: 'REQUEST_WEIGHT',
+                interval: 'MINUTE',
+                intervalNum: 1,
+                limit: 1200,
+                count: 10,
+            },
+        ],
+    ],
+    [
+        'userDataStream.start',
+        [
+            {
+                rateLimitType: 'REQUEST_WEIGHT',
+                interval: 'MINUTE',
+                intervalNum: 1,
+                limit: 1200,
+                count: 10,
+            },
+        ],
+    ],
 ]);

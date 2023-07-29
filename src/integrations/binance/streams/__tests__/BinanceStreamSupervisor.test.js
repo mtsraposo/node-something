@@ -41,9 +41,16 @@ describe('BinanceStreamSupervisor', () => {
 
     it('starts a user data stream', async () => {
         await connectWebSocket();
-        const { requestId, connectionPromise } = binanceStreamSupervisor.startUserDataStream();
-        binanceStreamSupervisor.binanceWebSocket.webSocket.mockTriggerEvent('message',
-            [JSON.stringify({ id: requestId, result: { listenKey: 'test-listen-key' } })],
+        const { requestId, connectionPromise } =
+            binanceStreamSupervisor.startUserDataStream();
+        binanceStreamSupervisor.binanceWebSocket.webSocket.mockTriggerEvent(
+            'message',
+            [
+                JSON.stringify({
+                    id: requestId,
+                    result: { listenKey: 'test-listen-key' },
+                }),
+            ],
         );
         await expect(connectionPromise).resolves.toBe('connected');
     });

@@ -1,5 +1,8 @@
 import EventEmitter from 'events';
-import { ADDITIONAL_RESULTS_BY_METHOD, RATE_LIMITS_BY_METHOD } from '#root/src/__mocks__/constants.js';
+import {
+    ADDITIONAL_RESULTS_BY_METHOD,
+    RATE_LIMITS_BY_METHOD,
+} from '#root/src/__mocks__/constants.js';
 
 class WebSocketMock extends EventEmitter {
     static CONNECTING = 0;
@@ -25,10 +28,10 @@ class WebSocketMock extends EventEmitter {
         if (Object.keys(this.eventMap).includes(event)) {
             this.eventMap[event](...args);
             switch (event) {
-                case ('open'):
+                case 'open':
                     this.readyState = WebSocketMock.OPEN;
                     break;
-                case ('close'):
+                case 'close':
                     this.readyState = WebSocketMock.CLOSED;
                     break;
                 default:
@@ -47,26 +50,24 @@ class WebSocketMock extends EventEmitter {
     send(message) {
         const payload = JSON.parse(message);
         const response = this._mockResponse(payload);
-        this.mockTriggerEvent('message',
-            [
-                JSON.stringify({
-                    id: payload.id,
-                    status: 200,
-                    ...response,
-                }),
-            ],
-        );
+        this.mockTriggerEvent('message', [
+            JSON.stringify({
+                id: payload.id,
+                status: 200,
+                ...response,
+            }),
+        ]);
         return payload.id;
     }
 
     _mockResponse(payload) {
         switch (payload.method) {
-            case ('ping'):
+            case 'ping':
                 return {
                     result: {},
                     rateLimits: RATE_LIMITS_BY_METHOD.get('ping'),
                 };
-            case ('order.place'):
+            case 'order.place':
                 return {
                     result: {
                         symbol: payload.params.symbol,
@@ -75,15 +76,19 @@ class WebSocketMock extends EventEmitter {
                     },
                     rateLimits: RATE_LIMITS_BY_METHOD.get('order.place'),
                 };
-            case ('account.status'):
+            case 'account.status':
                 return {
                     result: ADDITIONAL_RESULTS_BY_METHOD.get('account.status'),
                     rateLimits: RATE_LIMITS_BY_METHOD.get('account.status'),
                 };
             default:
                 return {
-                    result: ADDITIONAL_RESULTS_BY_METHOD.get('userDataStream.start'),
-                    rateLimits: RATE_LIMITS_BY_METHOD.get('userDataStream.start'),
+                    result: ADDITIONAL_RESULTS_BY_METHOD.get(
+                        'userDataStream.start',
+                    ),
+                    rateLimits: RATE_LIMITS_BY_METHOD.get(
+                        'userDataStream.start',
+                    ),
                 };
         }
     }

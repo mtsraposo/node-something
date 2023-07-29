@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
+import {
+    FIELD_ENUMS,
+    REQUIRED_ATTRIBUTES,
+    REQUIRED_ATTRIBUTES_BY_TYPE,
+} from './constants.js';
 import { buildSignaturePayload, generateSignature } from './auth.js';
 
 class BinanceRequest {
@@ -32,11 +36,11 @@ class BinanceRequest {
 
     authenticate() {
         if (!this.signed) return;
-        let authParams = {
+        const authParams = {
             apiKey: this.apiKey,
             ...this.params,
         };
-        authParams['signature'] = this.sign(authParams).toString('base64');
+        authParams.signature = this.sign(authParams).toString('base64');
         this.params = authParams;
     }
 
@@ -57,14 +61,16 @@ class BinanceRequest {
 
     validate() {
         const requiredAttributes = REQUIRED_ATTRIBUTES.get(this.method) || [];
-        const requiredAttributesByType = REQUIRED_ATTRIBUTES_BY_TYPE.get(this.method);
+        const requiredAttributesByType = REQUIRED_ATTRIBUTES_BY_TYPE.get(
+            this.method,
+        );
         const fieldEnums = FIELD_ENUMS.get(this.method);
 
         const required = [
             ...requiredAttributes,
             ...(requiredAttributesByType?.get(this.params?.type) || []),
         ];
-        required.forEach(param => {
+        required.forEach((param) => {
             if (!Object.keys(this.params).includes(param)) {
                 this.errors.push([param, 'required', undefined]);
                 this.isValid = false;

@@ -11,8 +11,8 @@ describe('BinanceWebSocket', () => {
         side: 'SELL',
         type: 'LIMIT',
         timeInForce: 'GTC',
-        price: 23416.10000000,
-        quantity: 0.00847000,
+        price: 23416.1,
+        quantity: 0.00847,
     };
 
     beforeEach(() => {
@@ -39,7 +39,10 @@ describe('BinanceWebSocket', () => {
     it('pings websocket', async () => {
         await connectWebSocket();
         const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
-        const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
+        const handleResponseSpy = jest.spyOn(
+            binanceWebSocket,
+            'handleResponse',
+        );
         binanceWebSocket.ping();
         expect(handleMessageSpy).toHaveBeenCalled();
         expect(handleResponseSpy).toHaveBeenCalled();
@@ -48,7 +51,10 @@ describe('BinanceWebSocket', () => {
     it('gets account status', async () => {
         await connectWebSocket();
         const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
-        const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
+        const handleResponseSpy = jest.spyOn(
+            binanceWebSocket,
+            'handleResponse',
+        );
         binanceWebSocket.getAccountStatus();
         expect(handleMessageSpy).toHaveBeenCalled();
         expect(handleResponseSpy).toHaveBeenCalled();
@@ -62,7 +68,7 @@ describe('BinanceWebSocket', () => {
         expect(binanceWebSocket.requests.get(requestId)).toBeTruthy();
     });
 
-    it('errors on server responses that don\'t match requests', async () => {
+    it("errors on server responses that don't match requests", async () => {
         await connectWebSocket();
         const spy = jest.spyOn(binanceWebSocket, 'handleMessage');
         const message = JSON.stringify({ id: uuidv4() });
@@ -78,7 +84,10 @@ describe('BinanceWebSocket', () => {
         const connectWebSocketSpy = jest.spyOn(binanceWebSocket, 'connect');
         await connectWebSocket();
         await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
-        binanceWebSocket.webSocket.mockTriggerEvent('close', [1000, 'Normal closure']);
+        binanceWebSocket.webSocket.mockTriggerEvent('close', [
+            1000,
+            'Normal closure',
+        ]);
         await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenCalled();
     });

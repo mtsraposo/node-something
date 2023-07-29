@@ -36,8 +36,8 @@ describe('BinanceWebSocketSupervisor', () => {
             side: 'SELL',
             type: 'LIMIT',
             timeInForce: 'GTC',
-            price: 23416.10000000,
-            quantity: 0.00847000,
+            price: 23416.1,
+            quantity: 0.00847,
         };
         const spy = jest.spyOn(binanceWebSocketSupervisor.webSocket, 'send');
         const requestId = binanceWebSocketSupervisor.send(method, params, true);
@@ -55,7 +55,9 @@ describe('BinanceWebSocketSupervisor', () => {
         console.error = jest.fn();
         const spy = jest.spyOn(binanceWebSocketSupervisor.webSocket, 'send');
         const requestId = binanceWebSocketSupervisor.send(method, params, true);
-        expect(binanceWebSocketSupervisor.requests.get(requestId)).toBeUndefined();
+        expect(
+            binanceWebSocketSupervisor.requests.get(requestId),
+        ).toBeUndefined();
         expect(spy).toHaveBeenCalledTimes(0);
         expect(console.error).toHaveBeenCalled();
     });

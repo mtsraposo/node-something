@@ -26,18 +26,19 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
 
     async connectByUid(uid) {
         switch (uid) {
-            case (this.stream?.uid):
+            case this.stream?.uid:
                 await this.connectStreams();
                 break;
-            case (this.userDataStream?.uid):
-                const { connectionPromise } = this.startUserDataStream();
-                await connectionPromise;
+            case this.userDataStream?.uid:
+                await this.startUserDataStream()?.connectionPromise;
                 break;
-            case (this.binanceWebSocket?.uid):
+            case this.binanceWebSocket?.uid:
                 await this.connectWebSocket();
                 break;
             default:
-                console.warn(`WebSocket with UID: ${uid} not found for connection.`);
+                console.warn(
+                    `WebSocket with UID: ${uid} not found for connection.`,
+                );
                 break;
         }
     }
@@ -53,7 +54,9 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
             return Promise.resolve('Already connected');
         }
         const streamParams = this.streamNames.join('/');
-        this.stream = this.setupWebSocket(`${BINANCE_WEBSOCKET_STREAM_URL}?streams=${streamParams}`);
+        this.stream = this.setupWebSocket(
+            `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${streamParams}`,
+        );
         return this.connectionPromise();
     }
 
@@ -71,28 +74,36 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     }
 
     startUserDataStream() {
-        const requestId = this.binanceWebSocket.send('userDataStream.start', { apiKey: this.apiKey }, false);
+        const requestId = this.binanceWebSocket.send(
+            'userDataStream.start',
+            { apiKey: this.apiKey },
+            false,
+        );
         return {
-            requestId: requestId,
+            requestId,
             connectionPromise: this.userDataStreamPromise(),
         };
     }
 
     userDataStreamPromise() {
         return new Promise((resolve) => {
-            this.binanceWebSocket.on('listen-key-ready', listenKey => {
+            this.binanceWebSocket.on('listen-key-ready', (listenKey) => {
                 resolve(listenKey);
             });
-        }).then((listenKey) => {
-            return this.connectUserDataStream(listenKey);
-        }).then(() => {
-            return 'connected';
-        });
+        })
+            .then((listenKey) => {
+                return this.connectUserDataStream(listenKey);
+            })
+            .then(() => {
+                return 'connected';
+            });
     }
 
     connectUserDataStream(listenKey) {
         this.listenKey = listenKey;
-        this.userDataStream = this.setupWebSocket(`${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`);
+        this.userDataStream = this.setupWebSocket(
+            `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`,
+        );
         return this.connectionPromise();
     }
 }

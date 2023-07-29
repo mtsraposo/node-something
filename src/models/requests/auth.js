@@ -3,7 +3,6 @@ import fs from 'node:fs';
 import { Buffer } from 'node:buffer';
 import qs from 'qs';
 
-
 export const serializePrivateKey = (privateKeyPath) => {
     if (!fs.existsSync(privateKeyPath)) {
         throw new Error(`Private key path does not exist: ${privateKeyPath}`);
@@ -23,10 +22,12 @@ export const serializePublicKey = (publicKeyPath) => {
 };
 
 export const buildSignaturePayload = (payload) => {
-    const sortedPayload = Object.keys(payload).sort().reduce((acc, key) => {
-        acc[key] = payload[key];
-        return acc;
-    }, {});
+    const sortedPayload = Object.keys(payload)
+        .sort()
+        .reduce((acc, key) => {
+            acc[key] = payload[key];
+            return acc;
+        }, {});
     return Buffer.from(qs.stringify(sortedPayload), 'ascii');
 };
 
