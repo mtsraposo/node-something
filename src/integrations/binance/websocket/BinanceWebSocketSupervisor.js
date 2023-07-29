@@ -27,7 +27,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
             return this.closePromise();
         }
         console.info(`
-            Attempted to close websocket connection with UID: ${this.webSocket.uid}
+            Attempted to close websocket connection with UID: ${this.webSocketUid}
             and URL: ${this.webSocket.url},
             but the connection is not open. 
             State: ${this.webSocket?.readyState}

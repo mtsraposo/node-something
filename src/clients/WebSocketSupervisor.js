@@ -5,18 +5,14 @@ class WebSocketSupervisor extends EventEmitter {
     constructor(WebSocketClass) {
         super();
         this.WebSocketClass = WebSocketClass;
-        this.uid = uuidv4();
-        this.url = null;
+        this.webSocketUid = uuidv4();
     }
 
     setupWebSocket(url) {
         const webSocket = new this.WebSocketClass(url);
-        this.url = url;
-        webSocket.uid = this.uid;
-        webSocket.url = this.url;
 
         webSocket.on('open', () => {
-            this.emit('ws-connected', [this.uid, this.url]);
+            this.emit('ws-connected', [this.webSocketUid, webSocket.url]);
         });
 
         webSocket.on('message', (data, _isBinary) => {
@@ -29,8 +25,8 @@ class WebSocketSupervisor extends EventEmitter {
         });
 
         webSocket.on('close', (_code, _reason) => {
-            console.info(`Received WebSocket close event. URL: ${this.url}. UID: ${this.uid}.`);
-            this.emit('ws-close', [this.uid, this.url]);
+            console.info(`Received WebSocket close event. URL: ${webSocket.url}. UID: ${this.webSocketUid}.`);
+            this.emit('ws-close', [this.webSocketUid, webSocket.url]);
         });
 
         return webSocket;

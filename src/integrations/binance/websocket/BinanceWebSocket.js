@@ -15,9 +15,9 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
     }
 
     addEventListeners() {
-        this.on('ws-connected', url => {
+        this.on('ws-connected', ([uid, url]) => {
             // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
-            console.info(`Connected to Binance WebSocket at url: ${url}`);
+            console.info(`Connected to Binance WebSocket. URL: ${url}. UID: ${uid}.`);
         });
 
         this.on('ws-message', message => {
