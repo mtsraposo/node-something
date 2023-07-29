@@ -20,6 +20,7 @@ describe('BinanceStream', () => {
 
     afterEach(async () => {
         binanceStream.keepAlive = false;
+        console.warn = jest.fn();
         await binanceStream.close();
         jest.resetAllMocks();
     });

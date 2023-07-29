@@ -24,9 +24,10 @@ describe('BinanceWebSocket', () => {
         );
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         binanceWebSocket.keepAlive = false;
-        binanceWebSocket.close();
+        console.warn = jest.fn();
+        await binanceWebSocket.close();
         jest.restoreAllMocks();
     });
 

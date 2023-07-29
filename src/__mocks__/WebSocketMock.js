@@ -16,7 +16,9 @@ class WebSocketMock extends EventEmitter {
         };
         this.connectionTimeout = setTimeout(() => {
             this.mockTriggerEvent('open', []);
+            this.connectionTimeout = null;
         }, 500);
+        this.closeTimeout = null;
     }
 
     mockTriggerEvent(event, args) {
@@ -36,8 +38,10 @@ class WebSocketMock extends EventEmitter {
     }
 
     close() {
-        clearTimeout(this.connectionTimeout);
-        this.mockTriggerEvent('close', [1000, 'Normal closure']);
+        this.closeTimeout = setTimeout(() => {
+            this.mockTriggerEvent('close', [1000, 'Normal closure']);
+            this.closeTimeout = null;
+        }, 500);
     }
 
     send(message) {

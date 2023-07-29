@@ -46,8 +46,7 @@ class WebSocketSupervisor extends EventEmitter {
 
     closePromise() {
         return new Promise((resolve, _reject) => {
-            this.on('ws-close', () => {
-                console.log('received ws-close');
+            this.on('ws-close', ([_uid, _url]) => {
                 resolve('closed');
             });
         });

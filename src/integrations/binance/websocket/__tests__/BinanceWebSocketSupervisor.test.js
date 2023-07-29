@@ -13,8 +13,9 @@ describe('BinanceWebSocketSupervisor', () => {
         );
     });
 
-    afterEach(() => {
-        binanceWebSocketSupervisor.close();
+    afterEach(async () => {
+        console.warn = jest.fn();
+        await binanceWebSocketSupervisor.close();
         jest.resetAllMocks();
     });
 

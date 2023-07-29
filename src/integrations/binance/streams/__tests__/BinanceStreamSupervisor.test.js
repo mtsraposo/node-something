@@ -15,8 +15,9 @@ describe('BinanceStreamSupervisor', () => {
         );
     });
 
-    afterEach(() => {
-        binanceStreamSupervisor.close();
+    afterEach(async () => {
+        console.warn = jest.fn();
+        await binanceStreamSupervisor.close();
         jest.resetAllMocks();
     });
 

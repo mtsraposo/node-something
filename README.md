@@ -7,7 +7,7 @@
 
 ## TODO
 
-- [ ] Update unit tests
+- [X] Update unit tests
 - [ ] Use SPOT API for account balances
 - [ ] Use SPOT API for order.place
 - [ ] Linter
