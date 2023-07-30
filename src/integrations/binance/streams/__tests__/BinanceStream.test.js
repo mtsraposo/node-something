@@ -26,7 +26,7 @@ describe('BinanceStream', () => {
     });
 
     const connectStreams = async () => {
-        const connectionPromise = binanceStream.connectStreams();
+        const connectionPromise = binanceStream.stream.connect();
         await expect(connectionPromise).resolves.toBe('connected');
     };
 
@@ -93,7 +93,7 @@ describe('BinanceStream', () => {
     it('retries streams connections when keepAlive is true', async () => {
         binanceStream.keepAlive = true;
         console.warn = jest.fn();
-        const connectionPromise = binanceStream.connectStreams();
+        const connectionPromise = binanceStream.stream.connect();
         await expect(connectionPromise).resolves.toBe('connected');
         await binanceStream.stream.close();
         expect(console.warn).toHaveBeenCalled();
