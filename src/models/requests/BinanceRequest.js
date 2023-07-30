@@ -4,12 +4,12 @@ import { buildSignaturePayload, generateSignature } from './auth.js';
 import logger from '#root/src/logger.js';
 
 class BinanceRequest {
-    constructor(apiKey, privateKey, method, params, signed) {
-        this.apiKey = apiKey;
-        this.privateKey = privateKey;
+    constructor(method, params, auth) {
         this.method = method;
         this.params = params;
-        this.signed = signed;
+        this.apiKey = auth?.apiKey;
+        this.privateKey = auth?.privateKey;
+        this.signed = auth?.signed;
 
         this.id = null;
         this.body = {};

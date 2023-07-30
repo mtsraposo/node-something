@@ -58,7 +58,11 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     send(method, params, signed) {
-        const request = new BinanceRequest(this.apiKey, this.privateKey, method, params, signed);
+        const request = new BinanceRequest(method, params, {
+            apiKey: this.apiKey,
+            privateKey: this.privateKey,
+            signed,
+        });
         if (!request.isValid) {
             this.handleErrors(request);
             return request.id;
