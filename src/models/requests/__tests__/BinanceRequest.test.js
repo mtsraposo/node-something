@@ -2,12 +2,13 @@ import { jest } from '@jest/globals';
 
 import BinanceRequest from '../BinanceRequest.js';
 import { serializePrivateKey } from '#root/src/models/requests/auth.js';
+import logger from '#root/src/logger.js';
 
 const expectInvalidRequest = (request) => {
     expect(request.isValid).toBeFalsy();
     expect(request.id).toBeNull();
     expect(request.body).toEqual({});
-    expect(console.error.mock.calls).toHaveLength(1);
+    expect(logger.error.mock.calls).toHaveLength(1);
 };
 describe('BinanceRequest', () => {
     const fakeApiKey = 'fake-api-key';
@@ -61,7 +62,7 @@ describe('BinanceRequest', () => {
     });
 
     it('requires certain fields to be in the params', () => {
-        console.error = jest.fn();
+        logger.error = jest.fn();
         const params = {
             symbol: 'BTCUSDT',
             side: 'SELL',

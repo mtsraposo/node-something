@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { v4 as uuidv4 } from 'uuid';
+import logger from '#root/src/logger.js';
 
 class WebSocketSupervisor extends EventEmitter {
     constructor(WebSocketClass) {
@@ -25,7 +26,7 @@ class WebSocketSupervisor extends EventEmitter {
         });
 
         webSocket.on('close', (_code, _reason) => {
-            console.info(
+            logger.info(
                 `Received WebSocket close event. URL: ${webSocket.url}. UID: ${this.webSocketUid}.`,
             );
             this.emit('ws-close', [this.webSocketUid, webSocket.url]);

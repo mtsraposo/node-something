@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import BinanceWebSocketSupervisor from '#root/src/integrations/binance/websocket/BinanceWebSocketSupervisor.js';
 import { WebSocketMock } from '#root/src/__mocks__/WebSocketMock.js';
+import logger from '#root/src/logger.js';
 
 describe('BinanceWebSocketSupervisor', () => {
     let binanceWebSocketSupervisor;
@@ -15,7 +16,7 @@ describe('BinanceWebSocketSupervisor', () => {
     });
 
     afterEach(async () => {
-        console.warn = jest.fn();
+        logger.warn = jest.fn();
         await binanceWebSocketSupervisor.close();
         jest.resetAllMocks();
     });
@@ -53,11 +54,11 @@ describe('BinanceWebSocketSupervisor', () => {
             symbol: 'BTCUSDT',
             side: 'SELL',
         };
-        console.error = jest.fn();
+        logger.error = jest.fn();
         const spy = jest.spyOn(binanceWebSocketSupervisor.webSocket, 'send');
         const requestId = binanceWebSocketSupervisor.send(method, params, true);
         expect(binanceWebSocketSupervisor.requests.get(requestId)).toBeUndefined();
         expect(spy).toHaveBeenCalledTimes(0);
-        expect(console.error).toHaveBeenCalled();
+        expect(logger.error).toHaveBeenCalled();
     });
 });

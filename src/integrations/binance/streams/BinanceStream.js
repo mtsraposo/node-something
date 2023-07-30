@@ -1,6 +1,7 @@
 import WebSocket from 'ws';
 import BinanceStreamSupervisor from './BinanceStreamSupervisor.js';
 import { BINANCE_STREAMS } from './constants.js';
+import logger from '#root/src/logger.js';
 
 class BinanceStream extends BinanceStreamSupervisor {
     constructor(
@@ -22,7 +23,7 @@ class BinanceStream extends BinanceStreamSupervisor {
             });
 
             webSocket.on('ws-error', (error) => {
-                console.error('Received error from stream: ', error);
+                logger.error('Received error from stream: ', error);
             });
         });
     }
@@ -33,7 +34,7 @@ class BinanceStream extends BinanceStreamSupervisor {
         } else if (message?.e) {
             this.handlePayload(message);
         } else {
-            console.error(`Received unknown message type ${JSON.stringify(message)}`);
+            logger.error(`Received unknown message type ${JSON.stringify(message)}`);
         }
     }
 
@@ -41,14 +42,14 @@ class BinanceStream extends BinanceStreamSupervisor {
         if (payload?.e?.includes('Ticker')) {
             this.handleTickerUpdate(payload);
         } else {
-            console.error(`Received unknown stream payload ${JSON.stringify(payload)}`);
+            logger.error(`Received unknown stream payload ${JSON.stringify(payload)}`);
         }
     }
 
     handleTickerUpdate(data) {
         const { e: eventType, s: symbol, c: lastPrice, w: averagePrice } = data;
-        console.info('- Received ticker update');
-        console.info('--- ', eventType, symbol, lastPrice, averagePrice);
+        logger.info('- Received ticker update');
+        logger.info('--- ', eventType, symbol, lastPrice, averagePrice);
     }
 }
 

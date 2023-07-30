@@ -1,6 +1,7 @@
 import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
 import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
 import { serializePrivateKey } from '#root/src/models/requests/auth.js';
+import logger from '#root/src/logger.js';
 
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     constructor(url, WebSocketClass, apiKey, privateKeyPath, keepAlive) {
@@ -16,13 +17,13 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
 
     addConnectionEventListeners() {
         this.on('ws-connected', ([uid, url]) => {
-            console.info(`Connected to Binance WebSocket. URL: ${url}. UID: ${uid}.`);
+            logger.info(`Connected to Binance WebSocket. URL: ${url}. UID: ${uid}.`);
         });
 
         this.on('ws-close', () => {
-            console.warn('WebSocket connection closed');
+            logger.warn('WebSocket connection closed');
             if (!this.keepAlive) return;
-            console.info('Reconnecting...');
+            logger.info('Reconnecting...');
             if (this.webSocket?.readyState === this.WebSocketClass.CLOSED) {
                 this.connect().then();
             }
@@ -47,7 +48,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
             this.webSocket.close();
             return this.closePromise();
         }
-        console.info(`
+        logger.info(`
             Attempted to close websocket connection with UID: ${this.webSocketUid}
             and URL: ${this.webSocket.url},
             but the connection is not open. 
@@ -68,7 +69,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     handleErrors(request) {
-        console.error(`Request failed with errors ${JSON.stringify(request.errors)}`);
+        logger.error(`Request failed with errors ${JSON.stringify(request.errors)}`);
     }
 
     ping() {

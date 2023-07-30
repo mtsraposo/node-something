@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketMock } from '#root/src/__mocks__/WebSocketMock.js';
 import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
+import logger from '#root/src/logger.js';
 
 describe('BinanceWebSocket', () => {
     let binanceWebSocket;
@@ -27,7 +28,7 @@ describe('BinanceWebSocket', () => {
 
     afterEach(async () => {
         binanceWebSocket.keepAlive = false;
-        console.warn = jest.fn();
+        logger.warn = jest.fn();
         await binanceWebSocket.close();
         jest.restoreAllMocks();
     });
@@ -67,20 +68,20 @@ describe('BinanceWebSocket', () => {
         await connectWebSocket();
         const spy = jest.spyOn(binanceWebSocket, 'handleMessage');
         const message = JSON.stringify({ id: uuidv4() });
-        console.error = jest.fn();
+        logger.error = jest.fn();
         binanceWebSocket.webSocket.mockTriggerEvent('message', [message]);
         expect(spy).toHaveBeenCalled();
-        expect(console.error).toHaveBeenCalled();
+        expect(logger.error).toHaveBeenCalled();
     });
 
     it('retries connections when keepAlive is true', async () => {
         binanceWebSocket.keepAlive = true;
-        console.warn = jest.fn();
+        logger.warn = jest.fn();
         const connectWebSocketSpy = jest.spyOn(binanceWebSocket, 'connect');
         await connectWebSocket();
         await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
         binanceWebSocket.webSocket.mockTriggerEvent('close', [1000, 'Normal closure']);
         await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
-        expect(console.warn).toHaveBeenCalled();
+        expect(logger.warn).toHaveBeenCalled();
     });
 });

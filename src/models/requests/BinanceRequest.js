@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
 import { buildSignaturePayload, generateSignature } from './auth.js';
+import logger from '#root/src/logger.js';
 
 class BinanceRequest {
     constructor(apiKey, privateKey, method, params, signed) {
@@ -26,7 +27,7 @@ class BinanceRequest {
             this.id = uuidv4();
             this.buildBody();
         } else {
-            console.error(`Invalid params received: ${this.params}`);
+            logger.error(`Invalid params received: ${this.params}`);
         }
     }
 

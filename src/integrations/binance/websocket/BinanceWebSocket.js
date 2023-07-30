@@ -1,5 +1,6 @@
 import WebSocket from 'ws';
 import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
+import logger from '#root/src/logger.js';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor(
@@ -20,7 +21,7 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         });
 
         this.on('ws-error', (error) => {
-            console.error('Received error from websocket: ', error);
+            logger.error('Received error from websocket: ', error);
         });
     }
 
@@ -29,7 +30,7 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         if (outgoingRequest) {
             this.handleResponse(outgoingRequest, message);
         } else {
-            console.error(`Received unknown message type ${JSON.stringify(message)}`);
+            logger.error(`Received unknown message type ${JSON.stringify(message)}`);
         }
     }
 
@@ -47,7 +48,7 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
             case 'order.place':
                 break;
             default:
-                console.warn(`Received response for unknown request method ${request.method}`);
+                logger.warn(`Received response for unknown request method ${request.method}`);
         }
     }
 }

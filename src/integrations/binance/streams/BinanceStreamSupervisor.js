@@ -4,6 +4,7 @@ import { BINANCE_WEBSOCKET_STREAM_URL } from './constants.js';
 import { BINANCE_WEBSOCKET_API_URL } from '#root/src/integrations/binance/websocket/constants.js';
 import BinanceWebSocketSupervisor from '#root/src/integrations/binance/websocket/BinanceWebSocketSupervisor.js';
 import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
+import logger from '#root/src/logger.js';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
     constructor(WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive) {
@@ -58,7 +59,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
                 await this.binanceWebSocket.connect();
                 break;
             default:
-                console.warn(`WebSocket with UID: ${uid} not found for connection.`);
+                logger.warn(`WebSocket with UID: ${uid} not found for connection.`);
                 break;
         }
     }
@@ -94,7 +95,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
                 return 'connected';
             })
             .catch((error) => {
-                console.error(`Failed to start user data stream with error ${error}`);
+                logger.error(`Failed to start user data stream with error ${error}`);
                 return error;
             });
     }

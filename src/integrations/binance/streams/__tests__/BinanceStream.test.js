@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 
 import { WebSocketMock } from '#root/src/__mocks__/WebSocketMock.js';
 import BinanceStream from '#root/src/integrations/binance/streams/BinanceStream.js';
+import logger from '#root/src/logger.js';
 
 describe('BinanceStream', () => {
     let binanceStream;
@@ -20,7 +21,7 @@ describe('BinanceStream', () => {
 
     afterEach(async () => {
         binanceStream.keepAlive = false;
-        console.warn = jest.fn();
+        logger.warn = jest.fn();
         await binanceStream.close();
         jest.resetAllMocks();
     });
@@ -61,19 +62,19 @@ describe('BinanceStream', () => {
 
     it('handles stream messages with bad formats', async () => {
         await connectStreams();
-        console.error = jest.fn();
+        logger.error = jest.fn();
         await expectMessageHandled({});
-        expect(console.error).toHaveBeenCalled();
+        expect(logger.error).toHaveBeenCalled();
     });
 
     it('handles invalid stream messages', async () => {
         await connectStreams();
-        console.error = jest.fn();
+        logger.error = jest.fn();
         const handlePayloadSpy = jest.spyOn(binanceStream, 'handlePayload');
         const message = { e: 'otherEventType' };
         await expectMessageHandled(message);
         expect(handlePayloadSpy).toHaveBeenCalledWith(message);
-        expect(console.error).toHaveBeenCalled();
+        expect(logger.error).toHaveBeenCalled();
     });
 
     it('handles ticker updates', async () => {
@@ -92,10 +93,10 @@ describe('BinanceStream', () => {
 
     it('retries streams connections when keepAlive is true', async () => {
         binanceStream.keepAlive = true;
-        console.warn = jest.fn();
+        logger.warn = jest.fn();
         const connectionPromise = binanceStream.stream.connect();
         await expect(connectionPromise).resolves.toBe('connected');
         await binanceStream.stream.close();
-        expect(console.warn).toHaveBeenCalled();
+        expect(logger.warn).toHaveBeenCalled();
     });
 });

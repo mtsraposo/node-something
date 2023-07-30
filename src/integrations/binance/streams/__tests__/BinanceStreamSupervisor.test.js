@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock.js';
 import BinanceStreamSupervisor from '#root/src/integrations/binance/streams/BinanceStreamSupervisor.js';
+import logger from '#root/src/logger.js';
 
 describe('BinanceStreamSupervisor', () => {
     let binanceStreamSupervisor;
@@ -16,7 +17,7 @@ describe('BinanceStreamSupervisor', () => {
     });
 
     afterEach(async () => {
-        console.warn = jest.fn();
+        logger.warn = jest.fn();
         await binanceStreamSupervisor.close();
         jest.resetAllMocks();
     });
