@@ -1,8 +1,10 @@
+import { env } from '#root/src/env.js';
+
 const BINANCE_SPOT_API_URLS = new Map([
     ['prod', 'https://api.binance.com/api/v3'],
-    ['test', 'https://testnet.binance.vision/api/v3'],
+    ['test', 'https://testnet.binance.vision/api'],
 ]);
-export const BINANCE_SPOT_API_URL = BINANCE_SPOT_API_URLS.get(process.env.BINANCE_ENV || 'test');
+export const BINANCE_SPOT_API_URL = BINANCE_SPOT_API_URLS.get(env.binance.env || 'test');
 
 export const HTTP_PATHS_TO_METHODS = new Map([
     ['post.order', 'order.place'],
@@ -10,5 +12,3 @@ export const HTTP_PATHS_TO_METHODS = new Map([
     ['get.ping', 'ping'],
     ['get.account/status', 'account.status'],
 ]);
-
-export const HTTP_VERBS = new Set([]);

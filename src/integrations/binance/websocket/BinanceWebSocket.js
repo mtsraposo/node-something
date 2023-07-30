@@ -1,16 +1,18 @@
 import WebSocket from 'ws';
 import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
 import logger from '#root/src/logger.js';
+import { env } from '#root/src/env.js';
+import { BINANCE_WEBSOCKET_API_URL } from '#root/src/integrations/binance/websocket/constants.js';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
-    constructor(
-        url,
+    constructor({
+        url = BINANCE_WEBSOCKET_API_URL,
         WebSocketClass = WebSocket,
-        apiKey = process.env.BINANCE_API_KEY,
-        privateKeyPath = process.env.PRIVATE_KEY_PATH,
+        apiKey = env.binance.apiKey,
+        privateKeyPath = env.binance.privateKeyPath,
         keepAlive = true,
-    ) {
-        super(url, WebSocketClass, apiKey, privateKeyPath, keepAlive);
+    }) {
+        super({ url, WebSocketClass, apiKey, privateKeyPath, keepAlive });
 
         this.addEventListeners();
     }

@@ -37,7 +37,7 @@ describe('BinanceRequest', () => {
             id: request.id,
             method,
             params: {
-                apiKey: apiKey,
+                apiKey,
                 signature: expect.any(String),
                 recvWindow: 5000,
                 timestamp: expect.any(Number),

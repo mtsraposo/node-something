@@ -5,6 +5,7 @@ class HttpClientMock {
         this.request = this.request.bind(this);
         this.response = this.response.bind(this);
     }
+
     request({ url }) {
         const response = this.response(url);
         return Promise.resolve(response);
@@ -12,7 +13,7 @@ class HttpClientMock {
 
     response(url) {
         switch (url) {
-            case '/userDataStream':
+            case 'userDataStream':
                 return { listenKey: uuidv4() };
             default:
                 return {};

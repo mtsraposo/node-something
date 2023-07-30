@@ -1,9 +1,16 @@
 import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
-import { HTTP_PATHS_TO_METHODS } from './constants.js';
+import { BINANCE_SPOT_API_URL, HTTP_PATHS_TO_METHODS } from './constants.js';
+import axios from 'axios';
+import { env } from '#root/src/env.js';
 
 class BinanceSpotApi {
-    constructor(url, httpClient, apiKey, privateKeyPath) {
+    constructor({
+        url = BINANCE_SPOT_API_URL,
+        httpClient = axios,
+        apiKey = env.binance.apiKey,
+        privateKeyPath = env.binance.privateKeyPath,
+    }) {
         this.url = url;
         this.httpClient = httpClient;
         this.apiKey = apiKey;
@@ -25,9 +32,9 @@ class BinanceSpotApi {
         return this.httpClient({
             method: httpVerb,
             baseURL: this.url,
-            url: `/${path}`,
-            data: data,
-            timeout: 500,
+            url: path,
+            data,
+            timeout: 5000,
             headers: { 'X-MBX-APIKEY': this.apiKey },
         });
     }

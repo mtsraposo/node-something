@@ -5,13 +5,22 @@ import HttpClientMock from '#root/src/__mocks__/HttpClientMock.js';
 describe('BinanceSpotApi', () => {
     let binanceSpotApi;
     let httpClient;
-    let url = 'https://test-url';
-    let apiKey = 'test-api-key';
-    let privateKeyPath = 'unit-test-prv-key.pem';
+    const url = 'https://test-url';
+    const apiKey = 'test-api-key';
+    const privateKeyPath = 'unit-test-prv-key.pem';
 
     beforeAll(() => {
         httpClient = new HttpClientMock();
-        binanceSpotApi = new BinanceSpotApi(url, httpClient.request, apiKey, privateKeyPath);
+        binanceSpotApi = new BinanceSpotApi({
+            url,
+            httpClient: httpClient.request,
+            apiKey,
+            privateKeyPath,
+        });
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     it('makes valid requests', async () => {

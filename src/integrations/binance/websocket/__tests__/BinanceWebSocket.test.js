@@ -17,13 +17,13 @@ describe('BinanceWebSocket', () => {
     };
 
     beforeEach(() => {
-        binanceWebSocket = new BinanceWebSocket(
-            'wss://test-websocket',
-            WebSocketMock,
-            'test-api-key',
-            'unit-test-prv-key.pem',
-            false,
-        );
+        binanceWebSocket = new BinanceWebSocket({
+            url: 'wss://test-websocket',
+            WebSocketClass: WebSocketMock,
+            apiKey: 'test-api-key',
+            privateKeyPath: 'unit-test-prv-key.pem',
+            keepAlive: false,
+        });
     });
 
     afterEach(async () => {

@@ -7,38 +7,41 @@ import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWe
 import logger from '#root/src/logger.js';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
-    constructor(WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive) {
+    constructor({ WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive }) {
         super(WebSocketClass);
         this.apiKey = apiKey;
         this.privateKeyPath = privateKeyPath;
         this.streamNames = streamNames;
         this.keepAlive = keepAlive;
 
+        this.binanceWebSocket = null;
+        this.stream = null;
+        this.userDataStream = null;
         this.initializeStreams();
     }
 
     initializeStreams() {
-        this.binanceWebSocket = new BinanceWebSocket(
-            BINANCE_WEBSOCKET_API_URL,
-            this.WebSocketClass,
-            this.apiKey,
-            this.privateKeyPath,
-            this.keepAlive,
-        );
-        this.stream = new BinanceWebSocketSupervisor(
-            `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.streamNames.join('/')}`,
-            this.WebSocketClass,
-            this.apiKey,
-            this.privateKeyPath,
-            this.keepAlive,
-        );
-        this.userDataStream = new BinanceWebSocketSupervisor(
-            `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`,
-            this.WebSocketClass,
-            this.apiKey,
-            this.privateKeyPath,
-            this.keepAlive,
-        );
+        [
+            ['binanceWebSocket', BinanceWebSocket, BINANCE_WEBSOCKET_API_URL],
+            [
+                'stream',
+                BinanceWebSocketSupervisor,
+                `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.streamNames.join('/')}`,
+            ],
+            [
+                'userDataStream',
+                BinanceWebSocketSupervisor,
+                `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`,
+            ],
+        ].forEach(([property, BinanceWebSocketClass, url]) => {
+            this[property] = new BinanceWebSocketClass({
+                url: url,
+                WebSocketClass: this.WebSocketClass,
+                apiKey: this.apiKey,
+                privateKeyPath: this.privateKeyPath,
+                keepAlive: this.keepAlive,
+            });
+        });
     }
 
     async connect() {

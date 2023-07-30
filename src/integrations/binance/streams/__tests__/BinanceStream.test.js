@@ -10,13 +10,13 @@ describe('BinanceStream', () => {
     const streamNames = ['testStream-1', 'testStream-2'];
 
     beforeEach(async () => {
-        binanceStream = new BinanceStream(
-            WebSocketMock,
-            'test-api-key',
-            'test-prv-key.pem',
+        binanceStream = new BinanceStream({
+            WebSocketClass: WebSocketMock,
+            apiKey: 'test-api-key',
+            privateKeyPath: 'test-prv-key.pem',
             streamNames,
-            false,
-        );
+            keepAlive: false,
+        });
     });
 
     afterEach(async () => {

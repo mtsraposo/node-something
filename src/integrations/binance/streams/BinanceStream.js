@@ -2,16 +2,17 @@ import WebSocket from 'ws';
 import BinanceStreamSupervisor from './BinanceStreamSupervisor.js';
 import { BINANCE_STREAMS } from './constants.js';
 import logger from '#root/src/logger.js';
+import { env } from '#root/src/env.js';
 
 class BinanceStream extends BinanceStreamSupervisor {
-    constructor(
+    constructor({
         WebSocketClass = WebSocket,
-        apiKey = process.env.BINANCE_API_KEY,
-        privateKeyPath = process.env.PRIVATE_KEY_PATH,
+        apiKey = env.binance.apiKey,
+        privateKeyPath = env.binance.privateKeyPath,
         streamNames = BINANCE_STREAMS,
         keepAlive = true,
-    ) {
-        super(WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive);
+    }) {
+        super({ WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive });
 
         this.addEventListeners();
     }

@@ -8,12 +8,13 @@ describe('BinanceStreamSupervisor', () => {
     const streamNames = ['testStream-1', 'testStream-2'];
 
     beforeEach(async () => {
-        binanceStreamSupervisor = new BinanceStreamSupervisor(
-            WebSocketMock,
-            'test-api-key',
-            'test-prv-key.pem',
+        binanceStreamSupervisor = new BinanceStreamSupervisor({
+            WebSocketClass: WebSocketMock,
+            apiKey: 'test-api-key',
+            privateKeyPath: 'test-prv-key.pem',
             streamNames,
-        );
+            keepAlive: false,
+        });
     });
 
     afterEach(async () => {

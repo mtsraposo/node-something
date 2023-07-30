@@ -7,12 +7,12 @@ describe('BinanceWebSocketSupervisor', () => {
     let binanceWebSocketSupervisor;
 
     beforeEach(() => {
-        binanceWebSocketSupervisor = new BinanceWebSocketSupervisor(
-            'wss://test-websocket',
-            WebSocketMock,
-            'test-api-key',
-            'unit-test-prv-key.pem',
-        );
+        binanceWebSocketSupervisor = new BinanceWebSocketSupervisor({
+            url: 'wss://test-websocket',
+            WebSocketClass: WebSocketMock,
+            apiKey: 'test-api-key',
+            privateKeyPath: 'unit-test-prv-key.pem',
+        });
     });
 
     afterEach(async () => {
