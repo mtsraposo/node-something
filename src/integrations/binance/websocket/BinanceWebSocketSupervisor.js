@@ -33,11 +33,16 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
         if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
             return Promise.resolve('Already connected');
         }
+        this.addConnectionEventListeners();
         this.webSocket = this.setupWebSocket(this.url);
         return this.connectionPromise();
     }
 
     close() {
+        if (!this.webSocket) {
+            return Promise.resolve('not-started');
+        }
+
         if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
             this.webSocket.close();
             return this.closePromise();
@@ -48,7 +53,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
             but the connection is not open. 
             State: ${this.webSocket?.readyState}
         `);
-        return Promise.resolve('close skipped');
+        return Promise.resolve('skipped');
     }
 
     send(method, params, signed) {

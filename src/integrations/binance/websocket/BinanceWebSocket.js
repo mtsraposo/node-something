@@ -12,7 +12,6 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         super(url, WebSocketClass, apiKey, privateKeyPath, keepAlive);
 
         this.addEventListeners();
-        this.addConnectionEventListeners();
     }
 
     addEventListeners() {

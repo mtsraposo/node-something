@@ -17,8 +17,6 @@ class BinanceStream extends BinanceStreamSupervisor {
 
     addEventListeners() {
         [this.stream, this.userDataStream, this.binanceWebSocket].forEach((webSocket) => {
-            webSocket.addConnectionEventListeners();
-
             webSocket.on('ws-message', (message) => {
                 this.handleMessage(message);
             });

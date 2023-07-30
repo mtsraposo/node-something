@@ -3,6 +3,7 @@ import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
 import { BINANCE_WEBSOCKET_STREAM_URL } from './constants.js';
 import { BINANCE_WEBSOCKET_API_URL } from '#root/src/integrations/binance/websocket/constants.js';
 import BinanceWebSocketSupervisor from '#root/src/integrations/binance/websocket/BinanceWebSocketSupervisor.js';
+import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
     constructor(WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive) {
@@ -12,7 +13,11 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
         this.streamNames = streamNames;
         this.keepAlive = keepAlive;
 
-        this.binanceWebSocket = new BinanceWebSocketSupervisor(
+        this.initializeStreams();
+    }
+
+    initializeStreams() {
+        this.binanceWebSocket = new BinanceWebSocket(
             BINANCE_WEBSOCKET_API_URL,
             this.WebSocketClass,
             this.apiKey,
