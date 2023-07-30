@@ -2,22 +2,38 @@ import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
 import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
 import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 
-import { BINANCE_WEBSOCKET_API_URL } from './constants.js';
-
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {
-    constructor(WebSocketClass, apiKey, privateKeyPath) {
+    constructor(url, WebSocketClass, apiKey, privateKeyPath, keepAlive) {
         super(WebSocketClass);
+        this.url = url;
         this.apiKey = apiKey;
         this.privateKey = serializePrivateKey(privateKeyPath);
+        this.keepAlive = keepAlive;
 
-        // TODO: move to a database?
         this.requests = new Map();
         this.webSocket = null;
     }
 
-    // TODO: send unsolicited pong frames to avoid disconnection
+    addConnectionEventListeners() {
+        this.on('ws-connected', ([uid, url]) => {
+            console.info(`Connected to Binance WebSocket. URL: ${url}. UID: ${uid}.`);
+        });
+
+        this.on('ws-close', () => {
+            console.warn('WebSocket connection closed');
+            if (!this.keepAlive) return;
+            console.info('Reconnecting...');
+            if (this.webSocket?.readyState === this.WebSocketClass.CLOSED) {
+                this.connect().then();
+            }
+        });
+    }
+
     connect() {
-        this.webSocket = this.setupWebSocket(BINANCE_WEBSOCKET_API_URL);
+        if (this.webSocket?.readyState === this.WebSocketClass.OPEN) {
+            return Promise.resolve('Already connected');
+        }
+        this.webSocket = this.setupWebSocket(this.url);
         return this.connectionPromise();
     }
 
@@ -36,13 +52,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     send(method, params, signed) {
-        const request = new BinanceRequest(
-            this.apiKey,
-            this.privateKey,
-            method,
-            params,
-            signed,
-        );
+        const request = new BinanceRequest(this.apiKey, this.privateKey, method, params, signed);
         if (!request.isValid) {
             this.handleErrors(request);
             return request.id;
@@ -53,9 +63,25 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     }
 
     handleErrors(request) {
-        console.error(
-            `Request failed with errors ${JSON.stringify(request.errors)}`,
+        console.error(`Request failed with errors ${JSON.stringify(request.errors)}`);
+    }
+
+    ping() {
+        return this.send('ping', {}, false);
+    }
+
+    getAccountStatus() {
+        return this.send(
+            'account.status',
+            {
+                timestamp: new Date().getTime(),
+            },
+            true,
         );
+    }
+
+    placeOrder(params) {
+        return this.send('order.place', params, true);
     }
 }
 

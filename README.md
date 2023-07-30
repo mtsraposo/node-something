@@ -2,16 +2,15 @@
 
 ## To run
 
-    $ node src/main.js
-
+    $ yarn start
 
 ## TODO
 
-- [X] Update unit tests
-- [ ] Use SPOT API for account balances
-- [ ] Use SPOT API for order.place
-- [ ] Linter
-- [ ] Security
-- [ ] Front-end
-- [ ] Database / reporting
-- [ ] Moving average trading logic
+-   [x] Update unit tests
+-   [x] Linter
+-   [ ] Use SPOT API for user stream
+-   [ ] Use SPOT API for order.place
+-   [ ] Security
+-   [ ] Front-end
+-   [ ] Database / reporting
+-   [ ] Moving average trading logic

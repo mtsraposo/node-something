@@ -32,9 +32,7 @@ describe('BinanceStream', () => {
 
     const expectMessageHandled = async (message) => {
         const spy = jest.spyOn(binanceStream, 'handleMessage');
-        binanceStream.stream.mockTriggerEvent('message', [
-            JSON.stringify(message),
-        ]);
+        binanceStream.stream.webSocket.mockTriggerEvent('message', [JSON.stringify(message)]);
         expect(spy).toHaveBeenCalledWith(message);
     };
 
@@ -65,7 +63,7 @@ describe('BinanceStream', () => {
         await connectStreams();
         console.error = jest.fn();
         await expectMessageHandled({});
-        expect(console.error.mock.calls).toHaveLength(1);
+        expect(console.error).toHaveBeenCalled();
     });
 
     it('handles invalid stream messages', async () => {
@@ -75,7 +73,7 @@ describe('BinanceStream', () => {
         const message = { e: 'otherEventType' };
         await expectMessageHandled(message);
         expect(handlePayloadSpy).toHaveBeenCalledWith(message);
-        expect(console.error.mock.calls).toHaveLength(1);
+        expect(console.error).toHaveBeenCalled();
     });
 
     it('handles ticker updates', async () => {

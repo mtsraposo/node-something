@@ -3,43 +3,25 @@ import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor(
+        url,
         WebSocketClass = WebSocket,
         apiKey = process.env.BINANCE_API_KEY,
         privateKeyPath = process.env.PRIVATE_KEY_PATH,
         keepAlive = true,
     ) {
-        super(WebSocketClass, apiKey, privateKeyPath);
-        this.keepAlive = keepAlive;
+        super(url, WebSocketClass, apiKey, privateKeyPath, keepAlive);
 
         this.addEventListeners();
+        this.addConnectionEventListeners();
     }
 
     addEventListeners() {
-        this.on('ws-connected', ([uid, url]) => {
-            // TODO: store connection_established_at timestamp. Connections are dropped after 24 hours.
-            console.info(
-                `Connected to Binance WebSocket. URL: ${url}. UID: ${uid}.`,
-            );
-        });
-
         this.on('ws-message', (message) => {
-            // TODO: storage
-            // TODO: error handling
             this.handleMessage(message);
         });
 
         this.on('ws-error', (error) => {
-            // TODO: error handling
             console.error('Received error from websocket: ', error);
-        });
-
-        this.on('ws-close', () => {
-            console.warn('WebSocket connection closed');
-            if (!this.keepAlive) return;
-            console.info('Reconnecting...');
-            if (this.webSocket?.readyState === this.WebSocketClass.CLOSED) {
-                this.connect().then();
-            }
         });
     }
 
@@ -48,9 +30,7 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         if (outgoingRequest) {
             this.handleResponse(outgoingRequest, message);
         } else {
-            console.error(
-                `Received unknown message type ${JSON.stringify(message)}`,
-            );
+            console.error(`Received unknown message type ${JSON.stringify(message)}`);
         }
     }
 
@@ -68,28 +48,8 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
             case 'order.place':
                 break;
             default:
-                console.warn(
-                    `Received response for unknown request method ${request.method}`,
-                );
+                console.warn(`Received response for unknown request method ${request.method}`);
         }
-    }
-
-    ping() {
-        return this.send('ping', {}, false);
-    }
-
-    getAccountStatus() {
-        return this.send(
-            'account.status',
-            {
-                timestamp: new Date().getTime(),
-            },
-            true,
-        );
-    }
-
-    placeOrder(params) {
-        return this.send('order.place', params, true);
     }
 }
 

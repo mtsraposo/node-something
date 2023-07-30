@@ -7,6 +7,7 @@ describe('BinanceWebSocketSupervisor', () => {
 
     beforeEach(() => {
         binanceWebSocketSupervisor = new BinanceWebSocketSupervisor(
+            'wss://test-websocket',
             WebSocketMock,
             'test-api-key',
             'unit-test-prv-key.pem',
@@ -55,9 +56,7 @@ describe('BinanceWebSocketSupervisor', () => {
         console.error = jest.fn();
         const spy = jest.spyOn(binanceWebSocketSupervisor.webSocket, 'send');
         const requestId = binanceWebSocketSupervisor.send(method, params, true);
-        expect(
-            binanceWebSocketSupervisor.requests.get(requestId),
-        ).toBeUndefined();
+        expect(binanceWebSocketSupervisor.requests.get(requestId)).toBeUndefined();
         expect(spy).toHaveBeenCalledTimes(0);
         expect(console.error).toHaveBeenCalled();
     });

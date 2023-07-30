@@ -1,9 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import {
-    FIELD_ENUMS,
-    REQUIRED_ATTRIBUTES,
-    REQUIRED_ATTRIBUTES_BY_TYPE,
-} from './constants.js';
+import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
 import { buildSignaturePayload, generateSignature } from './auth.js';
 
 class BinanceRequest {
@@ -61,9 +57,7 @@ class BinanceRequest {
 
     validate() {
         const requiredAttributes = REQUIRED_ATTRIBUTES.get(this.method) || [];
-        const requiredAttributesByType = REQUIRED_ATTRIBUTES_BY_TYPE.get(
-            this.method,
-        );
+        const requiredAttributesByType = REQUIRED_ATTRIBUTES_BY_TYPE.get(this.method);
         const fieldEnums = FIELD_ENUMS.get(this.method);
 
         const required = [

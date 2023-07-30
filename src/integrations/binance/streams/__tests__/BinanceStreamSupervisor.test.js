@@ -22,12 +22,12 @@ describe('BinanceStreamSupervisor', () => {
     });
 
     const connectStreams = async () => {
-        const connectionPromise = binanceStreamSupervisor.connectStreams();
+        const connectionPromise = binanceStreamSupervisor.stream.connect();
         await expect(connectionPromise).resolves.toBe('connected');
     };
 
     const connectWebSocket = async () => {
-        const connectionPromise = binanceStreamSupervisor.connectWebSocket();
+        const connectionPromise = binanceStreamSupervisor.binanceWebSocket.connect();
         await expect(connectionPromise).resolves.toBe('connected');
     };
 
@@ -41,17 +41,13 @@ describe('BinanceStreamSupervisor', () => {
 
     it('starts a user data stream', async () => {
         await connectWebSocket();
-        const { requestId, connectionPromise } =
-            binanceStreamSupervisor.startUserDataStream();
-        binanceStreamSupervisor.binanceWebSocket.webSocket.mockTriggerEvent(
-            'message',
-            [
-                JSON.stringify({
-                    id: requestId,
-                    result: { listenKey: 'test-listen-key' },
-                }),
-            ],
-        );
+        const { requestId, connectionPromise } = binanceStreamSupervisor.startUserDataStream();
+        binanceStreamSupervisor.binanceWebSocket.webSocket.mockTriggerEvent('message', [
+            JSON.stringify({
+                id: requestId,
+                result: { listenKey: 'test-listen-key' },
+            }),
+        ]);
         await expect(connectionPromise).resolves.toBe('connected');
     });
 });

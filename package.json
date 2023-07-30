@@ -13,9 +13,10 @@
     "scripts": {
         "lint": "eslint '*/**/*.{js,ts}'",
         "format": "prettier --write '*/**/*.{js,ts}'",
-        "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+        "prepare": "husky install",
         "start": "node src/main.js",
-        "prepare": "husky install"
+        "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose=false",
+        "test-verbose": "NODE_OPTIONS=--experimental-vm-modules npx jest"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"

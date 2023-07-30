@@ -15,8 +15,6 @@ describe('WebSocketSupervisor', () => {
 
     it('sets up a new websocket connection with event handlers', async () => {
         webSocket = webSocketSupervisor.setupWebSocket('wss://');
-        await expect(webSocketSupervisor.connectionPromise()).resolves.toBe(
-            'connected',
-        );
+        await expect(webSocketSupervisor.connectionPromise()).resolves.toBe('connected');
     });
 });

@@ -10,8 +10,9 @@ class WebSocketMock extends EventEmitter {
     static CLOSING = 2;
     static CLOSED = 3;
 
-    constructor() {
+    constructor(url) {
         super();
+        this.url = url;
         this.eventMap = {};
         this.readyState = WebSocketMock.CLOSED;
         this.on = (event, callback) => {
@@ -83,12 +84,8 @@ class WebSocketMock extends EventEmitter {
                 };
             default:
                 return {
-                    result: ADDITIONAL_RESULTS_BY_METHOD.get(
-                        'userDataStream.start',
-                    ),
-                    rateLimits: RATE_LIMITS_BY_METHOD.get(
-                        'userDataStream.start',
-                    ),
+                    result: ADDITIONAL_RESULTS_BY_METHOD.get('userDataStream.start'),
+                    rateLimits: RATE_LIMITS_BY_METHOD.get('userDataStream.start'),
                 };
         }
     }

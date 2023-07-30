@@ -47,8 +47,6 @@ describe('checkSignature', () => {
         };
         const signaturePayload = buildSignaturePayload(params);
         const signature = generateSignature(signaturePayload, privateKey);
-        expect(checkSignature(signaturePayload, publicKey, signature)).toBe(
-            true,
-        );
+        expect(checkSignature(signaturePayload, publicKey, signature)).toBe(true);
     });
 });

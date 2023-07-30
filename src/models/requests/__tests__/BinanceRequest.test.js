@@ -29,13 +29,7 @@ describe('BinanceRequest', () => {
             price: 23416.1,
             quantity: 0.00847,
         };
-        const request = new BinanceRequest(
-            fakeApiKey,
-            privateKey,
-            method,
-            params,
-            true,
-        );
+        const request = new BinanceRequest(fakeApiKey, privateKey, method, params, true);
         expect(request.isValid).toBeTruthy();
         expect(request.errors).toEqual([]);
         expect(request.body).toMatchObject({
@@ -57,13 +51,7 @@ describe('BinanceRequest', () => {
     });
 
     it('creates an unsigned binance request', () => {
-        const request = new BinanceRequest(
-            fakeApiKey,
-            privateKey,
-            'ping',
-            {},
-            true,
-        );
+        const request = new BinanceRequest(fakeApiKey, privateKey, 'ping', {}, true);
         expect(request.isValid).toBeTruthy();
         expect(request.errors).toEqual([]);
         expect(request.body).toMatchObject({
@@ -78,12 +66,7 @@ describe('BinanceRequest', () => {
             symbol: 'BTCUSDT',
             side: 'SELL',
         };
-        const request = new BinanceRequest(
-            fakeApiKey,
-            privateKey,
-            method,
-            params,
-        );
+        const request = new BinanceRequest(fakeApiKey, privateKey, method, params);
         expect(request.errors).toEqual([['type', 'required', undefined]]);
         expectInvalidRequest(request);
     });
@@ -94,12 +77,7 @@ describe('BinanceRequest', () => {
             side: 'SELL',
             type: 'MARGIN',
         };
-        const request = new BinanceRequest(
-            fakeApiKey,
-            privateKey,
-            method,
-            params,
-        );
+        const request = new BinanceRequest(fakeApiKey, privateKey, method, params);
         expect(request.errors).toEqual([['type', 'enum', 'MARGIN']]);
         expectInvalidRequest(request);
     });
@@ -110,12 +88,7 @@ describe('BinanceRequest', () => {
             side: 'SELL',
             type: 'MARKET',
         };
-        const request = new BinanceRequest(
-            fakeApiKey,
-            privateKey,
-            method,
-            params,
-        );
+        const request = new BinanceRequest(fakeApiKey, privateKey, method, params);
         expect(request.errors).toEqual([['quantity', 'required', undefined]]);
         expectInvalidRequest(request);
     });

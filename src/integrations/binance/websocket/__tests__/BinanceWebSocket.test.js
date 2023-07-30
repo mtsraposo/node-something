@@ -17,6 +17,7 @@ describe('BinanceWebSocket', () => {
 
     beforeEach(() => {
         binanceWebSocket = new BinanceWebSocket(
+            'wss://test-websocket',
             WebSocketMock,
             'test-api-key',
             'unit-test-prv-key.pem',
@@ -39,10 +40,7 @@ describe('BinanceWebSocket', () => {
     it('pings websocket', async () => {
         await connectWebSocket();
         const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
-        const handleResponseSpy = jest.spyOn(
-            binanceWebSocket,
-            'handleResponse',
-        );
+        const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
         binanceWebSocket.ping();
         expect(handleMessageSpy).toHaveBeenCalled();
         expect(handleResponseSpy).toHaveBeenCalled();
@@ -51,10 +49,7 @@ describe('BinanceWebSocket', () => {
     it('gets account status', async () => {
         await connectWebSocket();
         const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
-        const handleResponseSpy = jest.spyOn(
-            binanceWebSocket,
-            'handleResponse',
-        );
+        const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
         binanceWebSocket.getAccountStatus();
         expect(handleMessageSpy).toHaveBeenCalled();
         expect(handleResponseSpy).toHaveBeenCalled();
@@ -84,10 +79,7 @@ describe('BinanceWebSocket', () => {
         const connectWebSocketSpy = jest.spyOn(binanceWebSocket, 'connect');
         await connectWebSocket();
         await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
-        binanceWebSocket.webSocket.mockTriggerEvent('close', [
-            1000,
-            'Normal closure',
-        ]);
+        binanceWebSocket.webSocket.mockTriggerEvent('close', [1000, 'Normal closure']);
         await expect(connectWebSocketSpy).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenCalled();
     });

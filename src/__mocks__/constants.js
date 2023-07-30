@@ -36,8 +36,7 @@ export const ADDITIONAL_RESULTS_BY_METHOD = new Map([
     [
         'userDataStream.start',
         {
-            listenKey:
-                'xs0mRXdAKlIPDRFrlPcw0qI41Eh3ixNntmymGyhrhgqo7L6FuLaWArTD7RLP',
+            listenKey: 'xs0mRXdAKlIPDRFrlPcw0qI41Eh3ixNntmymGyhrhgqo7L6FuLaWArTD7RLP',
         },
     ],
 ]);
