@@ -12,8 +12,8 @@ class BinanceStreamTestnet extends BinanceStream {
     startUserDataStream() {
         const connectionPromise = this.binanceSpotApi
             .request('post', 'userDataStream', {}, false)
-            .then(({ listenKey }) => {
-                this.connectUserDataStream(listenKey);
+            .then((response) => {
+                this.connectUserDataStream(response?.data?.listenKey);
             });
 
         return {

@@ -104,6 +104,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     connectUserDataStream(listenKey) {
         if (listenKey) {
             this.listenKey = listenKey;
+            this.userDataStream.url = `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`;
             return this.userDataStream.connect();
         }
         return Promise.reject(new Error('missing listen key'));

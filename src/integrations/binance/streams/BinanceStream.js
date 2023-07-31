@@ -17,12 +17,12 @@ class BinanceStream extends BinanceStreamSupervisor {
     }
 
     addEventListeners() {
-        [this.stream, this.userDataStream, this.binanceWebSocket].forEach((webSocket) => {
-            webSocket.on('ws-message', (message) => {
+        [this.stream, this.userDataStream].forEach((stream) => {
+            stream.on('ws-message', (message) => {
                 this.handleMessage(message);
             });
 
-            webSocket.on('ws-error', (error) => {
+            stream.on('ws-error', (error) => {
                 logger.error('Received error from stream: ', error);
             });
         });

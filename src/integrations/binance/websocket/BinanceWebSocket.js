@@ -28,7 +28,7 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
 
     handleMessage(message) {
         const outgoingRequest = this.requests.get(message.id);
-        if (outgoingRequest) {
+        if (!!outgoingRequest) {
             this.handleResponse(outgoingRequest, message);
         } else {
             logger.error(`Received unknown message type ${JSON.stringify(message)}`);

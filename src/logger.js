@@ -1,18 +1,18 @@
 class Logger {
-    debug(message) {
-        console.debug(`DEBUG: ${message}`);
+    debug(...message) {
+        console.debug(`DEBUG: ${message.join(' ')}`);
     }
 
-    info(message) {
-        console.info(`INFO: ${message}`);
+    info(...message) {
+        console.info(`INFO: ${message.join(' ')}`);
     }
 
-    warn(message) {
-        console.warn(`WARN: ${message}`);
+    warn(...message) {
+        console.warn(`WARN: ${message.join(' ')}`);
     }
 
-    error(message) {
-        console.error(`ERROR: ${message}`);
+    error(...message) {
+        console.error(`ERROR: ${message.join(' ')}`);
     }
 }
 

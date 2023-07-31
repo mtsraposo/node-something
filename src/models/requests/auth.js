@@ -40,7 +40,6 @@ export const checkEd25519 = (payload, publicKey, signature) => {
 };
 
 export const signHmac = (signaturePayload, secretKey) => {
-    const hmac = crypto.createHmac('sha256', secretKey);
-    hmac.update(signaturePayload);
-    return hmac.digest('hex');
+    const secretKeyObject = crypto.createSecretKey(secretKey);
+    return crypto.createHmac('sha256', secretKeyObject).update(signaturePayload).digest('hex');
 };
