@@ -41,6 +41,10 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
                 this.emit('ws-pong');
                 break;
             case 'account.status':
+                logger.info(
+                    'Received account status. Balances: ',
+                    JSON.stringify(response?.result?.balances),
+                );
                 break;
             case 'userDataStream.start':
                 this.listenKey = response?.result?.listenKey;

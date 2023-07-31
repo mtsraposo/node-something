@@ -10,4 +10,4 @@ const streams = new BinanceStream({});
 await webSocket.connect();
 await streams.connect();
 
-webSocket.ping();
+webSocket.getAccountStatus();

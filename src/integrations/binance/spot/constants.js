@@ -10,5 +10,5 @@ export const HTTP_PATHS_TO_METHODS = new Map([
     ['post.order', 'order.place'],
     ['post.userDataStream', 'userDataStream.start'],
     ['get.ping', 'ping'],
-    ['get.account/status', 'account.status'],
+    ['get.account', 'account.status'],
 ]);

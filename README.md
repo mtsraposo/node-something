@@ -9,7 +9,7 @@
 -   [x] Update unit tests
 -   [x] Linter
 -   [x] Segregate logger
--   [ ] Use SPOT API for user stream
+-   [x] Use SPOT API for user stream
 -   [ ] Use SPOT API for order.place
 -   [ ] Security
 -   [ ] Front-end

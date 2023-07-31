@@ -16,7 +16,7 @@ class BinanceSpotApi {
     }
 
     request(httpVerb, path, payload, signed) {
-        const { errors, isValid, params: data } = this.prepareData(httpVerb, path, payload, signed);
+        const { errors, isValid, params } = this.prepareData(httpVerb, path, payload, signed);
 
         if (!isValid) {
             return Promise.resolve({
@@ -29,8 +29,7 @@ class BinanceSpotApi {
             method: httpVerb,
             baseURL: this.url,
             url: path,
-            data,
-            timeout: 5000,
+            params,
             headers: {
                 'X-MBX-APIKEY': this.auth.apiKey,
                 'Content-Type': 'application/x-www-form-urlencoded',
