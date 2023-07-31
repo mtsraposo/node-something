@@ -7,12 +7,11 @@ import { env } from '#root/src/env.js';
 class BinanceStream extends BinanceStreamSupervisor {
     constructor({
         WebSocketClass = WebSocket,
-        apiKey = env.binance.apiKey,
-        privateKeyPath = env.binance.privateKeyPath,
+        auth = env.binance.auth.ed25519,
         streamNames = BINANCE_STREAMS,
         keepAlive = true,
     }) {
-        super({ WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive });
+        super({ WebSocketClass, auth, streamNames, keepAlive });
 
         this.addEventListeners();
     }

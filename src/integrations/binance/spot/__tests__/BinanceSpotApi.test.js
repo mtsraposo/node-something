@@ -6,16 +6,18 @@ describe('BinanceSpotApi', () => {
     let binanceSpotApi;
     let httpClient;
     const url = 'https://test-url';
-    const apiKey = 'test-api-key';
-    const privateKeyPath = 'unit-test-prv-key.pem';
+    const auth = {
+        type: 'ed25519',
+        apiKey: 'test-api-key',
+        privateKeyPath: 'unit-test-prv-key.pem',
+    };
 
     beforeAll(() => {
         httpClient = new HttpClientMock();
         binanceSpotApi = new BinanceSpotApi({
             url,
             httpClient: httpClient.request,
-            apiKey,
-            privateKeyPath,
+            auth,
         });
     });
 

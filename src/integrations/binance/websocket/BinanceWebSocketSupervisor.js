@@ -4,11 +4,10 @@ import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 import logger from '#root/src/logger.js';
 
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {
-    constructor({ url, WebSocketClass, apiKey, privateKeyPath, keepAlive }) {
+    constructor({ url, WebSocketClass, auth, keepAlive }) {
         super(WebSocketClass);
         this.url = url;
-        this.apiKey = apiKey;
-        this.privateKey = serializePrivateKey(privateKeyPath);
+        this.auth = auth;
         this.keepAlive = keepAlive;
 
         this.requests = new Map();
@@ -59,8 +58,7 @@ class BinanceWebSocketSupervisor extends WebSocketSupervisor {
 
     send(method, params, signed) {
         const request = new BinanceRequest(method, params, {
-            apiKey: this.apiKey,
-            privateKey: this.privateKey,
+            ...this.auth,
             signed,
         });
         if (!request.isValid) {

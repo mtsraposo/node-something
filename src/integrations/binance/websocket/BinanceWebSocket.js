@@ -8,11 +8,10 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor({
         url = BINANCE_WEBSOCKET_API_URL,
         WebSocketClass = WebSocket,
-        apiKey = env.binance.apiKey,
-        privateKeyPath = env.binance.privateKeyPath,
+        auth = env.binance.auth.ed25519,
         keepAlive = true,
     }) {
-        super({ url, WebSocketClass, apiKey, privateKeyPath, keepAlive });
+        super({ url, WebSocketClass, auth, keepAlive });
 
         this.addEventListeners();
     }

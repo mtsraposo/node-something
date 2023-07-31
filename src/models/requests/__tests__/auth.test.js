@@ -1,7 +1,7 @@
 import {
     buildSignaturePayload,
-    checkSignature,
-    generateSignature,
+    checkEd25519,
+    signEd25519,
     serializePrivateKey,
     serializePublicKey,
 } from '../auth.js';
@@ -46,7 +46,7 @@ describe('checkSignature', () => {
             timestamp: new Date().getTime(),
         };
         const signaturePayload = buildSignaturePayload(params);
-        const signature = generateSignature(signaturePayload, privateKey);
-        expect(checkSignature(signaturePayload, publicKey, signature)).toBe(true);
+        const signature = signEd25519(signaturePayload, privateKey);
+        expect(checkEd25519(signaturePayload, publicKey, signature)).toBe(true);
     });
 });

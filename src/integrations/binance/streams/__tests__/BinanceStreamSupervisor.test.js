@@ -6,12 +6,16 @@ import logger from '#root/src/logger.js';
 describe('BinanceStreamSupervisor', () => {
     let binanceStreamSupervisor;
     const streamNames = ['testStream-1', 'testStream-2'];
+    const auth = {
+        type: 'ed25519',
+        apiKey: 'test-api-key',
+        privateKeyPath: 'test-prv-key.pem',
+    };
 
     beforeEach(async () => {
         binanceStreamSupervisor = new BinanceStreamSupervisor({
             WebSocketClass: WebSocketMock,
-            apiKey: 'test-api-key',
-            privateKeyPath: 'test-prv-key.pem',
+            auth: auth,
             streamNames,
             keepAlive: false,
         });

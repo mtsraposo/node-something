@@ -1,9 +1,20 @@
+import { serializePrivateKey } from '#root/src/models/requests/auth.js';
+
 export const env = {
     binance: {
-        apiKey: process.env.BINANCE_API_KEY,
+        auth: {
+            ed25519: {
+                type: 'ed25519',
+                apiKey: process.env.BINANCE_API_KEY,
+                privateKey: serializePrivateKey(process.env.PRIVATE_KEY_PATH),
+            },
+            hmac: {
+                type: 'hmac',
+                apiKey: process.env.BINANCE_API_KEY_HMAC,
+                privateKey: process.env.BINANCE_SECRET_KEY_HMAC,
+            },
+        },
         env: process.env.BINANCE_ENV,
-        secretKey: process.env.BINANCE_SECRET_KEY,
-        privateKeyPath: process.env.PRIVATE_KEY_PATH,
     },
     openSSLPath: process.env.OPENSSL_PATH,
 };

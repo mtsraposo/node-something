@@ -31,10 +31,16 @@ export const buildSignaturePayload = (payload) => {
     return Buffer.from(qs.stringify(sortedPayload), 'ascii');
 };
 
-export const generateSignature = (signaturePayload, privateKey) => {
+export const signEd25519 = (signaturePayload, privateKey) => {
     return crypto.sign(null, signaturePayload, privateKey);
 };
 
-export const checkSignature = (payload, publicKey, signature) => {
+export const checkEd25519 = (payload, publicKey, signature) => {
     return crypto.verify(null, payload, publicKey, signature);
+};
+
+export const signHmac = (signaturePayload, secretKey) => {
+    const hmac = crypto.createHmac('sha256', secretKey);
+    hmac.update(signaturePayload);
+    return hmac.digest('hex');
 };

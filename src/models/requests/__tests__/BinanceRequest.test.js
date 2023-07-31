@@ -11,8 +11,11 @@ const expectInvalidRequest = (request) => {
     expect(logger.error.mock.calls).toHaveLength(1);
 };
 describe('BinanceRequest', () => {
-    const apiKey = 'fake-api-key';
-    const privateKey = serializePrivateKey('unit-test-prv-key.pem');
+    const auth = {
+        type: 'ed25519',
+        apiKey: 'fake-api-key',
+        privateKey: serializePrivateKey('unit-test-prv-key.pem'),
+    };
     const method = 'order.place';
 
     afterEach(() => {
@@ -30,14 +33,14 @@ describe('BinanceRequest', () => {
             price: 23416.1,
             quantity: 0.00847,
         };
-        const request = new BinanceRequest(method, params, { apiKey, privateKey, signed: true });
+        const request = new BinanceRequest(method, params, { ...auth, signed: true });
         expect(request.isValid).toBeTruthy();
         expect(request.errors).toEqual([]);
         expect(request.body).toMatchObject({
             id: request.id,
             method,
             params: {
-                apiKey,
+                apiKey: auth.apiKey,
                 signature: expect.any(String),
                 recvWindow: 5000,
                 timestamp: expect.any(Number),
@@ -52,7 +55,7 @@ describe('BinanceRequest', () => {
     });
 
     it('creates an unsigned binance request', () => {
-        const request = new BinanceRequest('ping', {}, { apiKey, privateKey, signed: false });
+        const request = new BinanceRequest('ping', {}, { ...auth, signed: false });
         expect(request.isValid).toBeTruthy();
         expect(request.errors).toEqual([]);
         expect(request.body).toMatchObject({
@@ -67,7 +70,7 @@ describe('BinanceRequest', () => {
             symbol: 'BTCUSDT',
             side: 'SELL',
         };
-        const request = new BinanceRequest(method, params, { apiKey, privateKey, signed: true });
+        const request = new BinanceRequest(method, params, { ...auth, signed: true });
         expect(request.errors).toEqual([['type', 'required', undefined]]);
         expectInvalidRequest(request);
     });
@@ -78,7 +81,7 @@ describe('BinanceRequest', () => {
             side: 'SELL',
             type: 'MARGIN',
         };
-        const request = new BinanceRequest(method, params, { apiKey, privateKey, signed: true });
+        const request = new BinanceRequest(method, params, { ...auth, signed: true });
         expect(request.errors).toEqual([['type', 'enum', 'MARGIN']]);
         expectInvalidRequest(request);
     });
@@ -89,7 +92,7 @@ describe('BinanceRequest', () => {
             side: 'SELL',
             type: 'MARKET',
         };
-        const request = new BinanceRequest(method, params, { apiKey, privateKey, signed: true });
+        const request = new BinanceRequest(method, params, { ...auth, signed: true });
         expect(request.errors).toEqual([['quantity', 'required', undefined]]);
         expectInvalidRequest(request);
     });

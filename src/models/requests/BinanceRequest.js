@@ -1,15 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
-import { buildSignaturePayload, generateSignature } from './auth.js';
+import { buildSignaturePayload, signEd25519, signHmac } from './auth.js';
 import logger from '#root/src/logger.js';
 
 class BinanceRequest {
     constructor(method, params, auth) {
         this.method = method;
         this.params = params;
-        this.apiKey = auth?.apiKey;
-        this.privateKey = auth?.privateKey;
-        this.signed = auth?.signed;
+        this.auth = auth;
 
         this.id = null;
         this.body = {};
@@ -32,18 +30,34 @@ class BinanceRequest {
     }
 
     authenticate() {
-        if (!this.signed) return;
+        if (!this.auth.signed) return;
+        switch (this.auth.type) {
+            case 'ed25519':
+                this.signEd25519();
+                break;
+            case 'hmac':
+                this.signHmac();
+                break;
+            default:
+                break;
+        }
+    }
+
+    signEd25519() {
         const authParams = {
-            apiKey: this.apiKey,
+            apiKey: this.auth.apiKey,
             ...this.params,
         };
-        authParams.signature = this.sign(authParams).toString('base64');
+        const signaturePayload = buildSignaturePayload(authParams);
+        authParams.signature = signEd25519(signaturePayload, this.auth.privateKey).toString(
+            'base64',
+        );
         this.params = authParams;
     }
 
-    sign(payload) {
-        const signaturePayload = buildSignaturePayload(payload);
-        return generateSignature(signaturePayload, this.privateKey);
+    signHmac() {
+        const signaturePayload = buildSignaturePayload(this.params);
+        this.params.signature = signHmac(signaturePayload, this.auth.privateKey);
     }
 
     buildBody() {

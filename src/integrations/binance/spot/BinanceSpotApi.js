@@ -8,15 +8,11 @@ class BinanceSpotApi {
     constructor({
         url = BINANCE_SPOT_API_URL,
         httpClient = axios,
-        apiKey = env.binance.apiKey,
-        privateKeyPath = env.binance.privateKeyPath,
+        auth = env.binance.auth.ed25519,
     }) {
         this.url = url;
         this.httpClient = httpClient;
-        this.apiKey = apiKey;
-        this.privateKeyPath = privateKeyPath;
-
-        this.privateKey = serializePrivateKey(this.privateKeyPath);
+        this.auth = auth;
     }
 
     request(httpVerb, path, payload, signed) {
@@ -35,15 +31,17 @@ class BinanceSpotApi {
             url: path,
             data,
             timeout: 5000,
-            headers: { 'X-MBX-APIKEY': this.apiKey },
+            headers: {
+                'X-MBX-APIKEY': this.auth.apiKey,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
         });
     }
 
     prepareData(httpVerb, path, payload, signed) {
         const method = HTTP_PATHS_TO_METHODS.get(`${httpVerb}.${path}`);
         return new BinanceRequest(method, payload, {
-            apiKey: this.apiKey,
-            privateKey: this.privateKey,
+            ...this.auth,
             signed,
         });
     }

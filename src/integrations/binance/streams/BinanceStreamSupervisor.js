@@ -7,10 +7,9 @@ import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWe
 import logger from '#root/src/logger.js';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
-    constructor({ WebSocketClass, apiKey, privateKeyPath, streamNames, keepAlive }) {
+    constructor({ WebSocketClass, auth, streamNames, keepAlive }) {
         super(WebSocketClass);
-        this.apiKey = apiKey;
-        this.privateKeyPath = privateKeyPath;
+        this.auth = auth;
         this.streamNames = streamNames;
         this.keepAlive = keepAlive;
 
@@ -37,8 +36,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
             this[property] = new BinanceWebSocketClass({
                 url: url,
                 WebSocketClass: this.WebSocketClass,
-                apiKey: this.apiKey,
-                privateKeyPath: this.privateKeyPath,
+                auth: this.auth,
                 keepAlive: this.keepAlive,
             });
         });
@@ -76,7 +74,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     startUserDataStream() {
         const requestId = this.binanceWebSocket.send(
             'userDataStream.start',
-            { apiKey: this.apiKey },
+            { apiKey: this.auth.apiKey },
             false,
         );
         return {
