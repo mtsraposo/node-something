@@ -1,6 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { FIELD_ENUMS, REQUIRED_ATTRIBUTES, REQUIRED_ATTRIBUTES_BY_TYPE } from './constants.js';
-import { buildSignaturePayload, signEd25519, signHmac } from './auth.js';
+import {
+    buildSignaturePayload,
+    signatureBuffer,
+    signEd25519,
+    signHmac,
+    sortPayload,
+} from './auth.js';
 import logger from '#root/src/logger.js';
 
 class BinanceRequest {
@@ -56,7 +62,9 @@ class BinanceRequest {
     }
 
     signHmac() {
-        const signaturePayload = buildSignaturePayload(this.params);
+        const sortedPayload = sortPayload(this.params);
+        const signaturePayload = signatureBuffer(sortedPayload);
+        this.params = sortedPayload;
         this.params.signature = signHmac(signaturePayload, this.auth.privateKey);
     }
 

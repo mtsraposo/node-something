@@ -1,22 +1,17 @@
-import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
 import { BINANCE_SPOT_API_URL, HTTP_PATHS_TO_METHODS } from './constants.js';
 import axios from 'axios';
 import { env } from '#root/src/env.js';
 
 class BinanceSpotApi {
-    constructor({
-        url = BINANCE_SPOT_API_URL,
-        httpClient = axios,
-        auth = env.binance.auth.ed25519,
-    }) {
+    constructor({ url = BINANCE_SPOT_API_URL, httpClient = axios, auth = env.binance.auth.hmac }) {
         this.url = url;
         this.httpClient = httpClient;
         this.auth = auth;
     }
 
     request(httpVerb, path, payload, signed) {
-        const { errors, isValid, params } = this.prepareData(httpVerb, path, payload, signed);
+        const { id, errors, isValid, params } = this.prepareData(httpVerb, path, payload, signed);
 
         if (!isValid) {
             return Promise.resolve({
@@ -34,6 +29,12 @@ class BinanceSpotApi {
                 'X-MBX-APIKEY': this.auth.apiKey,
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
+            transformResponse: [
+                function (data) {
+                    const response = JSON.parse(data);
+                    return { ...response, requestId: id };
+                },
+            ],
         });
     }
 

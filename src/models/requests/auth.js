@@ -22,13 +22,21 @@ export const serializePublicKey = (publicKeyPath) => {
 };
 
 export const buildSignaturePayload = (payload) => {
-    const sortedPayload = Object.keys(payload)
+    const sortedPayload = sortPayload(payload);
+    return signatureBuffer(sortedPayload);
+};
+
+export const signatureBuffer = (sortedPayload) => {
+    return Buffer.from(qs.stringify(sortedPayload), 'ascii');
+};
+
+export const sortPayload = (payload) => {
+    return Object.keys(payload)
         .sort()
         .reduce((acc, key) => {
             acc[key] = payload[key];
             return acc;
         }, {});
-    return Buffer.from(qs.stringify(sortedPayload), 'ascii');
 };
 
 export const signEd25519 = (signaturePayload, privateKey) => {

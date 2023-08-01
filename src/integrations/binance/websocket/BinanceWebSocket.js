@@ -3,6 +3,7 @@ import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
 import logger from '#root/src/logger.js';
 import { env } from '#root/src/env.js';
 import { BINANCE_WEBSOCKET_API_URL } from '#root/src/integrations/binance/websocket/constants.js';
+import util from 'node:util';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {
     constructor({
@@ -31,12 +32,12 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
         if (!!outgoingRequest) {
             this.handleResponse(outgoingRequest, message);
         } else {
-            logger.error(`Received unknown message type ${JSON.stringify(message)}`);
+            logger.error(`Received unknown message type ${util.inspect(message)}`);
         }
     }
 
     handleResponse(request, response) {
-        switch (request.method) {
+        switch (request?.method) {
             case 'ping':
                 this.emit('ws-pong');
                 break;
@@ -51,6 +52,7 @@ class BinanceWebSocket extends BinanceWebSocketSupervisor {
                 this.emit('listen-key-ready', this.listenKey);
                 break;
             case 'order.place':
+                logger.info(`Received order placement. Result: ${response?.result}`);
                 break;
             default:
                 logger.warn(`Received response for unknown request method ${request.method}`);

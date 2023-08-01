@@ -3,6 +3,7 @@ import BinanceStreamSupervisor from './BinanceStreamSupervisor.js';
 import { BINANCE_STREAMS } from './constants.js';
 import logger from '#root/src/logger.js';
 import { env } from '#root/src/env.js';
+import util from 'node:util';
 
 class BinanceStream extends BinanceStreamSupervisor {
     constructor({
@@ -34,15 +35,19 @@ class BinanceStream extends BinanceStreamSupervisor {
         } else if (message?.e) {
             this.handlePayload(message);
         } else {
-            logger.error(`Received unknown message type ${JSON.stringify(message)}`);
+            logger.error(`Received unknown message type ${util.inspect(message)}`);
         }
     }
 
     handlePayload(payload) {
         if (payload?.e?.includes('Ticker')) {
             this.handleTickerUpdate(payload);
+        } else if (payload?.e === 'executionReport') {
+            this.handleExecutionReport(payload);
+        } else if (payload?.e === 'outboundAccountPosition') {
+            this.handleOutboundAccountPosition(payload);
         } else {
-            logger.error(`Received unknown stream payload ${JSON.stringify(payload)}`);
+            logger.error(`Received unknown stream payload ${util.inspect(payload)}`);
         }
     }
 
@@ -50,6 +55,33 @@ class BinanceStream extends BinanceStreamSupervisor {
         const { e: eventType, s: symbol, c: lastPrice, w: averagePrice } = data;
         logger.info('- Received ticker update');
         logger.info('--- ', eventType, symbol, lastPrice, averagePrice);
+    }
+
+    handleExecutionReport(data) {
+        const {
+            e: eventType,
+            s: symbol,
+            c: clientOrderId,
+            o: orderType,
+            q: orderQuantity,
+            p: orderPrice,
+            i: orderId,
+        } = data;
+        logger.info(
+            `Received execution report`,
+            eventType,
+            symbol,
+            clientOrderId,
+            orderType,
+            orderQuantity,
+            orderPrice,
+            orderId,
+        );
+    }
+
+    handleOutboundAccountPosition(payload) {
+        const { B: balances } = payload;
+        logger.info('Received outbound account position', util.inspect(balances));
     }
 }
 
