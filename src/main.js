@@ -19,7 +19,7 @@ const streams = new BinanceStream({});
 await webSocket.connect();
 await streams.connect();
 
-let replServer = repl.start({ prompt: '> ' });
+const replServer = repl.start({ prompt: '> ' });
 replServer.context.webSocket = webSocket;
 replServer.context.streams = streams;
 

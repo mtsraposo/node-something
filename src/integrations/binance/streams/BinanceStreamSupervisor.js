@@ -34,7 +34,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
             ],
         ].forEach(([property, BinanceWebSocketClass, url]) => {
             this[property] = new BinanceWebSocketClass({
-                url: url,
+                url,
                 WebSocketClass: this.WebSocketClass,
                 auth: this.auth,
                 keepAlive: this.keepAlive,

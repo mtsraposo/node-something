@@ -15,7 +15,7 @@ describe('BinanceStreamSupervisor', () => {
     beforeEach(async () => {
         binanceStreamSupervisor = new BinanceStreamSupervisor({
             WebSocketClass: WebSocketMock,
-            auth: auth,
+            auth,
             streamNames,
             keepAlive: false,
         });

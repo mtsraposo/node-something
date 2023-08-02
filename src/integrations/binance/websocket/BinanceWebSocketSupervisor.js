@@ -1,6 +1,5 @@
 import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
 import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
-import { serializePrivateKey } from '#root/src/models/requests/auth.js';
 import logger from '#root/src/logger.js';
 
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {
