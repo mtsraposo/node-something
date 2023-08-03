@@ -26,5 +26,12 @@ export const env = {
         },
         env: process.env.BINANCE_ENV,
     },
+    nodeEnv: process.env.NODE_ENV,
     openSSLPath: process.env.OPENSSL_PATH,
+    postgres: {
+        name: process.env.POSTGRES_NAME,
+        username: process.env.POSTGRES_USERNAME,
+        password: process.env.POSTGRES_PASSWORD,
+        host: process.env.POSTGRES_HOST,
+    },
 };
