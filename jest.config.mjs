@@ -92,7 +92,7 @@ const config = {
     // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
     // modulePathIgnorePatterns: [],
 
-    modulePaths: ['<rootDir>'],
+    modulePaths: ['<rootDir>/src'],
 
     // Activates notifications for test results
     // notify: false,
@@ -122,12 +122,10 @@ const config = {
     // restoreMocks: false,
 
     // The root directory that Jest should scan for tests and modules within
-    // rootDir: 'src',
+    rootDir: 'src',
 
     // A list of paths to directories that Jest should use to search for files in
-    // roots: [
-    //     "<rootDir>"
-    // ],
+    roots: ['<rootDir>'],
 
     // Allows you to use a custom runner instead of Jest's default test runner
     // runner: "jest-runner",
@@ -175,7 +173,7 @@ const config = {
 
     // A map from regular expressions to paths to transformers
     transform: {
-        '^.+\\.jsx?$': './src/jestWrapper.js',
+        '^.+\\.jsx?$': '<rootDir>/jestWrapper.js',
     },
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

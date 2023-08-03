@@ -1,14 +1,10 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Quotes', {
-            id: {
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true,
-                type: Sequelize.INTEGER,
-            },
+        await queryInterface.createTable('quotes', {
             time: {
+                allowNull: false,
+                primaryKey: true,
                 type: Sequelize.DATE,
             },
             symbol: {
@@ -17,18 +13,21 @@ module.exports = {
             price: {
                 type: Sequelize.DECIMAL,
             },
-            createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-            },
-            updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-            },
+        });
+
+        await queryInterface.sequelize.query("SELECT create_hypertable('quotes', 'time');");
+
+        await queryInterface.addIndex('quotes', ['symbol', 'time'], {
+            name: 'ix_symbol_time',
+            order: [
+                ['symbol', 'ASC'],
+                ['time', 'DESC'],
+            ],
         });
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Quotes');
+        await queryInterface.removeIndex('quotes', 'ix_symbol_time');
+        await queryInterface.dropTable('quotes');
     },
 };

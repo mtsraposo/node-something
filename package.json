@@ -11,12 +11,14 @@
     },
     "scripts": {
         "build": "babel src -d dist",
-        "lint": "eslint '*/**/*.{js,ts}'",
         "format": "prettier --write '*/**/*.{js,ts}'",
+        "lint": "eslint '*/**/*.{js,ts}'",
+        "migrate": "npx sequelize-cli db:migrate",
         "prepare": "husky install",
+        "reset": "npx sequelize-cli db:migrate:undo:all",
         "start": "yarn build && node dist/app.js",
         "start-dev": "nodemon --exec babel-node src/app.js",
-        "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose=false --coverage && coveralls < coverage/lcov.info",
+        "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose=false --coverage && cat ./coverage/lcov.info | coveralls",
         "test-verbose": "NODE_OPTIONS=--experimental-vm-modules npx jest"
     },
     "lint-staged": {
