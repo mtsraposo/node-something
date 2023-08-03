@@ -32,7 +32,7 @@ const config = {
     // ],
 
     // Indicates which provider should be used to instrument code for coverage
-    coverageProvider: "v8",
+    coverageProvider: 'v8',
 
     // A list of reporter names that Jest uses when writing coverage reports
     // coverageReporters: [
@@ -72,9 +72,7 @@ const config = {
     // maxWorkers: "50%",
 
     // An array of directory names to be searched recursively up from the requiring module's location
-    moduleDirectories: [
-        "node_modules"
-    ],
+    moduleDirectories: ['node_modules'],
 
     // An array of file extensions your modules use
     // moduleFileExtensions: [
@@ -94,7 +92,7 @@ const config = {
     // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
     // modulePathIgnorePatterns: [],
 
-    modulePaths: ["<rootDir>"],
+    modulePaths: ['<rootDir>'],
 
     // Activates notifications for test results
     // notify: false,
@@ -176,7 +174,9 @@ const config = {
     // testRunner: "jest-circus/runner",
 
     // A map from regular expressions to paths to transformers
-    transform: {},
+    transform: {
+        '^.+\\.jsx?$': './src/jestWrapper.js',
+    },
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
     // transformIgnorePatterns: [

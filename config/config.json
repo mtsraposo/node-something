@@ -1,5 +1,5 @@
 {
-    "development": {
+    "dev": {
         "username": "postgres",
         "password": "postgres",
         "database": "node_something_dev",
@@ -15,7 +15,7 @@
         "dialect": "postgres",
         "port": "5432"
     },
-    "production": {
+    "prod": {
         "username": "postgres",
         "password": "postgres",
         "database": "node_something",

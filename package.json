@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "",
     "main": "src",
-    "type": "module",
     "imports": {
         "#root/*": "./*"
     },
@@ -11,11 +10,12 @@
         "node": ">=20.0.0"
     },
     "scripts": {
+        "build": "babel src -d dist",
         "lint": "eslint '*/**/*.{js,ts}'",
         "format": "prettier --write '*/**/*.{js,ts}'",
         "prepare": "husky install",
-        "start": "node src/app.js",
-        "dev": "nodemon src/app.js",
+        "start": "yarn build && node dist/app.js",
+        "start-dev": "nodemon --exec babel-node src/app.js",
         "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose=false --coverage && coveralls < coverage/lcov.info",
         "test-verbose": "NODE_OPTIONS=--experimental-vm-modules npx jest"
     },
@@ -47,7 +47,9 @@
     "devDependencies": {
         "@babel/cli": "^7.22.9",
         "@babel/core": "^7.22.9",
+        "@babel/node": "^7.22.6",
         "@babel/preset-env": "^7.22.9",
+        "@babel/register": "^7.22.5",
         "@types/jest": "^29.5.3",
         "babel-jest": "^29.6.1",
         "coveralls": "^3.1.1",

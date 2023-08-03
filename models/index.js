@@ -1,19 +1,15 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { Sequelize } from 'sequelize';
-import process from 'node:process';
-import configJson from '../config/config.json';
-import logger from '#root/src/logger.js';
+'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
+const Sequelize = require('sequelize');
+const process = require('process');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = configJson[env];
+const env = process.env.NODE_ENV || 'dev';
+const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, {
-    ...config,
-    logging: (message) => logger.info(message),
-});
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 fs.readdirSync(__dirname)
     .filter((file) => {
@@ -25,7 +21,7 @@ fs.readdirSync(__dirname)
         );
     })
     .forEach((file) => {
-        const model = sequelize['import'](path.join(__dirname, file));
+        const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
         db[model.name] = model;
     });
 
@@ -38,13 +34,14 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-export const authenticateDb = async () => {
-    try {
-        await db.sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
+module.exports = {
+    db,
+    async authenticateDb() {
+        try {
+            await sequelize.authenticate();
+            console.log('Connection has been established successfully.');
+        } catch (error) {
+            console.error('Unable to connect to the database:', error);
+        }
+    },
 };
-
-export default db;

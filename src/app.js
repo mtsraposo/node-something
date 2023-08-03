@@ -5,10 +5,15 @@ import { connectStreams, connectWebSocket } from '#root/src/websocket.js';
 
 config();
 
-await authenticateDb();
-const webSocket = await connectWebSocket();
-const streams = await connectStreams();
+async function main() {
+    await authenticateDb();
+    return {
+        webSocket: await connectWebSocket(),
+        streams: await connectStreams(),
+    };
+}
 
+const { webSocket, streams } = main().catch(console.error);
 const replServer = repl.start({ prompt: '> ' });
 replServer.context.webSocket = webSocket;
 replServer.context.streams = streams;
