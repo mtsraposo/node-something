@@ -15,14 +15,20 @@ module.exports = {
             },
         });
 
-        await queryInterface.sequelize.query("SELECT create_hypertable('quotes', 'time');");
-
-        await queryInterface.addIndex('quotes', ['symbol', 'time'], {
-            name: 'ix_symbol_time',
-            order: [
-                ['symbol', 'ASC'],
-                ['time', 'DESC'],
-            ],
+        return queryInterface.sequelize.transaction((t) => {
+            return Promise.all([
+                queryInterface.sequelize.query("SELECT create_hypertable('quotes', 'time');", {
+                    transaction: t,
+                }),
+                queryInterface.addIndex('quotes', ['symbol', 'time'], {
+                    name: 'ix_symbol_time',
+                    order: [
+                        ['symbol', 'ASC'],
+                        ['time', 'DESC'],
+                    ],
+                    transaction: t,
+                }),
+            ]);
         });
     },
 
