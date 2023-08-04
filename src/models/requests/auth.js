@@ -1,6 +1,6 @@
-import crypto from 'node:crypto';
-import fs from 'node:fs';
-import { Buffer } from 'node:buffer';
+import crypto from 'crypto';
+import fs from 'fs';
+import { Buffer } from 'buffer';
 import qs from 'qs';
 
 export const serializePrivateKey = (privateKeyPath) => {

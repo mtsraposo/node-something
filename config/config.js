@@ -1,7 +1,8 @@
 const { config } = require('dotenv');
-const { env } = require('src/env.js');
+const { env } = require('../src/env.js');
+const { path } = require('path');
 
-config();
+config({ path: path.join(__dirname, 'env.js') });
 
 module.exports = {
     dev: {

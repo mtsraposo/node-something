@@ -11,12 +11,15 @@
 -   [x] Segregate logger
 -   [x] Use SPOT API for user stream
 -   [x] Use SPOT API for order.place
--   [ ] Database / reporting
--   [ ] Babel
--   [ ] Sequelize with ES6
--   [ ] Migrations and models
+-   [x] Database
+-   [x] Babel
+-   [x] Sequelize with ES6
+-   [x] Migration and model for quotes
+-   [ ] Webpack
+-   [ ] Redis
 -   [ ] Tests
 -   [ ] Factory
+-   [ ] Reporting
 -   [ ] Security
 -   [ ] Front-end
 -   [ ] Moving average trading logic

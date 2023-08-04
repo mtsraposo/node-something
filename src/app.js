@@ -1,12 +1,15 @@
 import { config } from 'dotenv';
-import repl from 'node:repl';
-import { authenticateDb } from '#root/models/index.js';
-import { connectStreams, connectWebSocket } from '#root/src/websocket.js';
+import repl from 'repl';
+import { authenticateDb } from 'src/db';
+import { connectStreams, connectWebSocket } from 'src/websocket';
+import redisClient from 'src/cache';
+import * as path from 'path';
 
-config();
+config({ path: path.join(__dirname, 'env.js') });
 
 async function main() {
     await authenticateDb();
+    await redisClient.connect();
     return {
         webSocket: await connectWebSocket(),
         streams: await connectStreams(),

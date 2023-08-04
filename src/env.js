@@ -1,4 +1,4 @@
-import { serializePrivateKey } from '#root/src/models/requests/auth.js';
+import { serializePrivateKey } from './models/requests/auth.js';
 
 const suffix = process.env.BINANCE_ENV === 'prod' ? '' : '_TESTNET';
 const ed25519 = {
@@ -24,14 +24,25 @@ export const env = {
                 privateKey: hmac.privateKey,
             },
         },
-        env: process.env.BINANCE_ENV,
+        env: process.env.BINANCE_ENV || 'dev',
     },
-    nodeEnv: process.env.NODE_ENV,
+    nodeEnv: process.env.NODE_ENV || 'dev',
     openSSLPath: process.env.OPENSSL_PATH,
     postgres: {
-        name: process.env.POSTGRES_NAME,
-        username: process.env.POSTGRES_USERNAME,
-        password: process.env.POSTGRES_PASSWORD,
-        host: process.env.POSTGRES_HOST,
+        name: process.env.POSTGRES_NAME || 'postgres',
+        username: process.env.POSTGRES_USERNAME || 'postgres',
+        password: process.env.POSTGRES_PASSWORD || 'postgres',
+        host: process.env.POSTGRES_HOST || 'localhost',
+    },
+    redis: {
+        username: process.env.REDIS_USERNAME || 'default',
+        password: process.env.REDIS_PASSWORD || 'secret',
+        socket: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: process.env.REDIS_PORT || 6379,
+            key: process.env.REDIS_PRIVATE_KEY_PATH,
+            certPath: process.env.REDIS_CERT_PATH,
+            caPath: process.env.REDIS_CA_PATH,
+        },
     },
 };

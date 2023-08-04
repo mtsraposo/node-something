@@ -3,7 +3,7 @@ import BinanceStreamSupervisor from './BinanceStreamSupervisor.js';
 import { BINANCE_STREAMS } from './constants.js';
 import logger from '#root/src/logger.js';
 import { env } from '#root/src/env.js';
-import util from 'node:util';
+import util from 'util';
 
 class BinanceStream extends BinanceStreamSupervisor {
     constructor({
