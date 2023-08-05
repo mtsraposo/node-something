@@ -88,8 +88,7 @@ const config = {
 
     // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
     moduleNameMapper: {
-        '^src/(.*)$': '<rootDir>/src/$1.js',
-        '^config/(.*)$': '<rootDir>/config/$1.js',
+        '^src/(.*)$': '<rootDir>/src/$1',
     },
 
     // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -177,6 +176,7 @@ const config = {
     // A map from regular expressions to paths to transformers
     transform: {
         '^.+\\.jsx?$': '<rootDir>/src/jestWrapper.js',
+        '.js$': 'babel-jest',
     },
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

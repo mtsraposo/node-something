@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 import BinanceStreamSupervisor from './BinanceStreamSupervisor';
 import { BINANCE_STREAMS } from './constants';
 import logger from 'src/logger';
-import { env } from 'config/env';
+import { env } from 'src/env';
 import util from 'util';
 
 class BinanceStream extends BinanceStreamSupervisor {

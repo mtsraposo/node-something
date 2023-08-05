@@ -25,7 +25,7 @@ module.exports = {
         password: process.env.POSTGRES_PASSWORD,
         host: process.env.POSTGRES_HOST,
         port: process.env.POSTGRES_PORT,
-        database: 'node_something',
+        database: 'node_something_prod',
         dialect: 'postgres',
         dialectModule: pg,
     },

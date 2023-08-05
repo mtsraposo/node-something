@@ -1,6 +1,6 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-    async up(queryInterface, Sequelize) {
+    async up({ context: { queryInterface, Sequelize } }) {
         await queryInterface.createTable('quotes', {
             time: {
                 allowNull: false,
@@ -8,7 +8,7 @@ module.exports = {
                 type: Sequelize.DATE,
             },
             symbol: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             price: {
                 type: Sequelize.DECIMAL,
@@ -32,7 +32,7 @@ module.exports = {
         });
     },
 
-    async down(queryInterface, Sequelize) {
+    async down({ context: { queryInterface } }) {
         await queryInterface.removeIndex('quotes', 'ix_symbol_time');
         await queryInterface.dropTable('quotes');
     },

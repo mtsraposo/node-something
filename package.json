@@ -10,15 +10,15 @@
         "build": "webpack --config webpack.config.js",
         "format": "prettier --write '*/**/*.{js,ts}'",
         "lint": "eslint '*/**/*.{js,ts}'",
-        "migrate": "npx sequelize-cli db:migrate",
+        "migrate:up": "node src/db/tasks/migrator.js up",
+        "migrate:down": "node src/db/tasks/migrator.js down",
         "new-seed": "npx sequelize-cli seed:generate --name",
         "prepare": "husky install",
-        "reset": "npx sequelize-cli db:migrate:undo:all",
         "seed": "npx sequelize-cli db:seed:all",
         "start": "yarn build && node dist/main.js",
         "start-dev": "nodemon --exec babel-node src/app.js",
-        "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose=false --coverage",
-        "test-verbose": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+        "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose=false --coverage",
+        "test-verbose": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
@@ -43,6 +43,7 @@
         "qs": "^6.11.2",
         "redis": "^4.6.7",
         "sequelize": "^6.32.1",
+        "umzug": "^3.3.1",
         "uuid": "^9.0.0",
         "ws": "^8.13.0"
     },
