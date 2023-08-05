@@ -1,10 +1,10 @@
-import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
+import WebSocketSupervisor from 'src/clients/WebSocketSupervisor';
 
-import { BINANCE_WEBSOCKET_STREAM_URL } from './constants.js';
-import { BINANCE_WEBSOCKET_API_URL } from '#root/src/integrations/binance/websocket/constants.js';
-import BinanceWebSocketSupervisor from '#root/src/integrations/binance/websocket/BinanceWebSocketSupervisor.js';
-import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
-import logger from '#root/src/logger.js';
+import { BINANCE_WEBSOCKET_STREAM_URL } from './constants';
+import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
+import BinanceWebSocketSupervisor from 'src/integrations/binance/websocket/BinanceWebSocketSupervisor';
+import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
+import logger from 'src/logger';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
     constructor({ WebSocketClass, auth, streamNames, keepAlive }) {

@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 
-import { WebSocketMock } from '#root/src/__mocks__/WebSocketMock.js';
-import BinanceStream from '#root/src/integrations/binance/streams/BinanceStream.js';
-import logger from '#root/src/logger.js';
+import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
+import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
+import logger from 'src/logger';
 
 describe('BinanceStream', () => {
     let binanceStream;

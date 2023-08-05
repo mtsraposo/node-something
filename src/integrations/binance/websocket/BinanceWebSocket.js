@@ -1,8 +1,8 @@
 import WebSocket from 'ws';
-import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor.js';
-import logger from '#root/src/logger.js';
-import { env } from '#root/src/env.js';
-import { BINANCE_WEBSOCKET_API_URL } from '#root/src/integrations/binance/websocket/constants.js';
+import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor';
+import logger from 'src/logger';
+import { env } from 'src/env';
+import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
 import util from 'util';
 
 class BinanceWebSocket extends BinanceWebSocketSupervisor {

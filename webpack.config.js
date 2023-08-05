@@ -1,5 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
+const packageJson = require('./package.json');
+const dependencies = Object.keys(packageJson.dependencies || {});
 
 module.exports = {
     target: 'node',
@@ -26,7 +28,10 @@ module.exports = {
             },
         ],
     },
-    externals: 'sequelize',
+    externals: dependencies.reduce((ext, name) => {
+        ext[name] = `commonjs ${name}`;
+        return ext;
+    }, {}),
     plugins: [
         new webpack.IgnorePlugin({
             resourceRegExp: /\/index.js$/,

@@ -1,6 +1,7 @@
 const { config } = require('dotenv');
-const { env } = require('../src/env.js');
-const { path } = require('path');
+const { env } = require('src/env');
+const path = require('path');
+const pg = require('pg');
 
 config({ path: path.join(__dirname, 'env.js') });
 
@@ -11,6 +12,7 @@ module.exports = {
         database: 'node_something_dev',
         host: 'localhost',
         dialect: 'postgres',
+        dialectModule: pg,
         port: 5432,
     },
     test: {
@@ -19,6 +21,7 @@ module.exports = {
         database: 'node_something_test',
         host: 'localhost',
         dialect: 'postgres',
+        dialectModule: pg,
         port: 5432,
     },
     prod: {
@@ -27,6 +30,7 @@ module.exports = {
         database: 'node_something',
         host: env.postgres.host,
         dialect: 'postgres',
+        dialectModule: pg,
         port: env.postgres.port,
     },
 };

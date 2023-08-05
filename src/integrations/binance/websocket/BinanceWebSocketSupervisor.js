@@ -1,6 +1,6 @@
-import WebSocketSupervisor from '#root/src/clients/WebSocketSupervisor.js';
-import BinanceRequest from '#root/src/models/requests/BinanceRequest.js';
-import logger from '#root/src/logger.js';
+import WebSocketSupervisor from 'src/clients/WebSocketSupervisor';
+import BinanceRequest from 'src/models/requests/BinanceRequest';
+import logger from 'src/logger';
 
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {
     constructor({ url, WebSocketClass, auth, keepAlive }) {

@@ -1,5 +1,5 @@
-import BinanceSpotApi from '#root/src/integrations/binance/spot/BinanceSpotApi.js';
-import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
+import BinanceSpotApi from 'src/integrations/binance/spot/BinanceSpotApi';
+import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
 
 class BinanceWebSocketTestnet extends BinanceWebSocket {
     constructor(props) {

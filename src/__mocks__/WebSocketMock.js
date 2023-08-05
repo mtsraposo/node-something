@@ -1,8 +1,5 @@
 import EventEmitter from 'events';
-import {
-    ADDITIONAL_RESULTS_BY_METHOD,
-    RATE_LIMITS_BY_METHOD,
-} from '#root/src/__mocks__/constants.js';
+import { ADDITIONAL_RESULTS_BY_METHOD, RATE_LIMITS_BY_METHOD } from 'src/__mocks__/constants';
 
 class WebSocketMock extends EventEmitter {
     static CONNECTING = 0;

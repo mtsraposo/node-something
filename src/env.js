@@ -1,4 +1,4 @@
-import { serializePrivateKey } from './models/requests/auth.js';
+import { serializePrivateKey } from './models/requests/auth';
 
 const suffix = process.env.BINANCE_ENV === 'prod' ? '' : '_TESTNET';
 const ed25519 = {

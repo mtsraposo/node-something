@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 
-import BinanceRequest from '../BinanceRequest.js';
-import { serializePrivateKey } from '#root/src/models/requests/auth.js';
-import logger from '#root/src/logger.js';
+import BinanceRequest from '../BinanceRequest';
+import { serializePrivateKey } from 'src/models/requests/auth';
+import logger from 'src/logger';
 
 const expectInvalidRequest = (request) => {
     expect(request.isValid).toBeFalsy();

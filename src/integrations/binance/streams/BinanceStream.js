@@ -1,8 +1,8 @@
 import WebSocket from 'ws';
-import BinanceStreamSupervisor from './BinanceStreamSupervisor.js';
-import { BINANCE_STREAMS } from './constants.js';
-import logger from '#root/src/logger.js';
-import { env } from '#root/src/env.js';
+import BinanceStreamSupervisor from './BinanceStreamSupervisor';
+import { BINANCE_STREAMS } from './constants';
+import logger from 'src/logger';
+import { env } from 'src/env';
 import util from 'util';
 
 class BinanceStream extends BinanceStreamSupervisor {

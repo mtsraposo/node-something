@@ -4,7 +4,7 @@ import {
     signEd25519,
     serializePrivateKey,
     serializePublicKey,
-} from '../auth.js';
+} from '../auth';
 
 describe('serializePrivateKey', () => {
     it('returns a private key object', () => {

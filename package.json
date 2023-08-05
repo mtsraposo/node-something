@@ -3,9 +3,6 @@
     "version": "1.0.0",
     "description": "",
     "main": "src",
-    "imports": {
-        "#root/*": "./*"
-    },
     "engines": {
         "node": ">=20.0.0"
     },

@@ -1,7 +1,7 @@
-import { env } from 'src/env.js';
-import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket.js';
-import BinanceWebSocketTestnet from 'src/integrations/binance/websocket/BinanceWebSocketTestnet.js';
-import BinanceStream from 'src/integrations/binance/streams/BinanceStream.js';
+import { env } from 'src/env';
+import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
+import BinanceWebSocketTestnet from 'src/integrations/binance/websocket/BinanceWebSocketTestnet';
+import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
 
 export const connectWebSocket = async () => {
     let webSocket;

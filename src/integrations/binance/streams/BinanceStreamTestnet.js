@@ -1,6 +1,6 @@
-import BinanceSpotApi from '#root/src/integrations/binance/spot/BinanceSpotApi.js';
+import BinanceSpotApi from 'src/integrations/binance/spot/BinanceSpotApi';
 import { v4 as uuidv4 } from 'uuid';
-import BinanceStream from '#root/src/integrations/binance/streams/BinanceStream.js';
+import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
 
 class BinanceStreamTestnet extends BinanceStream {
     constructor(props) {

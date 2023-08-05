@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { v4 as uuidv4 } from 'uuid';
-import { WebSocketMock } from '#root/src/__mocks__/WebSocketMock.js';
-import BinanceWebSocket from '#root/src/integrations/binance/websocket/BinanceWebSocket.js';
-import logger from '#root/src/logger.js';
+import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
+import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
+import logger from 'src/logger';
 
 describe('BinanceWebSocket', () => {
     let binanceWebSocket;
