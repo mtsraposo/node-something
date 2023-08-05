@@ -1,4 +1,4 @@
-import { serializePrivateKey } from './models/requests/auth';
+import { serializePrivateKey } from 'src/clients/requests/auth';
 
 const suffix = process.env.BINANCE_ENV === 'prod' ? '' : '_TESTNET';
 const ed25519 = {
@@ -33,6 +33,7 @@ export const env = {
         username: process.env.POSTGRES_USERNAME || 'postgres',
         password: process.env.POSTGRES_PASSWORD || 'postgres',
         host: process.env.POSTGRES_HOST || 'localhost',
+        port: process.env.POSTGRES_PORT || 5432,
     },
     redis: {
         username: process.env.REDIS_USERNAME || 'default',

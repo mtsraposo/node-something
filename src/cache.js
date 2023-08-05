@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { env } from './env';
+import { env } from 'config/env';
 import { readFileSync } from 'fs';
 
 let auth = {};

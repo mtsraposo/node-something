@@ -1,4 +1,4 @@
-import { db } from 'models';
+import { db } from 'src/models';
 
 export const authenticateDb = async () => {
     try {

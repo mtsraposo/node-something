@@ -1,5 +1,5 @@
 import WebSocketSupervisor from 'src/clients/WebSocketSupervisor';
-import BinanceRequest from 'src/models/requests/BinanceRequest';
+import BinanceRequest from 'src/clients/requests/BinanceRequest';
 import logger from 'src/logger';
 
 class BinanceWebSocketSupervisor extends WebSocketSupervisor {

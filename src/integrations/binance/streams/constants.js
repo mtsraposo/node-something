@@ -1,4 +1,4 @@
-import { env } from 'src/env';
+import { env } from 'config/env';
 
 const BINANCE_WEBSOCKET_STREAM_URLS = new Map([
     ['prod', 'wss://stream.binance.com:9443/stream'],

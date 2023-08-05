@@ -1,7 +1,7 @@
-import BinanceRequest from 'src/models/requests/BinanceRequest';
+import BinanceRequest from 'src/clients/requests/BinanceRequest';
 import { BINANCE_SPOT_API_URL, HTTP_PATHS_TO_METHODS } from './constants';
 import axios from 'axios';
-import { env } from 'src/env';
+import { env } from 'config/env';
 
 class BinanceSpotApi {
     constructor({ url = BINANCE_SPOT_API_URL, httpClient = axios, auth = env.binance.auth.hmac }) {

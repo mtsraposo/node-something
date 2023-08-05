@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import BinanceWebSocketSupervisor from './BinanceWebSocketSupervisor';
 import logger from 'src/logger';
-import { env } from 'src/env';
+import { env } from 'config/env';
 import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
 import util from 'util';
 

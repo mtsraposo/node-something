@@ -1,4 +1,4 @@
-import { env } from 'src/env';
+import { env } from 'config/env';
 
 const BINANCE_SPOT_API_URLS = new Map([
     ['prod', 'https://api.binance.com/api/v3'],

@@ -1,9 +1,4 @@
-const { config } = require('dotenv');
-const { env } = require('src/env');
-const path = require('path');
 const pg = require('pg');
-
-config({ path: path.join(__dirname, 'env.js') });
 
 module.exports = {
     dev: {
@@ -25,12 +20,13 @@ module.exports = {
         port: 5432,
     },
     prod: {
-        username: env.postgres.username,
-        password: env.postgres.password,
+        name: process.env.POSTGRES_NAME,
+        username: process.env.POSTGRES_USERNAME,
+        password: process.env.POSTGRES_PASSWORD,
+        host: process.env.POSTGRES_HOST,
+        port: process.env.POSTGRES_PORT,
         database: 'node_something',
-        host: env.postgres.host,
         dialect: 'postgres',
         dialectModule: pg,
-        port: env.postgres.port,
     },
 };

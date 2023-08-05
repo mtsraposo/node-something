@@ -88,13 +88,14 @@ const config = {
 
     // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
     moduleNameMapper: {
-        '^src/(.*)$': '<rootDir>/$1.js',
+        '^src/(.*)$': '<rootDir>/src/$1.js',
+        '^config/(.*)$': '<rootDir>/config/$1.js',
     },
 
     // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
     // modulePathIgnorePatterns: [],
 
-    modulePaths: ['<rootDir>/src'],
+    modulePaths: ['<rootDir>'],
 
     // Activates notifications for test results
     // notify: false,
@@ -124,10 +125,10 @@ const config = {
     // restoreMocks: false,
 
     // The root directory that Jest should scan for tests and modules within
-    rootDir: 'src',
+    rootDir: './',
 
     // A list of paths to directories that Jest should use to search for files in
-    roots: ['<rootDir>'],
+    roots: ['<rootDir>/src'],
 
     // Allows you to use a custom runner instead of Jest's default test runner
     // runner: "jest-runner",
@@ -175,7 +176,7 @@ const config = {
 
     // A map from regular expressions to paths to transformers
     transform: {
-        '^.+\\.jsx?$': '<rootDir>/jestWrapper.js',
+        '^.+\\.jsx?$': '<rootDir>/src/jestWrapper.js',
     },
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

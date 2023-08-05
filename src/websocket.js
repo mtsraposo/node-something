@@ -1,4 +1,4 @@
-import { env } from 'src/env';
+import { env } from 'config/env';
 import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
 import BinanceWebSocketTestnet from 'src/integrations/binance/websocket/BinanceWebSocketTestnet';
 import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
