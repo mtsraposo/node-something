@@ -15,11 +15,16 @@
 -   [x] Babel
 -   [x] Sequelize with ES6
 -   [x] Migration and model for quotes
--   [ ] Webpack
--   [ ] Redis
--   [ ] Tests
+-   [x] Webpack
+-   [x] Redis
+-   [ ] Tests for database and cache
 -   [ ] Factory
+-   [ ] gRPC interface: signalOrder
+-   [ ] Python project:
+-   [ ] stateful sets connections
+-   [ ] gRPC client
+-   [ ] Moving average trading logic
+-   [ ] Trend following logic
 -   [ ] Reporting
 -   [ ] Security
 -   [ ] Front-end
--   [ ] Moving average trading logic
