@@ -17,10 +17,11 @@
         "seed": "npx sequelize-cli db:seed:all",
         "start": "yarn build && node dist/main.js",
         "start-dev": "nodemon --exec babel-node src/app.js",
-        "test:sync": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --testPathPattern=./*_sync.test.js --silent --verbose=false --coverage --runInBand",
-        "test:async": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --testPathIgnorePatterns=./*_sync.test.js --silent --verbose=false --coverage",
-        "test": "yarn test:async && yarn test:sync",
-        "test-verbose": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest"
+        "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --silent --coverage --verbose=false",
+        "test-verbose": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
+        "test:sync": "yarn test --testPathPattern=./*_sync.test.js --runInBand",
+        "test:async": "yarn test --testPathIgnorePatterns=./*_sync.test.js",
+        "test:all": "yarn test:async && yarn test:sync"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"

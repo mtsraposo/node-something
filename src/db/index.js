@@ -1,44 +1,72 @@
 'use strict';
 
-const process = require('process');
+const { config } = require('dotenv');
 const Sequelize = require('sequelize');
 
-const models = require('./models');
-const node_env = process.env.NODE_ENV || 'dev';
-const config = require('./config.js')[node_env];
+const modelsModules = require('./models');
+const { env } = require('../env');
 
-const initModels = (sequelize) => {
-    const db = {};
-    Object.entries(models).forEach(([name, model]) => {
-        db[name] = model(sequelize, Sequelize.DataTypes);
+const initModels = (db) => {
+    const modelsByName = {};
+    Object.entries(modelsModules).forEach(([name, model]) => {
+        modelsByName[name] = model(db, Sequelize.DataTypes);
     });
-    return db;
+    return modelsByName;
 };
 
-const associateModels = (db) => {
-    Object.keys(db).forEach((modelName) => {
-        if (db[modelName].associate) {
-            db[modelName].associate(db);
-        }
-    });
-    return db;
+const associateModels = (modelsByName) => {
+    Object.values(modelsByName)
+        .filter((model) => model.associate)
+        .forEach((model) => model.associate(modelsByName));
 };
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
-const db = initModels(sequelize);
+const authenticate = async (db) => {
+    try {
+        await db.authenticate();
+        console.info('Connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+        throw new Error(error);
+    }
+};
 
-associateModels(db);
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+const destroy = async (db, modelsByName) => {
+    if (nodeEnv !== 'test') {
+        throw new Error('Attempting to destroy database outside test environment. Aborting...');
+    }
+    try {
+        return await db.transaction(async (transaction) => {
+            for (const [name, _model] of Object.entries(modelsModules)) {
+                await modelsByName[name].destroy(
+                    {
+                        cascade: true,
+                        truncate: true,
+                    },
+                    { transaction },
+                );
+            }
+        });
+    } catch (error) {
+        console.error(`Failed to destroy database: ${error}`);
+        throw new Error(error);
+    }
+};
+
+const disconnect = async (db) => {
+    await db.close();
+};
+
+config();
+const nodeEnv = env.nodeEnv || 'dev';
+const { database, username, password, ...dbConfig } = require('./config.js')[nodeEnv];
+const db = new Sequelize(database, username, password, dbConfig);
+const modelsByName = initModels(db);
+associateModels(modelsByName);
 
 module.exports = {
+    authenticate,
     db,
-    async authenticateDb() {
-        try {
-            await db.sequelize.authenticate();
-            console.info('Connection has been established successfully.');
-        } catch (error) {
-            console.error('Unable to connect to the database:', error);
-        }
-    },
+    destroy,
+    disconnect,
+    modelsByName,
 };

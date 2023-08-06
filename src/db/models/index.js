@@ -1,5 +1,7 @@
 'use strict';
 
+const { QUOTE } = require('./constants');
+
 module.exports = {
-    quote: require('./quote.js'),
+    [QUOTE]: require('./quote.js'),
 };

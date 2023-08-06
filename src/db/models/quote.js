@@ -14,13 +14,14 @@ module.exports = (sequelize, DataTypes) => {
 
     Quote.init(
         {
-            time: DataTypes.DATE,
+            time: { type: DataTypes.DATE, primaryKey: true },
             symbol: DataTypes.STRING,
             price: DataTypes.DECIMAL,
         },
         {
             sequelize,
             modelName: 'quotes',
+            indexes: [{ unique: true, fields: ['symbol', 'time'] }],
         },
     );
     return Quote;

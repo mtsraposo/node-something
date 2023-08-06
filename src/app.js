@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import repl from 'repl';
-import { authenticateDb } from 'src/db';
+import { authenticate, db } from 'src/db';
 import { connectStreams, connectWebSocket } from 'src/websocket';
 import { connectCache } from 'src/cache';
 import * as path from 'path';
@@ -8,7 +8,7 @@ import * as path from 'path';
 config({ path: path.join(__dirname, 'env.js') });
 
 async function main() {
-    await authenticateDb();
+    await authenticate(db);
     await connectCache();
     return {
         webSocket: await connectWebSocket(),

@@ -13,6 +13,8 @@ module.exports = {
             price: {
                 type: Sequelize.DECIMAL,
             },
+            updatedAt: Sequelize.DATE,
+            createdAt: Sequelize.DATE,
         });
 
         return queryInterface.sequelize.transaction((t) => {

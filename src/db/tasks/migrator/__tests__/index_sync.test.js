@@ -1,12 +1,13 @@
 import { jest } from '@jest/globals';
+import { SequelizeStorage } from 'umzug';
+import { Sequelize } from 'sequelize';
+
 import {
     dbExists,
     dropDatabase,
     initPostgresConnection,
     isTimescaleDBInstalled,
 } from 'src/db/tasks/migrator/utils';
-import { SequelizeStorage } from 'umzug';
-import { Sequelize } from 'sequelize';
 import { addUmzugEventListeners, createUmzugInstance } from 'src/db/tasks/migrator';
 
 describe('migrator', () => {
@@ -60,11 +61,13 @@ describe('migrator', () => {
         console.error = jest.fn();
         const umzug = createInstance({ sequelizeInstance: sequelizeDbInstance });
         addEventListeners({ nodeEnv: 'test', umzug });
+
         await umzug.up();
         await umzug.down();
         const created = await dbExists({ existsQuery, sequelizeInitInstance });
-        expect(created).toBe(true);
         const installed = await isTimescaleDBInstalled({ sequelizeDbInstance });
+
+        expect(created).toBe(true);
         expect(installed).toBe(true);
         expect(console.error).toHaveBeenCalledTimes(0);
     });
@@ -73,6 +76,7 @@ describe('migrator', () => {
         console.error = jest.fn();
         const umzug = createInstance({ sequelizeInstance: sequelizeDbInstance });
         addEventListeners({ nodeEnv: 'prod', umzug });
+
         await expect(umzug.up()).rejects.toThrow();
     });
 });
