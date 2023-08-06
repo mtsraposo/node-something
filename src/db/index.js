@@ -24,7 +24,7 @@ const associateModels = (db) => {
     return db;
 };
 
-const sequelize = new Sequelize('postgres', config.username, config.password, config);
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 const db = initModels(sequelize);
 
 associateModels(db);

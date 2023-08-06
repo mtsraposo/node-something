@@ -19,4 +19,8 @@ const DATABASE_CONFIG_BY_ENV = new Map([
     ],
 ]);
 
-exports.DATABASE_CONFIG_BY_ENV = DATABASE_CONFIG_BY_ENV;
+const OK = 201;
+const SKIP = 204;
+const ERROR = 500;
+
+module.exports = { DATABASE_CONFIG_BY_ENV, ERROR, OK, SKIP };
