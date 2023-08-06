@@ -15,6 +15,7 @@ const createDbIfNotExists = async ({
     const exists = await dbExists({ existsQuery, sequelizeInitInstance });
     if (exists) {
         sequelizeDbInstance.options.database = dbName;
+        await createTimescaleDb({ sequelizeDbInstance });
         console.info('Database already exists...');
         return SKIP;
     } else {

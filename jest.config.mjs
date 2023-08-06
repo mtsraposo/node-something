@@ -60,10 +60,10 @@ const config = {
     // forceCoverageMatch: [],
 
     // A path to a module which exports an async function that is triggered once before all test suites
-    // globalSetup: undefined,
+    globalSetup: '<rootDir>/tests/setup.js',
 
     // A path to a module which exports an async function that is triggered once after all test suites
-    // globalTeardown: undefined,
+    globalTeardown: '<rootDir>/tests/teardown.js',
 
     // A set of global variables that need to be available in all test environments
     // globals: {},
@@ -175,7 +175,7 @@ const config = {
 
     // A map from regular expressions to paths to transformers
     transform: {
-        '^.+\\.jsx?$': '<rootDir>/src/jestWrapper.js',
+        '^.+\\.jsx?$': '<rootDir>/tests/jestWrapper.js',
         '.js$': 'babel-jest',
     },
 

@@ -6,7 +6,7 @@ const { DATABASE_CONFIG_BY_ENV, ERROR, OK, SKIP } = require('./constants.js');
 const { createDbIfNotExists, initPostgresConnection } = require('./utils.js');
 
 const initMigration = (dbInstance) => {
-    const sequelizeInitInstance = initPostgresConnection();
+    const sequelizeInitInstance = initPostgresConnection({});
     const nodeEnv = process.env.NODE_ENV || 'dev';
     const { createQuery, dbName, existsQuery } = DATABASE_CONFIG_BY_ENV.get(nodeEnv);
 
@@ -30,7 +30,7 @@ const initMigration = (dbInstance) => {
         umzugInstance: umzug,
     });
 
-    return umzug;
+    return { sequelizeInitInstance, umzug };
 };
 
 const createUmzugInstance = ({ context, storage }) => {
