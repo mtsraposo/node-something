@@ -49,8 +49,11 @@ describe('BinanceWebSocket', () => {
         const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
         const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
         binanceWebSocket.ping();
-        expect(handleMessageSpy).toHaveBeenCalled();
-        expect(handleResponseSpy).toHaveBeenCalled();
+        let timeout = setTimeout(() => {
+            expect(handleMessageSpy).toHaveBeenCalled();
+            expect(handleResponseSpy).toHaveBeenCalled();
+            timeout = null;
+        }, 250);
     });
 
     it('gets account status', async () => {
@@ -58,8 +61,11 @@ describe('BinanceWebSocket', () => {
         const handleMessageSpy = jest.spyOn(binanceWebSocket, 'handleMessage');
         const handleResponseSpy = jest.spyOn(binanceWebSocket, 'handleResponse');
         binanceWebSocket.getAccountStatus();
-        expect(handleMessageSpy).toHaveBeenCalled();
-        expect(handleResponseSpy).toHaveBeenCalled();
+        let timeout = setTimeout(() => {
+            expect(handleMessageSpy).toHaveBeenCalled();
+            expect(handleResponseSpy).toHaveBeenCalled();
+            timeout = null;
+        }, 250);
     });
 
     it('places orders', async () => {

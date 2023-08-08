@@ -20,9 +20,10 @@
 -   [x] Tests for database
 -   [x] Tests for cache
 -   [x] Factory
--   [ ] Tests for main: replace hard-coded streams and websocket URL in BinanceStreamSupervisor
+-   [x] Tests for main
+-   [ ] Improve test coverage
 -   [ ] gRPC interface: signalOrder
--   [ ] Python project:
+-   [ ] Python project
 -   [ ] stateful sets connections
 -   [ ] gRPC client
 -   [ ] Moving average trading logic
