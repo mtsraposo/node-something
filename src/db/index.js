@@ -6,10 +6,10 @@ const Sequelize = require('sequelize');
 const modelsModules = require('./models');
 const { env } = require('../env');
 
-const initModels = (db) => {
+const initModels = (dbInstance) => {
     const modelsByName = {};
     Object.entries(modelsModules).forEach(([name, model]) => {
-        modelsByName[name] = model(db, Sequelize.DataTypes);
+        modelsByName[name] = model(dbInstance, Sequelize.DataTypes);
     });
     return modelsByName;
 };
@@ -20,9 +20,9 @@ const associateModels = (modelsByName) => {
         .forEach((model) => model.associate(modelsByName));
 };
 
-const authenticate = async (db) => {
+const authenticate = async (dbInstance) => {
     try {
-        await db.authenticate();
+        await dbInstance.authenticate();
         console.info('Connection has been established successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
@@ -30,12 +30,12 @@ const authenticate = async (db) => {
     }
 };
 
-const destroy = async (db, modelsByName) => {
+const destroy = async (dbInstance, modelsByName) => {
     if (nodeEnv !== 'test') {
         throw new Error('Attempting to destroy database outside test environment. Aborting...');
     }
     try {
-        return await db.transaction(async (transaction) => {
+        return await dbInstance.transaction(async (transaction) => {
             for (const [name, _model] of Object.entries(modelsModules)) {
                 await modelsByName[name].destroy(
                     {
@@ -52,8 +52,8 @@ const destroy = async (db, modelsByName) => {
     }
 };
 
-const disconnect = async (db) => {
-    await db.close();
+const disconnect = async (dbInstance) => {
+    await dbInstance.close();
 };
 
 config();

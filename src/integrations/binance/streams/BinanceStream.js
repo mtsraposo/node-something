@@ -1,18 +1,20 @@
 import WebSocket from 'ws';
 import BinanceStreamSupervisor from './BinanceStreamSupervisor';
-import { BINANCE_STREAMS } from './constants';
+import { BINANCE_STREAMS, BINANCE_WEBSOCKET_STREAM_URL } from './constants';
 import logger from 'src/logger';
 import { env } from 'src/env';
 import util from 'util';
+import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
 
 class BinanceStream extends BinanceStreamSupervisor {
     constructor({
         WebSocketClass = WebSocket,
         auth = env.binance.auth.ed25519,
         streamNames = BINANCE_STREAMS,
+        urls = { webSocket: BINANCE_WEBSOCKET_API_URL, stream: BINANCE_WEBSOCKET_STREAM_URL },
         keepAlive = true,
     }) {
-        super({ WebSocketClass, auth, streamNames, keepAlive });
+        super({ WebSocketClass, auth, streamNames, urls, keepAlive });
 
         this.addEventListeners();
     }

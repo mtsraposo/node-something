@@ -2,10 +2,10 @@ import BinanceSpotApi from 'src/integrations/binance/spot/BinanceSpotApi';
 import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
 
 class BinanceWebSocketTestnet extends BinanceWebSocket {
-    constructor(props) {
-        super(props);
+    constructor({ spotApiProps = {}, webSocketProps = {} }) {
+        super(webSocketProps);
 
-        this.binanceSpotApi = new BinanceSpotApi({});
+        this.binanceSpotApi = new BinanceSpotApi(spotApiProps);
     }
 
     placeOrder(params) {

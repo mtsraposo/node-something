@@ -1,16 +1,21 @@
 import WebSocketSupervisor from 'src/clients/WebSocketSupervisor';
-
-import { BINANCE_WEBSOCKET_STREAM_URL } from './constants';
-import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
 import BinanceWebSocketSupervisor from 'src/integrations/binance/websocket/BinanceWebSocketSupervisor';
 import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
 import logger from 'src/logger';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
-    constructor({ WebSocketClass, auth, streamNames, keepAlive }) {
+    constructor({
+        WebSocketClass,
+        auth,
+        streamNames,
+        urls: { webSocket: webSocketUrl, stream: streamUrl },
+        keepAlive,
+    }) {
         super(WebSocketClass);
         this.auth = auth;
         this.streamNames = streamNames;
+        this.webSocketUrl = webSocketUrl;
+        this.streamUrl = streamUrl;
         this.keepAlive = keepAlive;
 
         this.binanceWebSocket = null;
@@ -21,16 +26,16 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
 
     initializeStreams() {
         [
-            ['binanceWebSocket', BinanceWebSocket, BINANCE_WEBSOCKET_API_URL],
+            ['binanceWebSocket', BinanceWebSocket, this.webSocketUrl],
             [
                 'stream',
                 BinanceWebSocketSupervisor,
-                `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.streamNames.join('/')}`,
+                `${this.streamUrl}?streams=${this.streamNames.join('/')}`,
             ],
             [
                 'userDataStream',
                 BinanceWebSocketSupervisor,
-                `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`,
+                `${this.streamUrl}?streams=${this.listenKey}`,
             ],
         ].forEach(([property, BinanceWebSocketClass, url]) => {
             this[property] = new BinanceWebSocketClass({
@@ -104,7 +109,7 @@ class BinanceStreamSupervisor extends WebSocketSupervisor {
     connectUserDataStream(listenKey) {
         if (listenKey) {
             this.listenKey = listenKey;
-            this.userDataStream.url = `${BINANCE_WEBSOCKET_STREAM_URL}?streams=${this.listenKey}`;
+            this.userDataStream.url = `${this.streamUrl}?streams=${this.listenKey}`;
             return this.userDataStream.connect();
         }
         return Promise.reject(new Error('missing listen key'));

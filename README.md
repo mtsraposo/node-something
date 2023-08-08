@@ -19,7 +19,8 @@
 -   [x] Redis
 -   [x] Tests for database
 -   [x] Tests for cache
--   [ ] Factory
+-   [x] Factory
+-   [ ] Tests for main: replace hard-coded streams and websocket URL in BinanceStreamSupervisor
 -   [ ] gRPC interface: signalOrder
 -   [ ] Python project:
 -   [ ] stateful sets connections

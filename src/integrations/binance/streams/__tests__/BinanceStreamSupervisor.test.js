@@ -11,12 +11,17 @@ describe('BinanceStreamSupervisor', () => {
         apiKey: 'test-api-key',
         privateKeyPath: 'test-prv-key.pem',
     };
+    const urls = {
+        webSocket: 'wss://test-websocket-url',
+        stream: 'wss://test-stream-url',
+    };
 
     beforeEach(async () => {
         binanceStreamSupervisor = new BinanceStreamSupervisor({
             WebSocketClass: WebSocketMock,
             auth,
             streamNames,
+            urls,
             keepAlive: false,
         });
     });
@@ -47,13 +52,7 @@ describe('BinanceStreamSupervisor', () => {
 
     it('starts a user data stream', async () => {
         await connectWebSocket();
-        const { requestId, connectionPromise } = binanceStreamSupervisor.startUserDataStream();
-        binanceStreamSupervisor.binanceWebSocket.webSocket.mockTriggerEvent('message', [
-            JSON.stringify({
-                id: requestId,
-                result: { listenKey: 'test-listen-key' },
-            }),
-        ]);
+        const { connectionPromise } = binanceStreamSupervisor.startUserDataStream();
         await expect(connectionPromise).resolves.toBe('connected');
     });
 });

@@ -3,9 +3,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
 import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
 import logger from 'src/logger';
+import { serializePrivateKey } from 'src/clients/requests/auth';
 
 describe('BinanceWebSocket', () => {
     let binanceWebSocket;
+
+    const auth = {
+        type: 'ed25519',
+        apiKey: 'fake-api-key',
+        privateKey: serializePrivateKey('unit-test-prv-key.pem'),
+    };
 
     const validOrder = {
         symbol: 'BTCUSDT',
@@ -20,8 +27,7 @@ describe('BinanceWebSocket', () => {
         binanceWebSocket = new BinanceWebSocket({
             url: 'wss://test-websocket',
             WebSocketClass: WebSocketMock,
-            apiKey: 'test-api-key',
-            privateKeyPath: 'unit-test-prv-key.pem',
+            auth: auth,
             keepAlive: false,
         });
     });

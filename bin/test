@@ -1,0 +1,26 @@
+#!/bin/zsh
+
+verbose=false
+for arg in "$@"
+do
+    case $arg in
+        --verbose)
+            verbose=true
+            shift # Removes --verbose from positional parameters
+            ;;
+        *)
+            # Handle other arguments
+            ;;
+    esac
+done
+
+yarn_test() {
+  NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --silent --verbose="$verbose" "$@";
+}
+
+if [ -z "$1" ]; then
+  yarn_test --testPathPattern="./*.sync.test.js" --runInBand --coverage \
+    && yarn_test --testPathIgnorePatterns="./*.sync.test.js" --coverage;
+else
+  yarn_test "$1";
+fi

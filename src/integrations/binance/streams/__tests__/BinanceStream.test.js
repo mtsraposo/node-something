@@ -3,18 +3,30 @@ import { jest } from '@jest/globals';
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
 import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
 import logger from 'src/logger';
+import { serializePrivateKey } from 'src/clients/requests/auth';
 
 describe('BinanceStream', () => {
     let binanceStream;
 
+    const auth = {
+        type: 'ed25519',
+        apiKey: 'fake-api-key',
+        privateKey: serializePrivateKey('unit-test-prv-key.pem'),
+    };
+
     const streamNames = ['testStream-1', 'testStream-2'];
+
+    const urls = {
+        webSocket: 'wss://test-websocket-url',
+        stream: 'wss://test-stream-url',
+    };
 
     beforeEach(async () => {
         binanceStream = new BinanceStream({
             WebSocketClass: WebSocketMock,
-            apiKey: 'test-api-key',
-            privateKeyPath: 'test-prv-key.pem',
+            auth: auth,
             streamNames,
+            urls,
             keepAlive: false,
         });
     });

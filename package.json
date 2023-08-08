@@ -17,11 +17,7 @@
         "seed": "npx sequelize-cli db:seed:all",
         "start": "yarn build && node dist/main.js",
         "start-dev": "nodemon --exec babel-node src/app.js",
-        "test:path": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --silent --coverage --verbose=false",
-        "test:sync": "yarn test:path --testPathPattern=./*.sync.test.js --runInBand",
-        "test:async": "yarn test:path --testPathIgnorePatterns=./*.sync.test.js",
-        "test": "yarn test:async && yarn test:sync",
-        "test-verbose": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --coverage"
+        "test": "bin/test"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"

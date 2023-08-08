@@ -13,6 +13,7 @@ class WebSocketMock extends EventEmitter {
         this.eventMap = {};
         this.readyState = WebSocketMock.CLOSED;
         this.on = (event, callback) => {
+            console.log('registering event', event);
             this.eventMap[event] = callback;
         };
         this.connectionTimeout = setTimeout(() => {
@@ -48,13 +49,16 @@ class WebSocketMock extends EventEmitter {
     send(message) {
         const payload = JSON.parse(message);
         const response = this._mockResponse(payload);
-        this.mockTriggerEvent('message', [
-            JSON.stringify({
-                id: payload.id,
-                status: 200,
-                ...response,
-            }),
-        ]);
+        let mockEventTimeout = setTimeout(() => {
+            this.mockTriggerEvent('message', [
+                JSON.stringify({
+                    id: payload.id,
+                    status: 200,
+                    ...response,
+                }),
+            ]);
+            mockEventTimeout = null;
+        }, 200);
         return payload.id;
     }
 
@@ -79,10 +83,15 @@ class WebSocketMock extends EventEmitter {
                     result: ADDITIONAL_RESULTS_BY_METHOD.get('account.status'),
                     rateLimits: RATE_LIMITS_BY_METHOD.get('account.status'),
                 };
-            default:
+            case 'userDataStream.start':
                 return {
                     result: ADDITIONAL_RESULTS_BY_METHOD.get('userDataStream.start'),
                     rateLimits: RATE_LIMITS_BY_METHOD.get('userDataStream.start'),
+                };
+            default:
+                return {
+                    result: {},
+                    rateLimits: [],
                 };
         }
     }
