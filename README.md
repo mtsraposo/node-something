@@ -17,7 +17,8 @@
 -   [x] Migration and model for quotes
 -   [x] Webpack
 -   [x] Redis
--   [ ] Tests for database and cache
+-   [x] Tests for database
+-   [x] Tests for cache
 -   [ ] Factory
 -   [ ] gRPC interface: signalOrder
 -   [ ] Python project:
