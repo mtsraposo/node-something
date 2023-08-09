@@ -21,12 +21,14 @@
 -   [x] Tests for cache
 -   [x] Factory
 -   [x] Tests for main
--   [ ] Improve test coverage
--   [ ] gRPC interface: signalOrder
--   [ ] Python project
--   [ ] stateful sets connections
--   [ ] gRPC client
--   [ ] Moving average trading logic
+-   [ ] Kafka topic for data persistence
+-   [ ] Set up topic
+-   [ ] Publish incoming WebSocket messages to topic
+-   [ ] Set up consumer to persist data
+-   [ ] Set up Python project
+-   [ ] Set up Kafka consumer to handle short-term trading strategy
+-   [ ] Set up Redis Pub/Sub in Python service
+-   [ ] Set up Postgres LISTEN/NOTIFY in Python service
 -   [ ] Trend following logic
 -   [ ] Reporting
 -   [ ] Security
