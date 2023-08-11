@@ -21,14 +21,12 @@
 -   [x] Tests for cache
 -   [x] Factory
 -   [x] Tests for main
--   [ ] Kafka topic for data persistence
--   [ ] Set up topic
--   [ ] Publish incoming WebSocket messages to topic
--   [ ] Set up consumer to persist data
+-   [ ] Containerize services
+-   [ ] Set up Kafka Streams to receive new quotes
+-   [ ] Set up a gRPC connection between Kafka Streams and the Python service for the trading logic inference
+-   [ ] Set up a regular Kafka topic for trading orders
+-   [ ] Set up Kafka Connect to persist data in Postgres
 -   [ ] Set up Python project
--   [ ] Set up Kafka consumer to handle short-term trading strategy
--   [ ] Set up Redis Pub/Sub in Python service
--   [ ] Set up Postgres LISTEN/NOTIFY in Python service
 -   [ ] Trend following logic
 -   [ ] Reporting
 -   [ ] Security
