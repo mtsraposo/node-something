@@ -1,4 +1,5 @@
-import { serializePrivateKey } from './clients/requests/auth';
+const { serializePrivateKey } = require('./clients/requests/auth');
+const path = require('path');
 
 const suffix = process.env.BINANCE_ENV === 'prod' ? '' : '_TESTNET';
 const ed25519 = {
@@ -16,7 +17,7 @@ export const env = {
             ed25519: {
                 type: 'ed25519',
                 apiKey: ed25519.apiKey,
-                privateKey: serializePrivateKey(ed25519.privateKeyPath),
+                privateKey: serializePrivateKey(path.join(path.dirname(__dirname), ed25519.privateKeyPath)),
             },
             hmac: {
                 type: 'hmac',

@@ -1,6 +1,6 @@
 import Factory from 'tests/factory';
 import { QUOTE } from 'src/db/models/constants';
-import { destroy, db, modelsByName, disconnect } from 'src/db';
+import { destroy, db, modelsByName, disconnect } from 'src/db/index';
 
 describe('quote', () => {
     let factory;

@@ -1,4 +1,4 @@
-import { cache, connect, disconnect } from 'src/cache';
+import { cache, connect, disconnect } from 'src/cache/index';
 
 describe('cache', () => {
     beforeEach(async () => {

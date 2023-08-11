@@ -8,7 +8,7 @@ import {
     initPostgresConnection,
     isTimescaleDBInstalled,
 } from 'src/db/tasks/migrator/utils';
-import { addUmzugEventListeners, createUmzugInstance } from 'src/db/tasks/migrator';
+import { addUmzugEventListeners, createUmzugInstance } from 'src/db/tasks/migrator/index';
 
 describe('migrator', () => {
     const createQuery = 'CREATE DATABASE unit_test_db;';
