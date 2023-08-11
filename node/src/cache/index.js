@@ -22,8 +22,8 @@ const init = (auth) => {
         username: env.redis.username,
         password: env.redis.password,
         socket: {
-            host: env.redis.host,
-            port: env.redis.port,
+            host: env.redis.socket.host,
+            port: env.redis.socket.port,
             tls: env.nodeEnv === 'production',
             reconnectStrategy: handleReconnection,
             ...auth,

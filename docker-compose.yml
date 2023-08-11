@@ -56,12 +56,15 @@ services:
       - ./kafka_ui.config.yml:/etc/kafkaui/dynamic_config.yaml
 
   postgres:
-    image: postgres:15.3
+    image: timescale/timescaledb:latest-pg15
     ports:
       - '5431:5432'
     environment:
+      POSTGRES_SHARED_PRELOAD_LIBRARIES: 'timescaledb'
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redis:7.0.12
@@ -76,8 +79,6 @@ services:
       - postgres
       - redis
       - kafka-init-topics
-    ports:
-      - '3000:3000'
     env_file:
       - node/.env
     environment:
@@ -104,3 +105,6 @@ services:
 #      - kafka-init-topics
 #    volumes:
 #      - ./python:/app
+
+volumes:
+  pgdata:
