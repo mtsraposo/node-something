@@ -77,23 +77,22 @@ services:
       - redis
       - kafka-init-topics
     ports:
-      - '8080:8080'
+      - '3000:3000'
+    env_file:
+      - node/.env
     environment:
-      - BINANCE_API_KEY_ED25519
-      - BINANCE_PRIVATE_KEY_PATH_ED25519
-      - BINANCE_API_KEY_ED25519_TESTNET
-      - BINANCE_PRIVATE_KEY_PATH_ED25519_TESTNET
-      - BINANCE_API_KEY_HMAC
-      - BINANCE_SECRET_KEY_HMAC
-      - BINANCE_API_KEY_HMAC_TESTNET
-      - BINANCE_SECRET_KEY_HMAC_TESTNET
-      - BINANCE_ENV
-      - NODE_ENV
-      - OPENSSL_PATH
-      - POSTGRES_NAME
-      - POSTGRES_HOST
-      - POSTGRES_USERNAME
-      - POSTGRES_PASSWORD
+      POSTGRES_HOST: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PASSWORD: secret
+      REDIS_PORT: 6379
+      REDIS_USERNAME: default
+    volumes:
+      - ./node/prod-prv-key.pem:/app/prod-prv-key.pem
+      - ./node/prod-pub-key.pem:/app/prod-pub-key.pem
+      - ./node/testnet-prv-key.pem:/app/testnet-prv-key.pem
+      - ./node/testnet-pub-key.pem:/app/testnet-pub-key.pem
 
 #  python-app:
 #    build:
