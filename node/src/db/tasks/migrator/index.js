@@ -8,7 +8,7 @@ const { createDbIfNotExists, initPostgresConnection } = require('./utils.js');
 
 const initMigration = (db) => {
     const sequelizeInitInstance = initPostgresConnection({});
-    const nodeEnv = process.env.NODE_ENV || 'dev';
+    const nodeEnv = process.env.NODE_ENV || 'development';
     const { createQuery, dbName, existsQuery } = DATABASE_CONFIG_BY_ENV.get(nodeEnv);
 
     const umzug = createUmzugInstance({
@@ -45,7 +45,7 @@ const createUmzugInstance = ({ context, storage }) => {
 
 const addUmzugEventListeners = ({ dbProps, nodeEnv, umzugInstance }) => {
     umzugInstance.on('beforeCommand', async () => {
-        if (nodeEnv === 'prod') return;
+        if (nodeEnv === 'production') return;
         await createDbIfNotExists(dbProps);
     });
 };

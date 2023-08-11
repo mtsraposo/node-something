@@ -1,6 +1,6 @@
 const DATABASE_CONFIG_BY_ENV = new Map([
     [
-        'dev',
+        'development',
         {
             createQuery: 'CREATE DATABASE node_something_dev;',
             dbName: 'node_something_dev',

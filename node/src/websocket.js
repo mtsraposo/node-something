@@ -4,7 +4,7 @@ import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
 
 export const connectWebSocket = async ({ binanceEnv, spotApiProps = {}, webSocketProps = {} }) => {
     let webSocket;
-    if (binanceEnv === 'prod') {
+    if (binanceEnv === 'production') {
         webSocket = new BinanceWebSocket(webSocketProps);
     } else {
         webSocket = new BinanceWebSocketTestnet({ spotApiProps, webSocketProps });

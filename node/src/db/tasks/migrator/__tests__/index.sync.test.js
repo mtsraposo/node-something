@@ -75,7 +75,7 @@ describe('migrator', () => {
     it('in prod, it does not try to create a database before migrating and rolling back', async () => {
         console.error = jest.fn();
         const umzug = createInstance({ sequelizeInstance: sequelizeDbInstance });
-        addEventListeners({ nodeEnv: 'prod', umzug });
+        addEventListeners({ nodeEnv: 'production', umzug });
 
         await expect(umzug.up()).rejects.toThrow();
     });

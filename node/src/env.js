@@ -1,7 +1,7 @@
 const { serializePrivateKey } = require('./clients/requests/auth');
 const path = require('path');
 
-const suffix = process.env.BINANCE_ENV === 'prod' ? '' : '_TESTNET';
+const suffix = process.env.BINANCE_ENV === 'production' ? '' : '_TESTNET';
 const ed25519 = {
     apiKey: process.env[`BINANCE_API_KEY_ED25519${suffix}`],
     privateKeyPath: process.env[`BINANCE_PRIVATE_KEY_PATH_ED25519${suffix}`],
@@ -11,13 +11,15 @@ const hmac = {
     privateKey: process.env[`BINANCE_SECRET_KEY_HMAC${suffix}`],
 };
 
-export const env = {
+const env = {
     binance: {
         auth: {
             ed25519: {
                 type: 'ed25519',
                 apiKey: ed25519.apiKey,
-                privateKey: serializePrivateKey(path.join(path.dirname(__dirname), ed25519.privateKeyPath)),
+                privateKey: serializePrivateKey(
+                    path.join(path.dirname(__dirname), ed25519.privateKeyPath),
+                ),
             },
             hmac: {
                 type: 'hmac',
@@ -25,9 +27,9 @@ export const env = {
                 privateKey: hmac.privateKey,
             },
         },
-        env: process.env.BINANCE_ENV || 'dev',
+        env: process.env.BINANCE_ENV || 'development',
     },
-    nodeEnv: process.env.NODE_ENV || 'dev',
+    nodeEnv: process.env.NODE_ENV || 'development',
     openSSLPath: process.env.OPENSSL_PATH,
     postgres: {
         name: process.env.POSTGRES_NAME || 'postgres',
@@ -48,3 +50,5 @@ export const env = {
         },
     },
 };
+
+module.exports = { env };

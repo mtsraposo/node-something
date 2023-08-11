@@ -1,9 +1,9 @@
 'use strict';
 
 const Sequelize = require('sequelize');
-const pg = require('pg');
 
 const { SKIP, OK, ERROR } = require('./constants.js');
+const { connection } = require('../../config');
 
 const createDbIfNotExists = async ({
     createQuery,
@@ -68,7 +68,7 @@ const createTimescaleDb = async ({ sequelizeDbInstance }) => {
         });
         return OK;
     } catch (error) {
-        console.error('Error creating TimescaleDB extension');
+        console.error('Error creating TimescaleDB extension: ', error);
         return ERROR;
     }
 };
@@ -83,11 +83,12 @@ const isTimescaleDBInstalled = async ({ sequelizeDbInstance }) => {
 };
 
 const initPostgresConnection = ({ dbName = 'postgres' }) => {
-    return new Sequelize(dbName, process.env.POSTGRES_USERNAME, process.env.POSTGRES_PASSWORD, {
-        dialect: 'postgres',
-        dialectModule: pg,
-        port: process.env.POSTGRES_PORT,
-    });
+    return new Sequelize(
+        dbName,
+        process.env.POSTGRES_USERNAME,
+        process.env.POSTGRES_PASSWORD,
+        connection,
+    );
 };
 
 module.exports = {

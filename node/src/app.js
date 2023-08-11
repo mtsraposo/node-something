@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import repl from 'repl';
+import path from 'path';
 
 import { authenticate, db } from 'src/db';
 import { connectStreams, connectWebSocket } from 'src/websocket';
@@ -24,7 +25,7 @@ async function main({
     };
 }
 
-if (process.argv[1] === __dirname) {
+if (path.dirname(process.argv[1]) === __dirname) {
     console.log('Starting server...');
     const { webSocket, streams } = main({}).catch(console.error);
     const replServer = repl.start({ prompt: '> ' });

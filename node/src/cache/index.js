@@ -24,7 +24,7 @@ const init = (auth) => {
         socket: {
             host: env.redis.host,
             port: env.redis.port,
-            tls: env.nodeEnv === 'prod',
+            tls: env.nodeEnv === 'production',
             reconnectStrategy: handleReconnection,
             ...auth,
         },
@@ -47,7 +47,7 @@ const disconnect = async (cache) => {
 };
 
 let auth = {};
-if (env.nodeEnv === 'prod') {
+if (env.nodeEnv === 'production') {
     auth = {
         key: readFileSync(env.redis.privateKeyPath),
         cert: readFileSync(env.redis.certPath),

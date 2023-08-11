@@ -57,9 +57,14 @@ const disconnect = async (dbInstance) => {
 };
 
 config();
-const nodeEnv = env.nodeEnv || 'dev';
-const { database, username, password, ...dbConfig } = require('./config.js')[nodeEnv];
-const db = new Sequelize(database, username, password, dbConfig);
+const nodeEnv = env.nodeEnv || 'development';
+const dbConfig = require('./config');
+const db = new Sequelize(
+    dbConfig[nodeEnv].database,
+    env.postgres.username,
+    env.postgres.password,
+    dbConfig.connection,
+);
 const modelsByName = initModels(db);
 associateModels(modelsByName);
 
