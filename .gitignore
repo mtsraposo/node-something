@@ -1,7 +1,9 @@
 node_modules
 .idea
+*.iml
 .env
 *.pem
 tmp
 coverage
 dist
+target

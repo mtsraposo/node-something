@@ -40,7 +40,16 @@ services:
       - kafka
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
             cub kafka-ready -b kafka:29092 1 30 && \
-            kafka-topics --create --topic dev.binance.quote.received.v1.json --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092'"
+            kafka-topics --create --if-not-exists \
+            --topic dev.binance.quote.received.v1.json \ 
+            --partitions 1 \
+            --replication-factor 1 \
+            --bootstrap-server kafka:29092 && \
+            kafka-topics --create --if-not-exists \
+            --topic dev.binance.quote.received.v1.json \ 
+            --partitions 1 \
+            --replication-factor 1 \
+            --bootstrap-server kafka:29092'"
 
   kafka-ui:
     container_name: kafka-ui
