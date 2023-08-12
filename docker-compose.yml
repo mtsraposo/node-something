@@ -38,18 +38,9 @@ services:
     image: confluentinc/cp-kafka:7.2.1
     depends_on:
       - kafka
-    command: "bash -c 'echo Waiting for Kafka to be ready... && \
-            cub kafka-ready -b kafka:29092 1 30 && \
-            kafka-topics --create --if-not-exists \
-            --topic dev.binance.quote.received.v1.json \ 
-            --partitions 1 \
-            --replication-factor 1 \
-            --bootstrap-server kafka:29092 && \
-            kafka-topics --create --if-not-exists \
-            --topic dev.binance.quote.received.v1.json \ 
-            --partitions 1 \
-            --replication-factor 1 \
-            --bootstrap-server kafka:29092'"
+    command: [ "/setup_kafka_topics.sh" ]
+    volumes:
+      - ./bin/setup_kafka_topics.sh:/setup_kafka_topics.sh
 
   kafka-ui:
     container_name: kafka-ui
