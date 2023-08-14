@@ -9,6 +9,7 @@
 -   [ ] Set up Kafka Connect to persist data in Postgres
 -   [ ] Set up a regular Kafka topic for trading orders
 -   [ ] Set up Python project
+-   [ ] Set up cron to train model and consider Apache Airflow
 
 # Roadmap:
 

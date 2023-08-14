@@ -24,7 +24,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
@@ -41,6 +41,31 @@ services:
     command: [ "/setup_kafka_topics.sh" ]
     volumes:
       - ./bin/setup_kafka_topics.sh:/setup_kafka_topics.sh
+
+  kafka-connect:
+    build:
+      context: .
+      dockerfile: kafka_connect/Dockerfile
+    depends_on:
+      - kafka
+      - postgres
+    entrypoint: [ "/bin/start_kafka_connect.sh" ]
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./kafka_connect/timescale-sink.properties:/etc/kafka-connect/config/timescale-sink.properties
+      - ./kafka_connect/connect-standalone.properties:/etc/kafka-connect/connect-standalone.properties
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka:29092
+      CONNECT_REST_PORT: 8083
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: postgres
 
   kafka-ui:
     container_name: kafka-ui

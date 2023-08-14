@@ -7,3 +7,4 @@ tmp
 coverage
 dist
 target
+.DS_Store
