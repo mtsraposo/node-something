@@ -1,12 +1,12 @@
 #!/bin/sh
 
 echo 'Waiting for Kafka to be ready...';
-until cub kafka-ready -b kafka:9092 1 30; do
+until cub kafka-ready -b kafka:29092 1 30; do
   sleep 1
 done
 echo "Kafka is up and running!"
 
-until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -c '\q'; do
+while ! nc -z postgres 5432; do
   echo "Postgres is unavailable - sleeping"
   sleep 1
 done
