@@ -1,0 +1,4 @@
+{
+  "schemaType": "JSON",
+  "schema": "{\"type\": \"object\", \"properties\": {\"time\": {\"type\": \"string\", \"format\": \"date-time\"}}}"
+}
