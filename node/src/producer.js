@@ -1,7 +1,31 @@
 const { Kafka, Partitioners } = require('kafkajs');
 const { SchemaRegistry, SchemaType } = require('@kafkajs/confluent-schema-registry');
+const avro = require('avsc');
 
-const registry = new SchemaRegistry({ host: 'http://localhost:8081' });
+class DateType extends avro.types.LogicalType {
+    _fromValue(val) {
+        return new Date(val);
+    }
+
+    _toValue(date) {
+        return +date;
+    }
+
+    _resolve(type) {
+        if (avro.Type.isType(type, 'long', 'string', 'logical:timestamp-millis')) {
+            return this._fromValue;
+        }
+    }
+}
+
+const options = {
+    [SchemaType.AVRO]: {
+        logicalTypes: {
+            'timestamp-millis': DateType,
+        },
+    },
+};
+const registry = new SchemaRegistry({ host: 'http://localhost:8081' }, options);
 const timescaleDbSinkTopic = 'dev.binance.quote.received.v1.avro';
 
 const kafka = new Kafka({
@@ -9,21 +33,18 @@ const kafka = new Kafka({
     clientId: 'quote-producer',
 });
 
+const timeField = { name: 'time', type: { type: 'long', logicalType: 'timestamp-millis' } };
 const keySchema = {
     type: 'record',
     name: 'key',
     namespace: 'quote',
-    fields: [{ name: 'time', type: 'long' }],
+    fields: [timeField],
 };
 const valueSchema = {
     type: 'record',
     name: 'value',
     namespace: 'quote',
-    fields: [
-        { name: 'time', type: 'long' },
-        { name: 'symbol', type: 'string' },
-        { name: 'price', type: 'double' },
-    ],
+    fields: [timeField, { name: 'symbol', type: 'string' }, { name: 'price', type: 'double' }],
 };
 
 const registerSchemas = () => {
