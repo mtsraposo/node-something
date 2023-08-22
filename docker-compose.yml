@@ -45,17 +45,6 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:29092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
 
-  kafka-create-schemas:
-    image: confluentinc/cp-kafka:7.2.1
-    depends_on:
-      - kafka
-      - kafka-schema-registry
-    command: [ "/bin/create_schemas.sh" ]
-    volumes:
-      - ./kafka/schema/quote/key.json:/schema/quote/key.json
-      - ./kafka/schema/quote/value.json:/schema/quote/value.json
-      - ./kafka/schema/create_schemas.sh:/bin/create_schemas.sh
-
   kafka-init-topics:
     image: confluentinc/cp-kafka:7.2.1
     depends_on:
@@ -65,10 +54,12 @@ services:
       - ./bin/setup_kafka_topics.sh:/bin/setup_kafka_topics.sh
 
   kafka-connect:
+    container_name: 'kafka-connect'
     build:
       context: .
       dockerfile: kafka/connect/Dockerfile
     depends_on:
+      - kafka-schema-registry
       - kafka-init-topics
       - postgres
     command: [ "/bin/start_kafka_connect.sh" ]
@@ -78,13 +69,6 @@ services:
       - ./kafka/connect/timescale-sink.properties:/etc/kafka-connect/config/timescale-sink.properties
       - ./kafka/connect/connect-standalone.properties:/etc/kafka-connect/connect-standalone.properties
     environment:
-      CONNECT_BOOTSTRAP_SERVERS: kafka:29092
-      CONNECT_REST_PORT: 8083
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLED: "true"
-      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLED: "true"
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_HOST: postgres

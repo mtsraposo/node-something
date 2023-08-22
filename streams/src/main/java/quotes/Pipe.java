@@ -20,7 +20,7 @@ public class Pipe {
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
         final StreamsBuilder builder = new StreamsBuilder();
-        builder.stream("dev.binance.quote.received.v1.json").to("dev.binance.quote.processed.v1.json");
+        builder.stream("dev.binance.quote.received.v1.avro").to("dev.binance.quote.processed.v1.json");
 
         final Topology topology = builder.build();
 

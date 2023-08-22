@@ -6,7 +6,7 @@ until cub kafka-ready -b kafka:29092 1 30; do
 done
 echo "Kafka is up and running!"
 
-topics="dev.binance.quote.received.v1.json dev.binance.quote.processed.v1.json dev.binance.quote.dlx.v1.json";
+topics="dev.binance.quote.received.v1.avro dev.binance.quote.processed.v1.json dev.binance.quote.dlx.v1.avro";
 
 for topic in $topics; do
     kafka-topics --create --if-not-exists \
