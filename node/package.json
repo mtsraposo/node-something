@@ -34,6 +34,7 @@
     "homepage": "https://github.com/mtsraposo/node-something#readme",
     "dependencies": {
         "@kafkajs/confluent-schema-registry": "^3.3.0",
+        "avsc": "^5.7.7",
         "axios": "^1.4.0",
         "buffer": "^6.0.3",
         "dotenv": "^16.3.1",
