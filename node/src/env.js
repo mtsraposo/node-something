@@ -38,6 +38,12 @@ const env = {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: process.env.POSTGRES_PORT || 5432,
     },
+    kafka: {
+        clientId: 'quote-received',
+        host: 'localhost:9092',
+        quoteReceivedTopic: 'dev.binance.quote.received.v1.avro',
+        schemaRegistryUrl: 'http://localhost:8081',
+    },
     redis: {
         username: process.env.REDIS_USERNAME || 'default',
         password: process.env.REDIS_PASSWORD || 'secret',

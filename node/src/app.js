@@ -6,6 +6,9 @@ import { authenticate, db } from 'src/db';
 import { connectStreams, connectWebSocket } from 'src/websocket';
 import { cache, connect } from 'src/cache';
 import { env } from 'src/env';
+import { registerSchemas, registry } from 'src/connectors/kafka/registry';
+import { connectProducer, producer } from 'src/connectors/kafka';
+import { quoteValueSchema, timeKeySchema } from 'src/connectors/kafka/schemas/quote';
 
 config({ path: './env.js' });
 
@@ -13,15 +16,31 @@ async function main({
     binanceEnv = env.binance.env,
     cacheInstance = cache,
     dbInstance = db,
+    producerInstance = producer,
+    quoteReceivedTopic = env.kafka.quoteReceivedTopic,
+    registryInstance = registry,
     spotApiProps = {},
     streamProps = {},
     webSocketProps = {},
 }) {
     await authenticate(dbInstance);
     await connect(cacheInstance);
+    const [{ id: timeKeySchemaId }, { id: quoteValueSchemaId }] = await registerSchemas(
+        registryInstance,
+        [
+            { ...timeKeySchema, subject: `${quoteReceivedTopic}-key` },
+            { ...quoteValueSchema, subject: `${quoteReceivedTopic}-value` },
+        ],
+    );
+    await connectProducer(producerInstance);
     return {
         webSocket: await connectWebSocket({ binanceEnv, spotApiProps, webSocketProps }),
-        streams: await connectStreams(streamProps),
+        streams: await connectStreams(streamProps, {
+            producerInstance,
+            quoteReceivedTopic,
+            registryInstance,
+            schemas: { timeKeySchemaId, quoteValueSchemaId },
+        }),
     };
 }
 
