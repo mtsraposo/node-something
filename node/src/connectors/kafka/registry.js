@@ -12,6 +12,7 @@ const options = {
 const registry = new SchemaRegistry({ host: env.kafka.schemaRegistryUrl }, options);
 
 const registerSchemas = async (registryInstance, schemas) => {
+    console.info('Registering schemas');
     return await Promise.all(
         schemas.map((schema) => {
             return registryInstance.register(

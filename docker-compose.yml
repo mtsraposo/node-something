@@ -109,7 +109,7 @@ services:
     depends_on:
       - postgres
       - redis
-      - kafka-init-topics
+      - kafka-connect
     env_file:
       - node/.env
     environment:

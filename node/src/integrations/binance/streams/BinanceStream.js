@@ -103,13 +103,13 @@ class BinanceStream extends BinanceStreamSupervisor {
 
     async persistQuote({ symbol, lastPrice }) {
         try {
-            const { keySchemaId, valueSchemaId } = this.schemas;
+            const { timeKeySchemaId, quoteValueSchemaId } = this.schemas;
             const time = +new Date();
             await produceMessage({
                 key: { time: time },
                 producerInstance: this.producerInstance,
                 registryInstance: this.registryinstance,
-                schema: { keySchemaId, valueSchemaId },
+                schema: { timeKeySchemaId, quoteValueSchemaId },
                 topic: this.quoteReceivedTopic,
                 value: {
                     time: time,
@@ -117,6 +117,7 @@ class BinanceStream extends BinanceStreamSupervisor {
                     price: lastPrice,
                 },
             });
+            console.info(`Successfully produced message to topic ${this.quoteReceivedTopic}`);
         } catch (e) {
             console.error('Error persisting quote', e);
         }

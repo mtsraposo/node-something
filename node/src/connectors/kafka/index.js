@@ -21,10 +21,10 @@ const produceMessage = async ({
     topic,
     value,
 }) => {
-    const { keySchemaId, valueSchemaId } = schema;
+    const { timeKeySchemaId, quoteValueSchemaId } = schema;
     const outgoingMessage = {
-        key: await registryInstance.encode(keySchemaId, key),
-        value: await registryInstance.encode(valueSchemaId, value),
+        key: await registryInstance.encode(timeKeySchemaId, key),
+        value: await registryInstance.encode(quoteValueSchemaId, value),
     };
 
     await producerInstance.send({

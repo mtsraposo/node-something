@@ -40,9 +40,9 @@ const env = {
     },
     kafka: {
         clientId: 'quote-received',
-        host: 'localhost:9092',
+        host: 'kafka:9092',
         quoteReceivedTopic: 'dev.binance.quote.received.v1.avro',
-        schemaRegistryUrl: 'http://localhost:8081',
+        schemaRegistryUrl: 'http://kafka-schema-registry:8081',
     },
     redis: {
         username: process.env.REDIS_USERNAME || 'default',
