@@ -1,6 +1,6 @@
-const { Kafka, Partitioners } = require('kafkajs');
-const { env } = require('../../env');
-const { registerSchemas } = require('./registry');
+import { Kafka, Partitioners } from 'kafkajs';
+import { env } from 'src/env';
+import { registerSchemas } from './registry';
 
 const kafka = new Kafka({
     brokers: [env.kafka.host],

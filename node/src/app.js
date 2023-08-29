@@ -2,15 +2,14 @@ import { config } from 'dotenv';
 import repl from 'repl';
 import path from 'path';
 
-import { authenticate, db } from 'src/db';
+import { authenticateDb, db } from 'src/db';
 import { connectStreams, connectWebSocket } from 'src/websocket';
-import { cache, connect } from 'src/cache';
+import { cache, connectCache } from 'src/cache';
 import { env } from 'src/env';
 import { registerSchemas, registry } from 'src/connectors/kafka/registry';
 import { connectProducer, producer } from 'src/connectors/kafka';
 import { quoteValueSchema, timeKeySchema } from 'src/connectors/kafka/schemas/quote';
-
-config({ path: './env.js' });
+import { logger } from 'src/logger';
 
 async function main({
     binanceEnv = env.binance.env,
@@ -23,8 +22,9 @@ async function main({
     streamProps = {},
     webSocketProps = {},
 }) {
-    await authenticate(dbInstance);
-    await connect(cacheInstance);
+    config({ path: './env.js' });
+    await authenticateDb(dbInstance);
+    await connectCache(cacheInstance);
     const [{ id: timeKeySchemaId }, { id: quoteValueSchemaId }] = await registerSchemas(
         registryInstance,
         [
@@ -45,7 +45,7 @@ async function main({
 }
 
 if (path.dirname(process.argv[1]) === __dirname) {
-    console.log('Starting server...');
+    logger.info('Starting server...');
     const { webSocket, streams } = main({}).catch(console.error);
     const replServer = repl.start({ prompt: '> ' });
     replServer.context.webSocket = webSocket;

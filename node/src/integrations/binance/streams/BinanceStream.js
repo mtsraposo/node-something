@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import BinanceStreamSupervisor from './BinanceStreamSupervisor';
 import { BINANCE_STREAMS, BINANCE_WEBSOCKET_STREAM_URL } from './constants';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 import { env } from 'src/env';
 import util from 'util';
 import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
@@ -106,20 +106,20 @@ class BinanceStream extends BinanceStreamSupervisor {
             const { timeKeySchemaId, quoteValueSchemaId } = this.schemas;
             const time = +new Date();
             await produceMessage({
-                key: { time: time },
+                key: { time },
                 producerInstance: this.producerInstance,
                 registryInstance: this.registryinstance,
                 schema: { timeKeySchemaId, quoteValueSchemaId },
                 topic: this.quoteReceivedTopic,
                 value: {
-                    time: time,
-                    symbol: symbol,
+                    time,
+                    symbol,
                     price: lastPrice,
                 },
             });
-            console.info(`Successfully produced message to topic ${this.quoteReceivedTopic}`);
+            logger.info(`Successfully produced message to topic ${this.quoteReceivedTopic}`);
         } catch (e) {
-            console.error('Error persisting quote', e);
+            logger.error('Error persisting quote', e);
         }
     }
 }

@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
 import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 import { serializePrivateKey } from 'src/clients/requests/auth';
 
 describe('BinanceStream', () => {

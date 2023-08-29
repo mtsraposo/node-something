@@ -1,11 +1,12 @@
 import { ClientClosedError, createClient } from 'redis';
 import { readFileSync } from 'fs';
 import { env } from '../env';
+import { logger } from '../logger';
 
 const handleReconnection = (retries, error) => {
     if (error.code === 'ECONNREFUSED') {
         const delay = 2 ** (retries + 10);
-        console.log(`Failed to connect Redis. Is it running? Retrying in ${delay} ms`);
+        logger.error(`Failed to connect Redis. Is it running? Retrying in ${delay} ms`);
         return delay;
     }
     return Math.min(retries * 50, 500);
@@ -13,7 +14,7 @@ const handleReconnection = (retries, error) => {
 
 const handleErrors = (err) => {
     if (err.code !== 'ECONNREFUSED') {
-        console.log('Redis Client Error', err);
+        logger.error('Redis Client Error', err);
     }
 };
 
@@ -31,7 +32,7 @@ const init = (auth) => {
     });
 };
 
-const connect = async (cache) => {
+const connectCache = async (cache) => {
     cache.on('error', handleErrors);
     await cache.connect().catch(handleErrors);
 };
@@ -41,7 +42,7 @@ const disconnect = async (cache) => {
         await cache.disconnect();
     } catch (error) {
         if (error instanceof ClientClosedError) return;
-        console.error(`Failed to disconnect redis: ${error}`);
+        logger.error(`Failed to disconnect redis: ${error}`);
         throw new Error(error);
     }
 };
@@ -60,4 +61,4 @@ cache.on('error', (error) => {
     console.error(`Received Redis error from server: ${error}`);
 });
 
-export { cache, connect, disconnect, init };
+export { cache, connectCache, disconnect, init };

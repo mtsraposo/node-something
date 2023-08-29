@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
 import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 import { serializePrivateKey } from 'src/clients/requests/auth';
 
 describe('BinanceWebSocket', () => {

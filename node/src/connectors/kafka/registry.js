@@ -1,6 +1,7 @@
-const { SchemaRegistry, SchemaType } = require('@kafkajs/confluent-schema-registry');
-const { DateType } = require('./logicalTypes/DateType');
-const { env } = require('../../env');
+import { SchemaRegistry, SchemaType } from '@kafkajs/confluent-schema-registry';
+import DateType from './logicalTypes/DateType';
+import { env } from 'src/env';
+import { logger } from 'src/logger';
 
 const options = {
     [SchemaType.AVRO]: {
@@ -12,7 +13,7 @@ const options = {
 const registry = new SchemaRegistry({ host: env.kafka.schemaRegistryUrl }, options);
 
 const registerSchemas = async (registryInstance, schemas) => {
-    console.info('Registering schemas');
+    logger.info('Registering schemas');
     return await Promise.all(
         schemas.map((schema) => {
             return registryInstance.register(

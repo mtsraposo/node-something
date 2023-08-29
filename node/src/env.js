@@ -36,7 +36,7 @@ const env = {
         username: process.env.POSTGRES_USERNAME || 'postgres',
         password: process.env.POSTGRES_PASSWORD || 'postgres',
         host: process.env.POSTGRES_HOST || 'localhost',
-        port: process.env.POSTGRES_PORT || 5432,
+        port: process.env.POSTGRES_PORT || 5431,
     },
     kafka: {
         clientId: 'quote-received',

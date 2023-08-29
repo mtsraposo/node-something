@@ -20,7 +20,7 @@ const associateModels = (modelsByName) => {
         .forEach((model) => model.associate(modelsByName));
 };
 
-const authenticate = async (dbInstance) => {
+const authenticateDb = async (dbInstance) => {
     try {
         await dbInstance.authenticate();
         console.info('Connection has been established successfully.');
@@ -69,7 +69,7 @@ const modelsByName = initModels(db);
 associateModels(modelsByName);
 
 module.exports = {
-    authenticate,
+    authenticateDb,
     db,
     destroy,
     disconnect,

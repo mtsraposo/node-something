@@ -1,4 +1,4 @@
-const avro = require('avsc');
+import avro from 'avsc';
 
 class DateType extends avro.types.LogicalType {
     _fromValue(val) {
@@ -16,4 +16,4 @@ class DateType extends avro.types.LogicalType {
     }
 }
 
-module.export = { DateType };
+export default DateType;

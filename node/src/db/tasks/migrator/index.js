@@ -3,7 +3,7 @@
 const { SequelizeStorage, Umzug } = require('umzug');
 const { Sequelize } = require('sequelize');
 
-const { DATABASE_CONFIG_BY_ENV, ERROR, OK, SKIP } = require('./constants.js');
+const { DATABASE_CONFIG_BY_ENV } = require('./constants.js');
 const { createDbIfNotExists, initPostgresConnection } = require('./utils.js');
 
 const initMigration = (db) => {

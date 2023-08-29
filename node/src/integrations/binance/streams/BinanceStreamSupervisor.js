@@ -1,7 +1,7 @@
 import WebSocketSupervisor from 'src/clients/WebSocketSupervisor';
 import BinanceWebSocketSupervisor from 'src/integrations/binance/websocket/BinanceWebSocketSupervisor';
 import BinanceWebSocket from 'src/integrations/binance/websocket/BinanceWebSocket';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 
 class BinanceStreamSupervisor extends WebSocketSupervisor {
     constructor({

@@ -1,8 +1,8 @@
-import { cache, connect, disconnect } from 'src/cache/index';
+import { cache, connectCache, disconnect } from 'src/cache/index';
 
 describe('cache', () => {
     beforeEach(async () => {
-        await connect(cache);
+        await connectCache(cache);
     });
 
     afterEach(async () => {

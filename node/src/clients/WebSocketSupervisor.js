@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 
 class WebSocketSupervisor extends EventEmitter {
     constructor(WebSocketClass) {

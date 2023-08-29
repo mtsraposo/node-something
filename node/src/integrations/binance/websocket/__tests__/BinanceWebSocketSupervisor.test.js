@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import BinanceWebSocketSupervisor from 'src/integrations/binance/websocket/BinanceWebSocketSupervisor';
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 
 describe('BinanceWebSocketSupervisor', () => {
     let binanceWebSocketSupervisor;

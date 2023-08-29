@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { ADDITIONAL_RESULTS_BY_METHOD, RATE_LIMITS_BY_METHOD } from 'src/__mocks__/constants';
+import { logger } from 'src/logger';
 
 class WebSocketMock extends EventEmitter {
     static CONNECTING = 0;
@@ -13,7 +14,7 @@ class WebSocketMock extends EventEmitter {
         this.eventMap = {};
         this.readyState = WebSocketMock.CLOSED;
         this.on = (event, callback) => {
-            console.log('registering event', event);
+            logger.info('registering event', event);
             this.eventMap[event] = callback;
         };
         this.connectionTimeout = setTimeout(() => {

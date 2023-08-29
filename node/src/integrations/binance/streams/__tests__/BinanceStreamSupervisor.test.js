@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
 import BinanceStreamSupervisor from 'src/integrations/binance/streams/BinanceStreamSupervisor';
-import logger from 'src/logger';
+import { logger } from 'src/logger';
 
 describe('BinanceStreamSupervisor', () => {
     let binanceStreamSupervisor;
