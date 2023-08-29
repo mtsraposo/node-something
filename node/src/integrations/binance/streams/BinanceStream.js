@@ -1,4 +1,6 @@
 import WebSocket from 'ws';
+import { SchemaRegistry } from '@kafkajs/confluent-schema-registry';
+
 import BinanceStreamSupervisor from './BinanceStreamSupervisor';
 import { BINANCE_STREAMS, BINANCE_WEBSOCKET_STREAM_URL } from './constants';
 import { logger } from 'src/logger';
@@ -6,21 +8,21 @@ import { env } from 'src/env';
 import util from 'util';
 import { BINANCE_WEBSOCKET_API_URL } from 'src/integrations/binance/websocket/constants';
 import { produceMessage, producer } from 'src/connectors/kafka';
-import { registry } from 'src/connectors/kafka/registry';
+import { connectRegistry } from 'src/connectors/kafka/registry';
 
 class BinanceStream extends BinanceStreamSupervisor {
     constructor(
         {
-            WebSocketClass = WebSocket,
             auth = env.binance.auth.ed25519,
+            keepAlive = true,
             streamNames = BINANCE_STREAMS,
             urls = { webSocket: BINANCE_WEBSOCKET_API_URL, stream: BINANCE_WEBSOCKET_STREAM_URL },
-            keepAlive = true,
+            WebSocketClass = WebSocket,
         },
         {
             producerInstance = producer,
             quoteReceivedTopic = env.kafka.quoteReceivedTopic,
-            registryInstance = registry,
+            SchemaRegistryClass = SchemaRegistry,
             schemas = { timeKeySchemaId: 1, quoteValueSchemaId: 2 },
         },
     ) {
@@ -28,7 +30,7 @@ class BinanceStream extends BinanceStreamSupervisor {
 
         this.schemas = schemas;
         this.producerInstance = producerInstance;
-        this.registryinstance = registryInstance;
+        this.registryinstance = connectRegistry(SchemaRegistryClass);
         this.quoteReceivedTopic = quoteReceivedTopic;
         this.addEventListeners();
     }

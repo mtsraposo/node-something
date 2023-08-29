@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import BinanceSpotApi from 'src/integrations/binance/spot/BinanceSpotApi';
-import HttpClientMock from 'src/__mocks__/HttpClientMock';
+import { HttpClientMock } from 'src/__mocks__';
 
 describe('BinanceSpotApi', () => {
     let binanceSpotApi;

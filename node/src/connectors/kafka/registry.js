@@ -3,14 +3,17 @@ import DateType from './logicalTypes/DateType';
 import { env } from 'src/env';
 import { logger } from 'src/logger';
 
-const options = {
-    [SchemaType.AVRO]: {
-        logicalTypes: {
-            'timestamp-millis': DateType,
+const connectRegistry = (SchemaRegistryClass = SchemaRegistry) => {
+    const options = {
+        [SchemaType.AVRO]: {
+            logicalTypes: {
+                'timestamp-millis': DateType,
+            },
         },
-    },
+    };
+
+    return new SchemaRegistryClass({ host: env.kafka.schemaRegistryUrl }, options);
 };
-const registry = new SchemaRegistry({ host: env.kafka.schemaRegistryUrl }, options);
 
 const registerSchemas = async (registryInstance, schemas) => {
     logger.info('Registering schemas');
@@ -27,4 +30,4 @@ const registerSchemas = async (registryInstance, schemas) => {
     );
 };
 
-module.exports = { registerSchemas, registry };
+module.exports = { registerSchemas, connectRegistry };

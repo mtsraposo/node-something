@@ -1,12 +1,13 @@
 import { config } from 'dotenv';
 import repl from 'repl';
 import path from 'path';
+import { SchemaRegistry } from '@kafkajs/confluent-schema-registry';
 
 import { authenticateDb, db } from 'src/db';
 import { connectStreams, connectWebSocket } from 'src/websocket';
 import { cache, connectCache } from 'src/cache';
 import { env } from 'src/env';
-import { registerSchemas, registry } from 'src/connectors/kafka/registry';
+import { registerSchemas, connectRegistry } from 'src/connectors/kafka/registry';
 import { connectProducer, producer } from 'src/connectors/kafka';
 import { quoteValueSchema, timeKeySchema } from 'src/connectors/kafka/schemas/quote';
 import { logger } from 'src/logger';
@@ -17,7 +18,7 @@ async function main({
     dbInstance = db,
     producerInstance = producer,
     quoteReceivedTopic = env.kafka.quoteReceivedTopic,
-    registryInstance = registry,
+    SchemaRegistryClass = SchemaRegistry,
     spotApiProps = {},
     streamProps = {},
     webSocketProps = {},
@@ -25,6 +26,7 @@ async function main({
     config({ path: './env.js' });
     await authenticateDb(dbInstance);
     await connectCache(cacheInstance);
+    const registryInstance = connectRegistry(SchemaRegistryClass);
     const [{ id: timeKeySchemaId }, { id: quoteValueSchemaId }] = await registerSchemas(
         registryInstance,
         [

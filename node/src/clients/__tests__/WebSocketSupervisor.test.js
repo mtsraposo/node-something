@@ -1,5 +1,5 @@
 import WebSocketSupervisor from '../WebSocketSupervisor';
-import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
+import { WebSocketMock } from 'src/__mocks__';
 
 describe('WebSocketSupervisor', () => {
     let webSocketSupervisor;

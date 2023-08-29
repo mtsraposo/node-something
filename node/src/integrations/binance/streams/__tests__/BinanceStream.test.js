@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
+import { ProducerMock, SchemaRegistryMock, WebSocketMock } from 'src/__mocks__';
 import BinanceStream from 'src/integrations/binance/streams/BinanceStream';
 import { logger } from 'src/logger';
 import { serializePrivateKey } from 'src/clients/requests/auth';
@@ -13,22 +13,30 @@ describe('BinanceStream', () => {
         apiKey: 'fake-api-key',
         privateKey: serializePrivateKey('unit-test-prv-key.pem'),
     };
-
+    const producerInstance = new ProducerMock();
     const streamNames = ['testStream-1', 'testStream-2'];
-
+    const quoteReceivedTopic = 'test.quote.received.v1.avro';
     const urls = {
         webSocket: 'wss://test-websocket-url',
         stream: 'wss://test-stream-url',
     };
 
     beforeEach(async () => {
-        binanceStream = new BinanceStream({
-            WebSocketClass: WebSocketMock,
-            auth: auth,
-            streamNames,
-            urls,
-            keepAlive: false,
-        });
+        binanceStream = new BinanceStream(
+            {
+                auth,
+                keepAlive: false,
+                streamNames,
+                urls,
+                WebSocketClass: WebSocketMock,
+            },
+            {
+                producerInstance,
+                quoteReceivedTopic,
+                SchemaRegistryClass: SchemaRegistryMock,
+                schemas: { timeKeySchemaId: 1, quoteValueSchemaId: 2 },
+            },
+        );
     });
 
     afterEach(async () => {

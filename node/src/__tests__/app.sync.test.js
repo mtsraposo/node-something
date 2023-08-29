@@ -1,6 +1,5 @@
-import HttpClientMock from 'src/__mocks__/HttpClientMock';
+import { HttpClientMock, ProducerMock, SchemaRegistryMock, WebSocketMock } from 'src/__mocks__';
 import { main } from 'src/app';
-import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
 import { db, disconnect } from 'src/db';
 import { cache, disconnect as disconnectCache } from 'src/cache';
 
@@ -10,6 +9,9 @@ describe('app', () => {
         apiKey: 'test-api-key',
         privateKeyPath: 'unit-test-prv-key.pem',
     };
+
+    const producerInstance = new ProducerMock();
+    const quoteReceivedTopic = 'test.quote.received.v1.avro';
 
     const urls = {
         webSocket: 'wss://test-websocket-url',
@@ -24,6 +26,9 @@ describe('app', () => {
     it('starts up', async () => {
         const { webSocket, streams } = await main({
             binanceEnv: 'test',
+            producerInstance,
+            quoteReceivedTopic,
+            SchemaRegistryClass: SchemaRegistryMock,
             spotApiProps: {
                 auth,
                 httpClient: HttpClientMock,

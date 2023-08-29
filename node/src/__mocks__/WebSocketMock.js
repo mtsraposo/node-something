@@ -98,4 +98,4 @@ class WebSocketMock extends EventEmitter {
     }
 }
 
-export { WebSocketMock };
+export default WebSocketMock;

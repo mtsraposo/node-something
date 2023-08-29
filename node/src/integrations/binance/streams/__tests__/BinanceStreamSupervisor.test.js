@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { WebSocketMock } from 'src/__mocks__/WebSocketMock';
+import { WebSocketMock } from 'src/__mocks__';
 import BinanceStreamSupervisor from 'src/integrations/binance/streams/BinanceStreamSupervisor';
 import { logger } from 'src/logger';
 
