@@ -54,7 +54,7 @@ services:
       - ./bin/setup_kafka_topics.sh:/bin/setup_kafka_topics.sh
 
   kafka-connect:
-    container_name: 'kafka-connect'
+    container_name: kafka-connect
     build:
       context: .
       dockerfile: kafka/connect/Dockerfile
