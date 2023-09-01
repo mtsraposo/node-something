@@ -33,10 +33,4 @@ const produceMessage = async ({
     });
 };
 
-module.exports = {
-    connectProducer,
-    kafka,
-    produceMessage,
-    producer,
-    registerSchemas,
-};
+export { connectProducer, kafka, produceMessage, producer, registerSchemas };
