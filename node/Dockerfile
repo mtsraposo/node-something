@@ -34,4 +34,6 @@ RUN chmod +x dist/main.js && \
     chmod +x start.sh && \
     chmod +x src/db/migrator.js
 
+RUN apt-get update && apt-get install -y netcat-traditional
+
 ENTRYPOINT [ "./start.sh" ]

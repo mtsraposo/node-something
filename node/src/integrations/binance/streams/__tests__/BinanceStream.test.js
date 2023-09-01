@@ -16,6 +16,7 @@ describe('BinanceStream', () => {
     const producerInstance = new ProducerMock();
     const streamNames = ['testStream-1', 'testStream-2'];
     const quoteReceivedTopic = 'test.quote.received.v1.avro';
+    const schemas = { timeKeySchemaId: 1, quoteValueSchemaId: 2 };
     const urls = {
         webSocket: 'wss://test-websocket-url',
         stream: 'wss://test-stream-url',
@@ -34,7 +35,7 @@ describe('BinanceStream', () => {
                 producerInstance,
                 quoteReceivedTopic,
                 SchemaRegistryClass: SchemaRegistryMock,
-                schemas: { timeKeySchemaId: 1, quoteValueSchemaId: 2 },
+                schemas,
             },
         );
     });

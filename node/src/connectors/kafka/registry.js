@@ -30,4 +30,4 @@ const registerSchemas = async (registryInstance, schemas) => {
     );
 };
 
-module.exports = { registerSchemas, connectRegistry };
+export { registerSchemas, connectRegistry };

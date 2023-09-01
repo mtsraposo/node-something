@@ -12,10 +12,27 @@ describe('app', () => {
 
     const producerInstance = new ProducerMock();
     const quoteReceivedTopic = 'test.quote.received.v1.avro';
-
+    const spotApiProps = {
+        auth,
+        httpClient: HttpClientMock,
+        url: 'https://test-spot-url',
+    };
     const urls = {
         webSocket: 'wss://test-websocket-url',
         stream: 'wss://test-stream-url',
+    };
+    const streamProps = {
+        auth,
+        keepAlive: false,
+        streamNames: ['testStream-1', 'testStream-2'],
+        urls,
+        WebSocketClass: WebSocketMock,
+    };
+    const webSocketProps = {
+        auth,
+        keepAlive: false,
+        url: urls.webSocket,
+        WebSocketClass: WebSocketMock,
     };
 
     afterEach(async () => {
@@ -26,27 +43,14 @@ describe('app', () => {
     it('starts up', async () => {
         const { webSocket, streams } = await main({
             binanceEnv: 'test',
+            cacheInstance: cache,
+            dbInstance: db,
             producerInstance,
             quoteReceivedTopic,
             SchemaRegistryClass: SchemaRegistryMock,
-            spotApiProps: {
-                auth,
-                httpClient: HttpClientMock,
-                url: 'https://test-spot-url',
-            },
-            streamProps: {
-                auth,
-                keepAlive: false,
-                streamNames: ['testStream-1', 'testStream-2'],
-                urls,
-                WebSocketClass: WebSocketMock,
-            },
-            webSocketProps: {
-                auth,
-                keepAlive: false,
-                url: urls.webSocket,
-                WebSocketClass: WebSocketMock,
-            },
+            spotApiProps,
+            streamProps,
+            webSocketProps,
         });
         await streams.close();
         await webSocket.close();
