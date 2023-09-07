@@ -20,6 +20,7 @@ wait_for() {
       exit 1
     fi
 
+    echo "$service not ready yet. Sleeping for $((2 ** retries))s."
     sleep $((2 ** retries))
     : $((retries++))
   done

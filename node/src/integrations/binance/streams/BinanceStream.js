@@ -116,7 +116,7 @@ class BinanceStream extends BinanceStreamSupervisor {
                 value: {
                     time,
                     symbol,
-                    price: lastPrice,
+                    price: +lastPrice,
                 },
             });
             logger.info(`Successfully produced message to topic ${this.quoteReceivedTopic}`);
