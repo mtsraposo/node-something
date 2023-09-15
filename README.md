@@ -1,12 +1,39 @@
 # Node Something (or Node _Algo_)
 
-## To run
+This is a work-in-progress connector with major crypto and fiat exchanges, to enable algorithmic trading.
+Currently, only Binance is supported.
 
-    $ yarn start
+## Setup
+You'll need to fill out a file similar to `.env.template` with environment variables. The ones related to Binance can be
+obtained by following the [documentation](https://testnet.binance.vision).
+You'll also need private key files saved at the root of `node-something/node`.
+This is a suggestion on how those should be named (configuration to change accordingly): 
+- prod-prv-key.pem
+- prod-pub-key.pem
+- unit-test-prv-key.pem
+- unit-test-pub-key.pem
+
+## To run in Docker (recommended)
+
+```
+   $ docker-compose up --build
+```
+
+## To run locally
+
+```
+   $ yarn start
+```
+
+## To run the tests
+
+```
+   node-something/node $ yarn test
+```
 
 ## TODO
 
--   [ ] Set up Kafka Connect to persist data in Postgres
+-   [ ] Persist balances
 -   [ ] Set up a regular Kafka topic for trading orders
 -   [ ] Set up Python project
 -   [ ] Set up cron to train model and consider Apache Airflow
