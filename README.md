@@ -1,6 +1,6 @@
 # Node Something (or Node _Algo_)
 
-This is a work-in-progress connector with major crypto and fiat exchanges, to enable algorithmic trading.
+This is a work-in-progress connector to major crypto and fiat exchanges, to serve as an engine for algorithmic trading.
 Currently, only Binance is supported.
 
 ## Setup
